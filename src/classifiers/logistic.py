@@ -28,3 +28,12 @@ class LogisticRegression(object):
             name='W',
             borrow=True
         )
+        # initialize the bias vector b
+        self.b = theano.shared(
+            value=np.zeros(
+                (n, 1),
+                dtype=theano.config.floatX
+            ),
+            name='b',
+            borrow=True
+        )
