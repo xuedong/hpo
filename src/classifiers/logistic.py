@@ -43,10 +43,27 @@ class LogisticRegression(object):
         self.y_pred = T.argmax(self.p_y_x, axis=1)
 
     def neg_log_likelihood(self, y):
-        """Loss function.
+        """Log-likelihood loss.
 
         :param y: the correct label vector
         :return: the mean of the negative log-likelihood of the prediction, we use mean instead of sum here
         to make the learning rate less dependent of the size of the minibatch size
         """
         return -T.mean(T.log(self.p_y_x)[T.arange(y.shape[0]), y])
+
+    def zero_one(self, y):
+        """Zero-one loss.
+
+        :param y: the correct label vector
+        :return: the zero-one loss over the size of minibatch
+        """
+        if y.ndim != self.y_pred.ndim:
+            raise TypeError(
+                'y should have the same shape as self.y_pred',
+                ('y', y.type, 'y_pred', self.y_pred.type)
+            )
+        if y.dtype.startswith('int'):
+            return T.mean(T.neq(self.y_pred, y))
+        else:
+            raise NotImplementedError()
+        
