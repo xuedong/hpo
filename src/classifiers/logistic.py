@@ -1,11 +1,5 @@
 from __future__ import print_function
 
-import six.moves.cPickle
-import gzip
-import os
-import sys
-import timeit
-
 import numpy as np
 
 import theano
@@ -66,4 +60,3 @@ class LogisticRegression(object):
             return T.mean(T.neq(self.y_pred, y))
         else:
             raise NotImplementedError()
-        
