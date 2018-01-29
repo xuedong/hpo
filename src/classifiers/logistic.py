@@ -10,8 +10,8 @@ class LogisticRegression(object):
         """Initialization of the class.
 
         :param input: one minibatch
-        :param n: the dimension of the input space
-        :param m: the dimension of the output space
+        :param n: dimension of the input space
+        :param m: dimension of the output space
         """
         # initialize the weight matrix W
         self.W = theano.shared(
@@ -35,11 +35,15 @@ class LogisticRegression(object):
         self.p_y_x = T.nnet.softmax(T.dot(input, self.W) + self.b)
         # predict the class
         self.y_pred = T.argmax(self.p_y_x, axis=1)
+        # parameters of the model
+        self.params = [self.W, self.b]
+        # keep track of the input
+        self.input = input
 
     def neg_log_likelihood(self, y):
         """Log-likelihood loss.
 
-        :param y: the correct label vector
+        :param y: correct label vector
         :return: the mean of the negative log-likelihood of the prediction, we use mean instead of sum here
         to make the learning rate less dependent of the size of the minibatch size
         """
@@ -48,7 +52,7 @@ class LogisticRegression(object):
     def zero_one(self, y):
         """Zero-one loss.
 
-        :param y: the correct label vector
+        :param y: correct label vector
         :return: the zero-one loss over the size of minibatch
         """
         if y.ndim != self.y_pred.ndim:

@@ -10,7 +10,7 @@ from six.moves import cPickle
 def load_data(dataset):
     """
 
-    :param dataset: the path to the dataset
+    :param dataset: path to the dataset
     :return: separated training, validation and test dataset
     """
     # download the dataset if not already present (mnist dataset by default)
