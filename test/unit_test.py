@@ -19,5 +19,6 @@ import utils
 
 #print(__file__)
 
-#data = utils.load_data('mnist.pkl.gz')
-#print(data[0])
+data = utils.load_data('mnist.pkl.gz')
+input, target = data[0]
+print(input.get_value(borrow=True))
