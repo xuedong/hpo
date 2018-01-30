@@ -118,7 +118,8 @@ def sgd(dataset, learning_rate, epochs, batch_size):
                         batch_index + 1,
                         n_batches_train,
                         batch_cost,
-                        current_valid_loss * 100.)
+                        current_valid_loss * 100.
+                    )
                 )
 
                 if current_valid_loss < best_valid_loss:
@@ -144,7 +145,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
                     )
 
                     # save the best model
-                    with open('best_model_logistic_sgd.pkl', 'wb') as file:
+                    with open('../log/best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
             if patience <= iteration:
@@ -154,7 +155,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
     end_time = timeit.default_timer()
     print(
         (
-            'Optimization completed with best validation score of %f %%,'
+            'Optimization completed with best validation score of %f %%, '
             'with test performance %f %%'
         )
         % (best_valid_loss * 100., test_score * 100.)
@@ -168,5 +169,34 @@ def sgd(dataset, learning_rate, epochs, batch_size):
     return ()
 
 
+def predict(path, test_input):
+    """Function that loads a trained model, then uses it to predict labels.
+
+    :param path: path to the saved model
+    :param test_input: inputs to be tested
+    :return: None
+    """
+    # load a trained model
+    classifier = cPickle.load(open(path, 'rb'))
+
+    # construct a predict function
+    predict_model = theano.function(
+        inputs=[classifier.input_data],
+        outputs=classifier.y_pred
+    )
+
+    # test it on test_input
+    tests = test_input.get_value()
+    predicted_labels = predict_model(tests[:10])
+
+    print("Predicted labels for the first 10 examples: ")
+    print(predicted_labels)
+
+    return ()
+
+
 if __name__ == '__main__':
-    sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
+    # sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
+    test_data = utils.load_data(DATASET)
+    test_inputs, _ = test_data[2]
+    predict('../log/best_model_logistic_sgd.pkl', test_inputs)
