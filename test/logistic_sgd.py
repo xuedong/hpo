@@ -57,16 +57,16 @@ def sgd(dataset, learning_rate, epochs, batch_size):
         inputs=[index],
         outputs=classifier.zero_one(y),
         givens={
-            x: test_input[index * batch_size, (index + 1) * batch_size],
-            y: test_target[index * batch_size, (index + 1) * batch_size]
+            x: test_input[index * batch_size: (index + 1) * batch_size],
+            y: test_target[index * batch_size: (index + 1) * batch_size]
         }
     )
     valid_model = theano.function(
         inputs=[index],
         outputs=classifier.zero_one(y),
         givens={
-            x: valid_input[index * batch_size, (index + 1) * batch_size],
-            y: valid_target[index * batch_size, (index + 1) * batch_size]
+            x: valid_input[index * batch_size: (index + 1) * batch_size],
+            y: valid_target[index * batch_size: (index + 1) * batch_size]
         }
     )
 
@@ -82,8 +82,8 @@ def sgd(dataset, learning_rate, epochs, batch_size):
         outputs=cost,
         updates=updates,
         givens={
-            x: train_input[index * batch_size, (index + 1) * batch_size],
-            y: train_target[index * batch_size, (index + 1) * batch_size]
+            x: train_input[index * batch_size: (index + 1) * batch_size],
+            y: train_target[index * batch_size: (index + 1) * batch_size]
         }
     )
 

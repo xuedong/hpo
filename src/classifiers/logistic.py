@@ -26,7 +26,7 @@ class LogisticRegression(object):
         # initialize the bias vector b
         self.b = theano.shared(
             value=np.zeros(
-                (n, 1),
+                (m,),
                 dtype=theano.config.floatX
             ),
             name='b',
