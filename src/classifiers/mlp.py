@@ -6,7 +6,6 @@ import theano
 import theano.tensor as ts
 
 from classifiers.logistic import LogisticRegression
-from utils import load_data
 
 
 class HiddenLayer(object):
@@ -47,3 +46,27 @@ class HiddenLayer(object):
         self.output = output if activation is None else activation(output)
         # parameters of the model
         self.params = [self.w, self.b]
+
+
+class MLP(object):
+    def __init__(self, rng, input_data, n_in, n_hidden, n_out):
+        """Single layer mlp.
+
+        :param rng: random state
+        :param input_data: typically a minibatch of input
+        :param n_in: number of input units
+        :param n_hidden: number of hidden units
+        :param n_out: number of output units
+        """
+        self.hidden_layer = HiddenLayer(rng=rng, input_data=input_data, n=n_in, m=n_hidden)
+        self.logistic_layer = LogisticRegression(input_data=self.hidden_layer.output, n=n_hidden, m=n_out)
+        # regularization
+        self.l1 = abs(self.hidden_layer.w).sum() + abs(self.logistic_layer.w).sum()
+        self.l2 = (self.hidden_layer.w ** 2).sum() + (self.logistic_layer.w ** 2).sum()
+        # loss functions
+        self.neg_log_likelihood = self.logistic_layer.neg_log_likelihood
+        self.zero_one = self.logistic_layer.zero_one
+        # parameters of the model
+        self.params = self.hidden_layer.params + self.logistic_layer.params
+        # keep track of the input
+        self.input_data = input_data
