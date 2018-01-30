@@ -1,13 +1,14 @@
 import numpy as np
+import os
 import timeit
 import theano
-import theano.tensor as T
+import theano.tensor as ts
 
 from six.moves import cPickle
 
 import sys
-sys.path.insert(0, '../src/classifiers')
-sys.path.insert(0, '../src')
+sys.path.append('../src/classifiers')
+sys.path.append('../src')
 
 import logistic
 import utils
@@ -42,12 +43,12 @@ def sgd(dataset, learning_rate, epochs, batch_size):
     print('Building model...')
 
     # symbolic variables
-    index = T.lscalar()
-    x = T.matrix('x')
-    y = T.ivector('y')
+    index = ts.lscalar()
+    x = ts.matrix('x')
+    y = ts.ivector('y')
 
     # construct the classifier
-    classifier = logistic.LogisticRegression(input=x, n=28*28, m=10)
+    classifier = logistic.LogisticRegression(input_data=x, n=28*28, m=10)
     cost = classifier.neg_log_likelihood(y)
 
     # construct a Theano function that computes the errors made
@@ -71,9 +72,9 @@ def sgd(dataset, learning_rate, epochs, batch_size):
 
     # construct a Theano function that updates the parameters of
     # the training model using stochastic gradient descent
-    g_W = T.grad(cost=cost, wrt=classifier.W)
-    g_b = T.grad(cost=cost, wrt=classifier.b)
-    updates = [(classifier.W, classifier.W - learning_rate * g_W),
+    g_w = ts.grad(cost=cost, wrt=classifier.w)
+    g_b = ts.grad(cost=cost, wrt=classifier.b)
+    updates = [(classifier.w, classifier.w - learning_rate * g_w),
                (classifier.b, classifier.b - learning_rate * g_b)]
 
     train_model = theano.function(
@@ -104,9 +105,9 @@ def sgd(dataset, learning_rate, epochs, batch_size):
         epoch += 1
         for batch_index in range(n_batches_train):
             batch_cost = train_model(batch_index)
-            iter = (epoch - 1) * n_batches_train + batch_index
+            iteration = (epoch - 1) * n_batches_train + batch_index
 
-            if (iter + 1) % valid_freq == 0:
+            if (iteration + 1) % valid_freq == 0:
                 valid_losses = [valid_model(i) for i in range(n_batches_valid)]
                 current_valid_loss = np.mean(valid_losses)
 
@@ -122,7 +123,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
 
                 if current_valid_loss < best_valid_loss:
                     if current_valid_loss < best_valid_loss * threshold:
-                        patience = max(patience, iter * patience_increase)
+                        patience = max(patience, iteration * patience_increase)
 
                     best_valid_loss = current_valid_loss
 
@@ -146,7 +147,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
                     with open('best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
-            if patience <= iter:
+            if patience <= iteration:
                 done = True
                 break
 
@@ -162,10 +163,10 @@ def sgd(dataset, learning_rate, epochs, batch_size):
         epoch, 1. * epoch / (end_time - start_time)))
     print(('The code for file ' +
            os.path.split(__file__)[1] +
-           ' ran for %.1fs' % ((end_time - start_time))), file=sys.stderr)
+           ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
     return ()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
