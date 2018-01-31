@@ -94,6 +94,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
     valid_freq = min(n_batches_train, patience // 2)
 
     best_valid_loss = np.inf
+    best_iter = 0
     test_score = 0.
     start_time = timeit.default_timer()
 
@@ -125,6 +126,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
                         patience = max(patience, iteration * patience_increase)
 
                     best_valid_loss = current_valid_loss
+                    best_iter = iteration
 
                     test_losses = [test_model(i) for i in range(n_batches_test)]
                     test_score = np.mean(test_losses)
@@ -154,7 +156,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
     print(
         (
             'Optimization completed with best validation score of %f %%, '
-            'with test performance %f %%'
+            'obtained at iteration %i, with test performance %f %%'
         )
         % (best_valid_loss * 100., test_score * 100.)
     )
