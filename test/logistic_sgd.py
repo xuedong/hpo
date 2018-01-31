@@ -158,7 +158,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
             'Optimization completed with best validation score of %f %%, '
             'obtained at iteration %i, with test performance %f %%'
         )
-        % (best_valid_loss * 100., test_score * 100.)
+        % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
     )
     print('The code run for %d epochs, with %f epochs/sec' % (
         epoch, 1. * epoch / (end_time - start_time)))

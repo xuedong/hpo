@@ -173,7 +173,7 @@ def sgd(dataset, learning_rate, l1_reg, l2_reg, epochs, batch_size, n_hidden):
         epoch, 1. * epoch / (end_time - start_time)))
     print(('The code for file ' +
            os.path.split(__file__)[1] +
-           ' ran for %.2fm' % (end_time - start_time) / 60.), file=sys.stderr)
+           ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)
 
     return ()
 
