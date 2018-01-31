@@ -16,7 +16,7 @@ LEARNING_RATE = 0.13
 L1_REG = 0.
 L2_REG = 0.0001
 EPOCHS = 1000
-BATCH_SIZE = 20
+BATCH_SIZE = 128
 HIDDEN = 500
 
 rng = np.random.RandomState(1234)
