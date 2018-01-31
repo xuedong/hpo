@@ -105,3 +105,6 @@ data/
 
 # PyCharm IDE
 .idea/
+
+# data
+*.pkl
