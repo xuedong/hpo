@@ -178,5 +178,34 @@ def sgd(dataset, learning_rate, l1_reg, l2_reg, epochs, batch_size, n_hidden):
     return ()
 
 
+def predict(path, test_input):
+    """Function that loads a trained model, then uses it to predict labels.
+
+    :param path: path to the saved model
+    :param test_input: inputs to be tested
+    :return: None
+    """
+    # load a trained model
+    classifier = cPickle.load(open(path, 'rb'))
+
+    # construct a predict function
+    predict_model = theano.function(
+        inputs=[classifier.input_data],
+        outputs=classifier.logistic_layer.y_pred
+    )
+
+    # test it on test_input
+    tests = test_input.get_value()
+    predicted_labels = predict_model(tests[:10])
+
+    print("Predicted labels for the first 10 examples: ")
+    print(predicted_labels)
+
+    return ()
+
+
 if __name__ == '__main__':
     sgd(DATASET, LEARNING_RATE, L1_REG, L2_REG, EPOCHS, BATCH_SIZE, HIDDEN)
+    # test_data = utils.load_data(DATASET)
+    # test_inputs, _ = test_data[2]
+    # predict('../log/best_model_mlp_sgd.pkl', test_inputs)
