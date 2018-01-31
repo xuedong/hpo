@@ -8,7 +8,7 @@ from theano.tensor.signal import pool
 from theano.tensor.nnet import conv2d
 
 
-class ConvPoolLayer(object):
+class ConvolutionPoolLayer(object):
     def __init__(self, rng, input_data, filter_shape, image_shape, pool_size):
         """This layer includes one convolution layer followed by a max-pooling layer.
 
@@ -39,7 +39,7 @@ class ConvPoolLayer(object):
         self.b = theano.shared(value=b_values, borrow=True)
         # output after convolution and pooling
         # convolution between input feature maps and filters
-        conv = conv2d(
+        convolution = conv2d(
             input=input_data,
             filters=self.w,
             filter_shape=filter_shape,
@@ -47,7 +47,7 @@ class ConvPoolLayer(object):
         )
         # max-pooling for each feature map
         pooling = pool.pool_2d(
-            input=conv,
+            input=convolution,
             ds=pool_size,
             ignore_border=True
         )
