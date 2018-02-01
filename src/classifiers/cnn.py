@@ -48,7 +48,7 @@ class ConvolutionPoolLayer(object):
         # max-pooling for each feature map
         pooling = pool.pool_2d(
             input=convolution,
-            ds=pool_size,
+            ws=pool_size,
             ignore_border=True
         )
         self.output = ts.tanh(pooling + self.b.dimshuffle('x', 0, 'x', 'x'))

@@ -12,11 +12,11 @@ import src.classifiers.mlp as mlp
 import src.utils as utils
 
 # Parameters
-LEARNING_RATE = 0.13
+LEARNING_RATE = 0.01
 L1_REG = 0.
 L2_REG = 0.0001
 EPOCHS = 1000
-BATCH_SIZE = 128
+BATCH_SIZE = 20
 HIDDEN = 500
 
 rng = np.random.RandomState(1234)
@@ -97,7 +97,7 @@ def sgd(dataset, learning_rate, l1_reg, l2_reg, epochs, batch_size, n_hidden):
     print('Training model...')
 
     # early-stopping parameters
-    patience = 5000
+    patience = 10000
     patience_increase = 2
     threshold = 0.995
     valid_freq = min(n_batches_train, patience // 2)
