@@ -4,7 +4,7 @@ import timeit
 import theano
 import theano.tensor as ts
 
-from six.moves import cPickle
+# from six.moves import cPickle
 
 import sys
 
