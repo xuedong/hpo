@@ -18,7 +18,7 @@ LEARNING_RATE = 0.1
 L1_REG = 0.
 L2_REG = 0.0001
 EPOCHS = 1000
-BATCH_SIZE = 128
+BATCH_SIZE = 500
 HIDDEN = 500
 KERNELS = [20, 50]
 
@@ -75,9 +75,10 @@ def lenet(dataset, learning_rate, epochs, batch_size, n_hidden, kernels):
     )
 
     # construct the fully-connected hidden layer
+    layer3_input = layer2.output.flatten(2)
     layer3 = mlp.HiddenLayer(
         rng=rng,
-        input_data=layer2.output,
+        input_data=layer3_input,
         n=kernels[1] * 4 * 4,
         m=n_hidden,
         activation=ts.tanh
@@ -191,8 +192,8 @@ def lenet(dataset, learning_rate, epochs, batch_size, n_hidden, kernels):
                     )
 
                     # save the best model
-                    with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
-                        cPickle.dump(classifier, file)
+                    # with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
+                    #     cPickle.dump(classifier, file)
 
             if patience <= iteration:
                 done = True
