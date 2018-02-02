@@ -12,6 +12,11 @@ class Logger(object):
         self.log = open(path + '/hyperband_run.log', 'a')
 
     def write(self, message):
+        """
+
+        :param message: as it is
+        :return: None
+        """
         self.terminal.write(message)
         self.log.write(message)
         self.log.flush()

@@ -9,7 +9,7 @@ from six.moves import cPickle
 
 
 def load_data(dataset):
-    """
+    """Function that loads the data at dataset.
 
     :param dataset: path to the dataset
     :return: separated training, validation and test dataset
@@ -56,3 +56,23 @@ def load_data(dataset):
     data_values = [(train_input, train_target), (valid_input, valid_target), (test_input, test_target)]
 
     return data_values
+
+
+def s_to_m(start_time, current_time):
+    """Function that converts time in seconds to time in minutes.
+
+    :param start_time: starting time in seconds
+    :param current_time: current time in seconds
+    :return: minutes
+    """
+    return (current_time - start_time) / 60.
+
+
+def log_eta(x, eta):
+    """
+
+    :param x: input value
+    :param eta: base
+    :return: rounded log_eta(x)
+    """
+    return np.round(np.log(x) / np.log(eta), decimals=10)
