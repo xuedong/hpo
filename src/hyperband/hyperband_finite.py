@@ -120,5 +120,5 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                         # best_i = i
                         # best_arm = result[0]
 
-                cPickle.dump([durations, results], open(director + '/results.pkl', 'w'))
+                cPickle.dump([durations, results], open(director + '/results.pkl', 'wb'))
                 s -= 1
