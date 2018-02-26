@@ -117,7 +117,7 @@ class LogisticRegression(Model):
         return arms
 
 
-def run_solver(epochs, arm, data):
+def run_solver(epochs, arm, data, verbose=False):
     train_input, train_target = data[0]
     valid_input, valid_target = data[1]
     test_input, test_target = data[2]
@@ -199,16 +199,17 @@ def run_solver(epochs, arm, data):
                 valid_losses = [valid_model(i) for i in range(n_batches_valid)]
                 current_valid_loss = np.mean(valid_losses)
 
-                print(
-                    'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
-                    (
-                        epoch,
-                        batch_index + 1,
-                        n_batches_train,
-                        batch_cost,
-                        current_valid_loss * 100.
+                if verbose:
+                    print(
+                        'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
+                        (
+                            epoch,
+                            batch_index + 1,
+                            n_batches_train,
+                            batch_cost,
+                            current_valid_loss * 100.
+                        )
                     )
-                )
 
                 if current_valid_loss < best_valid_loss:
                     if current_valid_loss < best_valid_loss * threshold:
@@ -223,18 +224,19 @@ def run_solver(epochs, arm, data):
                     test_losses = [test_model(i) for i in range(n_batches_test)]
                     test_score = np.mean(test_losses)
 
-                    print(
-                        (
-                            '     epoch %i, batch %i/%i, test error of'
-                            ' best model %f %%'
-                        ) %
-                        (
-                            epoch,
-                            batch_index + 1,
-                            n_batches_train,
-                            test_score * 100.
+                    if verbose:
+                        print(
+                            (
+                                '     epoch %i, batch %i/%i, test error of'
+                                ' best model %f %%'
+                            ) %
+                            (
+                                epoch,
+                                batch_index + 1,
+                                n_batches_train,
+                                test_score * 100.
+                            )
                         )
-                    )
 
                     # save the best model
                     with open('../../log/best_model_logistic_sgd.pkl', 'wb') as file:

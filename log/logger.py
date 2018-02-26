@@ -11,6 +11,9 @@ class Logger(object):
         self.terminal = sys.stdout
         self.log = open(path + '/hyperband_run.log', 'a')
 
+    def flush(self):
+        pass
+
     def write(self, message):
         """
 
@@ -19,4 +22,4 @@ class Logger(object):
         """
         self.terminal.write(message)
         self.log.write(message)
-        self.log.flush()
+        # self.log.flush()
