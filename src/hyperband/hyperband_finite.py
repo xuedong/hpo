@@ -1,10 +1,10 @@
 import numpy as np
 import timeit
 import time
-import utils
 
 from six.moves import cPickle
 
+import utils
 import logistic
 
 
