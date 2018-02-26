@@ -1,12 +1,20 @@
 from __future__ import print_function
 
 import numpy as np
+import os
+import timeit
+import sys
+
+from six.moves import cPickle
 
 import theano
 import theano.tensor as ts
 
+# import utils
+from models import Model
 
-class LogisticRegression(object):
+
+class LogisticRegression(Model):
     def __init__(self, input_data, n, m):
         """Initialization of the class.
 
@@ -65,3 +73,189 @@ class LogisticRegression(object):
             return ts.mean(ts.neq(self.y_pred, y))
         else:
             raise NotImplementedError()
+
+    def generate_arms(self, n, path, params, default=False):
+        """
+
+        :param n:
+        :param path:
+        :param params:
+        :param default:
+        :return:
+        """
+        os.chdir(path)
+        arms = {}
+        if default:
+            arm = {}
+            dirname = "default_arm"
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            arm['dir'] = path + "/" + dirname
+            arm['learning_rate'] = 0.001
+            arm['batch_size'] = 100
+            arm['results'] = []
+            arms[0] = arm
+            return arms
+        subdirs = next(os.walk('.'))[1]
+        if len(subdirs) == 0:
+            start_count = 0
+        else:
+            start_count = len(subdirs)
+        for i in range(n):
+            dirname = "arm" + str(start_count + i)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            arm = {}
+            arm['dir'] = path + "/" + dirname
+            hps = ['learning_rate', 'batch_size']
+            for hp in hps:
+                val = params[hp].get_param_range(1, stochastic=True)
+                arm[hp] = val[0]
+            arm['results'] = []
+            arms[i] = arm
+
+        return arms
+
+
+def run_solver(epochs, arm, data):
+    train_input, train_target = data[0]
+    valid_input, valid_target = data[1]
+    test_input, test_target = data[2]
+
+    n_batches_train = train_input.get_value(borrow=True).shape[0] // arm['batch_size']
+    n_batches_valid = valid_input.get_value(borrow=True).shape[0] // arm['batch_size']
+    n_batches_test = test_input.get_value(borrow=True).shape[0] // arm['batch_size']
+
+    print('Building model...')
+
+    # symbolic variables
+    index = ts.lscalar()
+    x = ts.matrix('x')
+    y = ts.ivector('y')
+
+    # construct a classifier
+    classifier = LogisticRegression(input_data=x, n=28*28, m=10)
+    cost = classifier.neg_log_likelihood(y)
+
+    # construct a Theano function that computes the errors made
+    # by the model on a minibatch
+    test_model = theano.function(
+        inputs=[index],
+        outputs=classifier.zero_one(y),
+        givens={
+            x: test_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+            y: test_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
+        }
+    )
+    valid_model = theano.function(
+        inputs=[index],
+        outputs=classifier.zero_one(y),
+        givens={
+            x: valid_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+            y: valid_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
+        }
+    )
+
+    # construct a Theano function that updates the parameters of
+    # the training model using stochastic gradient descent
+    g_w = ts.grad(cost=cost, wrt=classifier.w)
+    g_b = ts.grad(cost=cost, wrt=classifier.b)
+    updates = [(classifier.w, classifier.w - arm['learning_rate'] * g_w),
+               (classifier.b, classifier.b - arm['learning_rate'] * g_b)]
+
+    train_model = theano.function(
+        inputs=[index],
+        outputs=cost,
+        updates=updates,
+        givens={
+            x: train_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+            y: train_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
+        }
+    )
+
+    print('Training model...')
+
+    # early-stopping parameters
+    patience = 5000
+    patience_increase = 2
+    threshold = 0.995
+    valid_freq = min(n_batches_train, patience // 2)
+
+    best_valid_loss = np.inf
+    best_iter = 0
+    test_score = 0.
+    train_loss = 0.
+    start_time = timeit.default_timer()
+
+    done = False
+    epoch = 0
+    while (epoch < epochs) and not done:
+        epoch += 1
+        for batch_index in range(n_batches_train):
+            batch_cost = train_model(batch_index)
+            iteration = (epoch - 1) * n_batches_train + batch_index
+
+            if (iteration + 1) % valid_freq == 0:
+                valid_losses = [valid_model(i) for i in range(n_batches_valid)]
+                current_valid_loss = np.mean(valid_losses)
+
+                print(
+                    'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
+                    (
+                        epoch,
+                        batch_index + 1,
+                        n_batches_train,
+                        batch_cost,
+                        current_valid_loss * 100.
+                    )
+                )
+
+                if current_valid_loss < best_valid_loss:
+                    if current_valid_loss < best_valid_loss * threshold:
+                        patience = max(patience, iteration * patience_increase)
+
+                    best_valid_loss = current_valid_loss
+                    best_iter = iteration
+
+                    train_losses = [train_model(i) for i in range(n_batches_train)]
+                    train_loss = np.mean(train_losses)
+
+                    test_losses = [test_model(i) for i in range(n_batches_test)]
+                    test_score = np.mean(test_losses)
+
+                    print(
+                        (
+                            '     epoch %i, batch %i/%i, test error of'
+                            ' best model %f %%'
+                        ) %
+                        (
+                            epoch,
+                            batch_index + 1,
+                            n_batches_train,
+                            test_score * 100.
+                        )
+                    )
+
+                    # save the best model
+                    with open('../log/best_model_logistic_sgd.pkl', 'wb') as file:
+                        cPickle.dump(classifier, file)
+
+            if patience <= iteration:
+                done = True
+                break
+
+    end_time = timeit.default_timer()
+    print(
+        (
+            'Optimization completed with best validation score of %f %%, '
+            'obtained at iteration %i, with test performance %f %%'
+        )
+        % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
+    )
+    print('The code run for %d epochs, with %f epochs/sec' % (
+        epoch, 1. * epoch / (end_time - start_time)))
+    print(('The code for file ' +
+           os.path.split(__file__)[1] +
+           ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+    return train_loss, best_valid_loss, test_score

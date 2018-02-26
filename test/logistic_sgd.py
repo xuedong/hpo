@@ -11,10 +11,10 @@ import sys
 import src.classifiers.logistic as logistic
 import src.utils as utils
 
-# Parameters
+# Hyperparameters
 LEARNING_RATE = 0.13
 EPOCHS = 1000
-BATCH_SIZE = 1024
+BATCH_SIZE = 100
 
 # Dataset
 DATASET = 'mnist.pkl.gz'
