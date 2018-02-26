@@ -88,8 +88,8 @@ class LogisticRegression(Model):
         if default:
             arm = {}
             dirname = "default_arm"
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
+            # if not os.path.exists(dirname):
+            #    os.makedirs(dirname)
             arm['dir'] = path + "/" + dirname
             arm['learning_rate'] = 0.001
             arm['batch_size'] = 100
@@ -103,8 +103,8 @@ class LogisticRegression(Model):
             start_count = len(subdirs)
         for i in range(n):
             dirname = "arm" + str(start_count + i)
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
+            # if not os.path.exists(dirname):
+            #    os.makedirs(dirname)
             arm = {}
             arm['dir'] = path + "/" + dirname
             hps = ['learning_rate', 'batch_size']
@@ -113,6 +113,8 @@ class LogisticRegression(Model):
                 arm[hp] = val[0]
             arm['results'] = []
             arms[i] = arm
+
+        os.chdir('../../src')
 
         return arms
 
@@ -239,7 +241,7 @@ def run_solver(epochs, arm, data, verbose=False):
                         )
 
                     # save the best model
-                    with open('../../log/best_model_logistic_sgd.pkl', 'wb') as file:
+                    with open('../log/best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
             if patience <= iteration:

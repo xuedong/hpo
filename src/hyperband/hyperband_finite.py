@@ -41,8 +41,8 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data):
         remaining_arms = sorted(remaining_arms, key=lambda a: -a[2])
         n_k1 = int(n * eta ** (-l-1))
         if i-l-1 >= 0:
-            for k in range(n_k1, len(remaining_arms)):
-                arm_dir = arms[remaining_arms[k][0]]['dir']
+            # for k in range(n_k1, len(remaining_arms)):
+                # arm_dir = arms[remaining_arms[k][0]]['dir']
                 # files = os.listdir(arm_dir)
             remaining_arms = remaining_arms[0:n_k1]
     best_arm = arms[remaining_arms[0][0]]
