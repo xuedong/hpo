@@ -237,7 +237,7 @@ def run_solver(epochs, arm, data):
                     )
 
                     # save the best model
-                    with open('../log/best_model_logistic_sgd.pkl', 'wb') as file:
+                    with open('../../log/best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
             if patience <= iteration:

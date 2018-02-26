@@ -93,7 +93,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
         s_max = int(min(budget / big_r - 1, int(np.floor(utils.log_eta(big_r / r, eta)))))
         s = s_max
         best_val = 0
-        print(' s_max = %i' % s_max)
+        print('s_max = %i' % s_max)
 
         # inner loop
         while s >= 0 and utils.s_to_m(start_time, timeit.default_timer()) < runtime:
