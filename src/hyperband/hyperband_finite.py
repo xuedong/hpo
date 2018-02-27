@@ -33,10 +33,10 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data):
             start_time = time.time()
             arm_key = remaining_arms[a][0]
             print(arms[arm_key])
-            if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model_logistic_sgd.pkl'):
+            if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model.pkl'):
                 train_loss, val_err, test_err = logistic.run_solver(num_pulls, arms[arm_key], data)
             else:
-                classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model_logistic_sgd.pkl', 'rb'))
+                classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
                 train_loss, val_err, test_err = logistic.run_solver(num_pulls, arms[arm_key], data, classifier)
             print(arm_key, train_loss, val_err, test_err, (time.time() - start_time) / 60.0)
             arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])

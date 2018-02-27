@@ -1,6 +1,7 @@
 import numpy
 import sys
 import os
+import random
 import theano.tensor as ts
 
 import logger
@@ -21,11 +22,13 @@ def get_search_space():
 def main():
     # Use for testing
     output_dir = ''
+    random.seed(1234)
+    model_name = 'logistic_sgd_'
     seed_id = 0
-    director = output_dir + '../result/' + str(seed_id)
+    director = output_dir + '../result/' + model_name + str(seed_id)
     if not os.path.exists(director):
         os.makedirs(director)
-    log_dir = output_dir + '../log/' + str(seed_id)
+    log_dir = output_dir + '../log/' + model_name + str(seed_id)
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     sys.stdout = logger.Logger(log_dir)
@@ -36,7 +39,7 @@ def main():
     params = get_search_space()
     # arms = model.generate_arms(1, "../result/", params, True)
     # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
-    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3)
+    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 3, 360, director, data, eta=3)
     # print(train_loss, val_acc, test_acc)
 
 
