@@ -1,6 +1,7 @@
 import numpy as np
 import timeit
 import time
+import os
 
 from six.moves import cPickle
 
@@ -32,13 +33,17 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data):
             start_time = time.time()
             arm_key = remaining_arms[a][0]
             print(arms[arm_key])
-            train_loss, val_err, test_err = logistic.run_solver(num_pulls, arms[arm_key], data)
+            if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model_logistic_sgd.pkl'):
+                train_loss, val_err, test_err = logistic.run_solver(num_pulls, arms[arm_key], data)
+            else:
+                classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model_logistic_sgd.pkl', 'rb'))
+                train_loss, val_err, test_err = logistic.run_solver(num_pulls, arms[arm_key], data, classifier)
             print(arm_key, train_loss, val_err, test_err, (time.time() - start_time) / 60.0)
             arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
             remaining_arms[a][1] = train_loss
             remaining_arms[a][2] = val_err
             remaining_arms[a][3] = test_err
-        remaining_arms = sorted(remaining_arms, key=lambda a: -a[2])
+        remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
         n_k1 = int(n * eta ** (-l-1))
         if i-l-1 >= 0:
             # for k in range(n_k1, len(remaining_arms)):

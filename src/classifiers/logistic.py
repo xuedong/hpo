@@ -88,8 +88,8 @@ class LogisticRegression(Model):
         if default:
             arm = {}
             dirname = "default_arm"
-            # if not os.path.exists(dirname):
-            #    os.makedirs(dirname)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
             arm['dir'] = path + "/" + dirname
             arm['learning_rate'] = 0.001
             arm['batch_size'] = 100
@@ -103,8 +103,8 @@ class LogisticRegression(Model):
             start_count = len(subdirs)
         for i in range(n):
             dirname = "arm" + str(start_count + i)
-            # if not os.path.exists(dirname):
-            #    os.makedirs(dirname)
+            if not os.path.exists(dirname):
+               os.makedirs(dirname)
             arm = {}
             arm['dir'] = path + "/" + dirname
             hps = ['learning_rate', 'batch_size']
@@ -119,7 +119,7 @@ class LogisticRegression(Model):
         return arms
 
 
-def run_solver(epochs, arm, data, verbose=False):
+def run_solver(epochs, arm, data, classifier=None, verbose=False):
     train_input, train_target = data[0]
     valid_input, valid_target = data[1]
     test_input, test_target = data[2]
@@ -136,7 +136,8 @@ def run_solver(epochs, arm, data, verbose=False):
     y = ts.ivector('y')
 
     # construct a classifier
-    classifier = LogisticRegression(input_data=x, n=28*28, m=10)
+    if not classifier:
+        classifier = LogisticRegression(input_data=x, n=28*28, m=10)
     cost = classifier.neg_log_likelihood(y)
 
     # construct a Theano function that computes the errors made
@@ -241,7 +242,7 @@ def run_solver(epochs, arm, data, verbose=False):
                         )
 
                     # save the best model
-                    with open('../log/best_model_logistic_sgd.pkl', 'wb') as file:
+                    with open(arm['dir'] + '/best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
             if patience <= iteration:

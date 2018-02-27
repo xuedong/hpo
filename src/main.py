@@ -21,11 +21,14 @@ def get_search_space():
 def main():
     # Use for testing
     output_dir = ''
-    seed_id = 1
+    seed_id = 0
     director = output_dir + '../result/' + str(seed_id)
     if not os.path.exists(director):
         os.makedirs(director)
-    sys.stdout = logger.Logger(director)
+    log_dir = output_dir + '../log/' + str(seed_id)
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    sys.stdout = logger.Logger(log_dir)
     data_dir = 'mnist.pkl.gz'
     data = utils.load_data(data_dir)
     x = ts.matrix('x')
