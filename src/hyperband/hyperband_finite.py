@@ -32,12 +32,12 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data):
             start_time = time.time()
             arm_key = remaining_arms[a][0]
             print(arms[arm_key])
-            train_loss, val_acc, test_acc = logistic.run_solver(num_pulls, arms[arm_key], data)
-            print(arm_key, train_loss, val_acc, test_acc, (time.time() - start_time) / 60.0)
-            arms[arm_key]['results'].append([num_pulls, train_loss, val_acc, test_acc])
+            train_loss, val_err, test_err = logistic.run_solver(num_pulls, arms[arm_key], data)
+            print(arm_key, train_loss, val_err, test_err, (time.time() - start_time) / 60.0)
+            arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
             remaining_arms[a][1] = train_loss
-            remaining_arms[a][2] = val_acc
-            remaining_arms[a][3] = test_acc
+            remaining_arms[a][2] = val_err
+            remaining_arms[a][3] = test_err
         remaining_arms = sorted(remaining_arms, key=lambda a: -a[2])
         n_k1 = int(n * eta ** (-l-1))
         if i-l-1 >= 0:
@@ -92,7 +92,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
         r = float(min_units)
         s_max = int(min(budget / big_r - 1, int(np.floor(utils.log_eta(big_r / r, eta)))))
         s = s_max
-        best_val = 0
+        best_val = np.inf
         print('s_max = %i' % s_max)
 
         # inner loop
@@ -108,13 +108,13 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                     print('i = %d, n = %d' % (i, n))
                     arms, result = sh_finite(model, resource_type, params, n, i, eta, big_r, director, data)
                     results[(k, s)] = arms
-                    print("k = " + str(k) + ", l = " + str(s) + ", validation accuracy = " + str(
-                        result[2]) + ", test accuracy = " + str(
+                    print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(
+                        result[2]) + ", test error = " + str(
                         result[3]) + " best arm dir: " + result[0]['dir'])
                     durations.append([utils.s_to_m(start_time, timeit.default_timer()), result])
                     print("time elapsed: " + str(utils.s_to_m(start_time, timeit.default_timer())))
 
-                    if result[2] > best_val:
+                    if result[2] < best_val:
                         best_val = result[2]
                         # best_n = n
                         # best_i = i

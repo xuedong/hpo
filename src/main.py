@@ -32,8 +32,8 @@ def main():
     model = logistic.LogisticRegression(x, 28*28, 10)
     params = get_search_space()
     # arms = model.generate_arms(1, "../result/", params, True)
-    # train_loss, val_acc, test_acc = logistic.run_solver(1000, arms[0], data)
-    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=3)
+    # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
+    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3)
     # print(train_loss, val_acc, test_acc)
 
 
