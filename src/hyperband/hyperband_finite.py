@@ -55,7 +55,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data):
     return arms, [best_arm, remaining_arms[0][1], remaining_arms[0][2], remaining_arms[0][3]]
 
 
-def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data, eta=4., budget=0, n_hyperbands=2, s_run=None, doubling=False):
+def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data, eta=4., budget=0, n_hyperbands=1, s_run=None, doubling=False):
     """Hyperband with finite horizon.
 
     :param model: object with subroutines to generate arms and train models
