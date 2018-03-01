@@ -104,7 +104,7 @@ class LogisticRegression(Model):
         for i in range(n):
             dirname = "arm" + str(start_count + i)
             if not os.path.exists(dirname):
-               os.makedirs(dirname)
+                os.makedirs(dirname)
             arm = {}
             arm['dir'] = path + "/" + dirname
             hps = ['learning_rate', 'batch_size']
@@ -184,7 +184,7 @@ def run_solver(epochs, arm, data, classifier=None, verbose=False):
     threshold = 0.995
     valid_freq = min(n_batches_train, patience // 2)
 
-    best_valid_loss = np.inf
+    best_valid_loss = 1.
     best_iter = 0
     test_score = 0.
     train_loss = 0.
@@ -200,7 +200,7 @@ def run_solver(epochs, arm, data, classifier=None, verbose=False):
 
             if (iteration + 1) % valid_freq == 0:
                 valid_losses = [valid_model(i) for i in range(n_batches_valid)]
-                current_valid_loss = np.mean(valid_losses)
+                current_valid_loss = float(np.mean(valid_losses))
 
                 if verbose:
                     print(
