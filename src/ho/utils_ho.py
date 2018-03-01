@@ -5,14 +5,15 @@
 
 import pylab as pl
 import numpy as np
-import sys
+# import sys
 import math
 import random
 import pickle
 
 import target
-import ho.hoo as hoo
-import ho.poo as poo
+import hoo
+import poo
+
 
 def std_box(f, fmax, nsplits, sigma, support, support_type):
     box = target.Box(f, fmax, nsplits, support, support_type)
@@ -21,9 +22,10 @@ def std_box(f, fmax, nsplits, sigma, support, support_type):
 
     return box
 
+
 # Regret for HOO
 def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
-    #y = np.zeros(horizon)
+    # y = np.zeros(horizon)
     y_cum = [0. for i in range(horizon)]
     y_sim = [0. for i in range(horizon)]
     x_sel = [None for i in range(horizon)]
@@ -43,6 +45,7 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
 
     return y_cum, y_sim, x_sel
 
+
 def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     losses = [0. for i in range(horizon)]
     htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, bbox)
@@ -61,6 +64,8 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
             losses[i] = best
 
     return losses
+
+
 """
 def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
     y_cum = [0. for i in range(horizon)]
@@ -84,6 +89,8 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
 
     return y_cum, y_sim, x_sel
 """
+
+
 def regret_poo(bbox, rhos, nu, alpha, horizon, epoch):
     y_cum = [[0. for j in range(horizon)] for i in range(epoch)]
     y_sim = [[0. for j in range(horizon)] for i in range(epoch)]
@@ -113,6 +120,7 @@ def regret_poo(bbox, rhos, nu, alpha, horizon, epoch):
 
     return y_cum, y_sim, x_sel
 
+
 def loss_poo(bbox, rhos, nu, alpha, horizon, epoch):
     losses = [[0. for j in range(horizon)] for i in range(epoch)]
     for i in range(epoch):
@@ -137,6 +145,7 @@ def loss_poo(bbox, rhos, nu, alpha, horizon, epoch):
 
     return losses
 
+
 # Plot regret curve
 def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):
     data = [None for k in range(epoch)]
@@ -145,39 +154,39 @@ def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):
             data[k] = pickle.load(file)
     with open(path+"POO", 'rb') as file:
         data_poo = pickle.load(file)
-    #with open(path+"GPUCB_DIRECT", 'rb') as file:
-    #    data_ucb_direct = pickle.load(file)
-    #with open(path+"GPUCB_LBFGS", 'rb') as file:
-    #    data_ucb_lbfgs = pickle.load(file)
-    #with open(path+"EI", 'rb') as file:
-    #    data_ei = pickle.load(file)
-    #with open(path+"PI", 'rb') as file:
-    #    data_pi = pickle.load(file)
-    #with open(path+"THOMP", 'rb') as file:
-    #    data_thomp = pickle.load(file)
+    # with open(path+"GPUCB_DIRECT", 'rb') as file:
+    #     data_ucb_direct = pickle.load(file)
+    # with open(path+"GPUCB_LBFGS", 'rb') as file:
+    #     data_ucb_lbfgs = pickle.load(file)
+    # with open(path+"EI", 'rb') as file:
+    #     data_ei = pickle.load(file)
+    # with open(path+"PI", 'rb') as file:
+    #     data_pi = pickle.load(file)
+    # with open(path+"THOMP", 'rb') as file:
+    #     data_thomp = pickle.load(file)
 
     length_hoo = len(rhos_hoo)
     length_poo = len(rhos_poo)
     rhostoshow = [int(length_hoo*k/4.) for k in range(4)]
-    #rhostoshow = [0, 6, 12, 18]
-    #rhostoshow = [0, 1, 3, 7, 15]
+    # rhostoshow = [0, 6, 12, 18]
+    # rhostoshow = [0, 1, 3, 7, 15]
     style = [[5,5], [1,3], [5,3,1,3], [5,2,5,2,5,10]]
-    #style = [[5,5], [1,3], [5,3,1,3], [5,2,5,2,5,10], [3, 1]]
+    # style = [[5,5], [1,3], [5,3,1,3], [5,2,5,2,5,10], [3, 1]]
 
     means = [[sum([data[k][j][i] for k in range(epoch)])/float(epoch) for i in range(horizon)] for j in range(length_hoo)]
     devs = [[math.sqrt(sum([(data[k][j][i]-means[j][i])**2 for k in range(epoch)])/(float(epoch)*float(epoch-1))) for i in range(horizon)] for j in range(length_hoo)]
 
     means_poo = [sum([data_poo[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
 
-    #means_ucb_direct = [sum([data_ucb_direct[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
+    # means_ucb_direct = [sum([data_ucb_direct[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
 
-    #means_ucb_lbfgs = [sum([data_ucb_lbfgs[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
+    # means_ucb_lbfgs = [sum([data_ucb_lbfgs[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
 
-    #means_ei = [sum([data_ei[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
+    # means_ei = [sum([data_ei[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
 
-    #means_pi = [sum([data_pi[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
+    # means_pi = [sum([data_pi[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
 
-    #means_thomp = [sum([data_thomp[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
+    # means_thomp = [sum([data_thomp[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]
 
     X = np.array(range(horizon))
     for i in range(len(rhostoshow)):
@@ -185,11 +194,11 @@ def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):
         label__ = r"$\mathtt{HOO}, \rho = " + str(float(k)/float(length_hoo)) + "$"
         pl.plot(X, np.array(means[k]), label=label__, dashes=style[i])
     pl.plot(X, np.array(means_poo), label=r"$\mathtt{POO}$")
-    #pl.plot(X, np.array(means_ucb_direct), label=r"$\mathtt{GPUCB-DIRECT}$", color='blue')
-    #pl.plot(X, np.array(means_ucb_lbfgs), label=r"$\mathtt{GPUCB-LBFGS}$", color='green')
-    #pl.plot(X, np.array(means_ei), label=r"$\mathtt{EI}$", color='cyan')
-    #pl.plot(X, np.array(means_pi), label=r"$\mathtt{PI}$", color='magenta')
-    #pl.plot(X, np.array(means_thomp), label=r"$\mathtt{THOMPSON}$", color='magenta')
+    # pl.plot(X, np.array(means_ucb_direct), label=r"$\mathtt{GPUCB-DIRECT}$", color='blue')
+    # pl.plot(X, np.array(means_ucb_lbfgs), label=r"$\mathtt{GPUCB-LBFGS}$", color='green')
+    # pl.plot(X, np.array(means_ei), label=r"$\mathtt{EI}$", color='cyan')
+    # pl.plot(X, np.array(means_pi), label=r"$\mathtt{PI}$", color='magenta')
+    # pl.plot(X, np.array(means_thomp), label=r"$\mathtt{THOMPSON}$", color='magenta')
     pl.legend()
     pl.xlabel("number of evaluations")
     pl.ylabel("simple regret")
@@ -201,11 +210,11 @@ def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):
         label__ = r"$\mathtt{HOO}, \rho = " + str(float(k)/float(length_hoo)) + "$"
         pl.plot(X, np.array(map(math.log, means[k][1:])), label=label__, dashes=style[i])
     pl.plot(X, np.array(map(math.log, means_poo[1:])), label=r"$\mathtt{POO}$")
-    #pl.plot(X, np.array(map(math.log, means_ucb_direct[1:])), label=r"$\mathtt{GPUCB-DIRECT}$", color='blue')
-    #pl.plot(X, np.array(map(math.log, means_ucb_lbfgs[1:])), label=r"$\mathtt{GPUCB-LBFGS}$", color='green')
-    #pl.plot(X, np.array(map(math.log, means_ei[1:])), label=r"$\mathtt{EI}$", color='cyan')
-    #pl.plot(X, np.array(map(math.log, means_pi[1:])), label=r"$\mathtt{PI}$", color='magenta')
-    #pl.plot(X, np.array(map(math.log, means_thomp[1:])), label=r"$\mathtt{THOMPSON}$", color='magenta')
+    # pl.plot(X, np.array(map(math.log, means_ucb_direct[1:])), label=r"$\mathtt{GPUCB-DIRECT}$", color='blue')
+    # pl.plot(X, np.array(map(math.log, means_ucb_lbfgs[1:])), label=r"$\mathtt{GPUCB-LBFGS}$", color='green')
+    # pl.plot(X, np.array(map(math.log, means_ei[1:])), label=r"$\mathtt{EI}$", color='cyan')
+    # pl.plot(X, np.array(map(math.log, means_pi[1:])), label=r"$\mathtt{PI}$", color='magenta')
+    # pl.plot(X, np.array(map(math.log, means_thomp[1:])), label=r"$\mathtt{THOMPSON}$", color='magenta')
     pl.legend(loc=3)
     pl.xlabel("number of evaluations (log-scale)")
     pl.ylabel("simple regret")
@@ -214,9 +223,9 @@ def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):
     X = np.array([float(j)/float(length_hoo-1) for j in range(length_hoo)])
     Y = np.array([means[j][horizon-1] for j in range(length_hoo)])
     Z1 = np.array([means[j][horizon-1]+math.sqrt(2*(devs[j][horizon-1] ** 2) * math.log(1/delta)) for j in range(length_hoo)])
-    #Z1 = np.array([means[j][horizon-1]+2*devs[j][horizon-1] for j in range(length_hoo)])
+    # Z1 = np.array([means[j][horizon-1]+2*devs[j][horizon-1] for j in range(length_hoo)])
     Z2 = np.array([means[j][horizon-1]-math.sqrt(2*(devs[j][horizon-1] ** 2) * math.log(1/delta)) for j in range(length_hoo)])
-    #Z2 = np.array([means[j][horizon-1]-2*devs[j][horizon-1] for j in range(length_hoo)])
+    # Z2 = np.array([means[j][horizon-1]-2*devs[j][horizon-1] for j in range(length_hoo)])
     pl.plot(X, Y)
     pl.plot(X, Z1, color="green")
     pl.plot(X, Z2, color="green")
@@ -227,11 +236,12 @@ def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):
     X = np.array([float(j)/float(length_hoo-1) for j in range(length_hoo)])
     Y = np.array([means[j][horizon-1] for j in range(length_hoo)])
     E = np.array([math.sqrt(2*(devs[j][horizon-1] ** 2) * math.log(1/delta)) for j in range(length_hoo)])
-    #E = np.array([2*devs[j][horizon-1] for j in range(length_hoo)])
+    # E = np.array([2*devs[j][horizon-1] for j in range(length_hoo)])
     pl.errorbar(X, Y, yerr=E, color='black', errorevery=3)
     pl.xlabel(r"$\rho$")
     pl.ylabel("simple regret after " + str(horizon) + " evaluations")
     pl.show()
+
 
 # How to choose rhos to be used
 def get_rhos(nsplits, rhomax, horizon):

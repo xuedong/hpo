@@ -4,8 +4,9 @@
 # https://team.inria.fr/sequel/Software/POO/
 
 import random
-import numpy as np
+# import numpy as np
 import math
+
 
 class HTree:
     def __init__(self, support, support_type, father, depth, rho, nu, box):
@@ -26,14 +27,14 @@ class HTree:
 
     def add_children(self):
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
-        #print(supports)
+        # print(supports)
 
         self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1, self.rho, self.nu, self.box) for i in range(len(supports))]
 
     def explore(self):
         if self.tvalue == 0:
             return self
-        elif not(self.children):
+        elif not self.children:
             self.add_children()
             return random.choice(self.children)
         else:
@@ -54,17 +55,17 @@ class HTree:
         self.tvalue += 1
         self.update_node(alpha)
 
-        if not(self.children):
+        if not self.children:
             self.bvalue = self.uvalue
         else:
             self.bvalue = min(self.uvalue, max([child.bvalue for child in self.children]))
 
-        if self.father is not(None):
+        if self.father is not None:
             self.father.update_path(reward, alpha)
 
     def update(self, alpha):
         self.update_node(alpha)
-        if not(self.children):
+        if not self.children:
             self.bvalue = self.uvalue
         else:
             for child in self.children:

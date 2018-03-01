@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import random
-import numpy as np
+# import numpy as np
 import math
+
 
 class HCTree:
     def __init__(self, support, father, depth, rho, nu, tvalue, tau, box):
@@ -23,7 +24,7 @@ class HCTree:
 
     def add_children(self, c, dvalue):
         supports = self.box.split(self.support, self.box.nsplits)
-        #print(supports)
+        # print(supports)
 
         tau = c**2 * math.log(1./dvalue) * self.rho**(-2*(self.depth+1))/(self.nu**2)
         self.children = [HCTree(s, self, self.depth + 1, self.rho, self.nu, 0, tau, self.box) for s in supports]
@@ -31,7 +32,7 @@ class HCTree:
     def explore(self, c, dvalue):
         if self.tvalue < self.tau:
             return self
-        elif not(self.children):
+        elif not self.children:
             self.add_children(c, dvalue)
             return random.choice(self.children)
         else:
@@ -48,22 +49,22 @@ class HCTree:
             self.uvalue = mean + hoeffding + variation
 
     def update_path(self, reward, c, dvalue):
-        if not(self.children):
+        if not self.children:
             self.reward += reward
             self.tvalue += 1
         self.update_node(c, dvalue)
 
-        if not(self.children):
+        if not self.children:
             self.bvalue = self.uvalue
         else:
             self.bvalue = min(self.uvalue, max([child.bvalue for child in self.children]))
 
-        if self.father is not(None):
+        if self.father is not None:
             self.father.update_path(reward, c, dvalue)
 
     def update(self, c, dvalue):
         self.update_node(c, dvalue)
-        if not(self.children):
+        if not self.children:
             self.bvalue = self.uvalue
         else:
             for child in self.children:
@@ -76,9 +77,9 @@ class HCTree:
 
         if leaf.noisy is None:
             x = self.box.center(leaf.support)
-            leaf.evaluted = x
+            leaf.evaluated = x
             leaf.noisy = self.box.f_noised(x)
             existed = True
         leaf.update_path(leaf.noisy, c, dvalue)
 
-        return leaf.evaluted, leaf.noisy, existed
+        return leaf.evaluated, leaf.noisy, existed

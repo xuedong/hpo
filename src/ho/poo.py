@@ -7,7 +7,8 @@ import random
 import numpy as np
 import math
 
-import ho.hoo as hoo
+import hoo
+
 
 class PTree:
     def __init__(self, support, support_type, father, depth, rhos, nu, box):
@@ -35,7 +36,7 @@ class PTree:
     def explore(self, k):
         if self.tvalues[k] == 0:
             return self
-        elif not(self.children):
+        elif not self.children:
             self.add_children()
             return random.choice(self.children)
         else:
@@ -62,31 +63,31 @@ class PTree:
         self.tvalues[k] += 1
         self.update_node(alpha, k)
 
-        if not(self.children):
+        if not self.children:
             self.bvalues[k] = self.uvalues[k]
         else:
             self.bvalues[k] = min(self.uvalues[k], max([child.bvalues[k] for child in self.children]))
 
-        if self.father is not(None):
+        if self.father is not None:
             self.father.update_path(reward, alpha, k)
 
     def update_path_bis(self, reward, alpha, k):
         self.hoos[k].update_path(reward, alpha)
 
     def update_all(self, alpha):
-        for k in range(len(rhos)):
+        for k in range(len(self.rhos)):
             self.update_node(alpha, k)
 
-        if not(self.children):
+        if not self.children:
             self.bvalues = self.uvalues
         else:
             for child in self.children:
                 child.update_all(alpha)
-            for k in range(len(rhos)):
+            for k in range(len(self.rhos)):
                 self.bvalues[k] = min(self.uvalues[k], max([child.bvalues[k] for child in self.children]))
 
     def update_all_bis(self, alpha):
-        for k in range(len(rhos)):
+        for k in range(len(self.rhos)):
             self.hoos[k].update(alpha)
 
     def sample(self, alpha, k):
