@@ -111,6 +111,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                 while n*big_r*(i+1.)*eta**(-i) > budget:
                     i += 1
 
+                if s_run is None or i == s_run:
                     print('i = %d, n = %d' % (i, n))
                     arms, result = sh_finite(model, resource_type, params, n, i, eta, big_r, director, data)
                     results[(k, s)] = arms
@@ -126,5 +127,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                         # best_i = i
                         # best_arm = result[0]
 
-                cPickle.dump([durations, results], open(director + '/results.pkl', 'wb'))
+                if s_run is None:
+                    cPickle.dump([durations, results], open(director + '/results.pkl', 'wb'))
+                else:
+                    cPickle.dump([durations, results], open(director + '/results_' + str(s_run) + '.pkl', 'wb'))
                 s -= 1
