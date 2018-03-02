@@ -46,7 +46,7 @@ def main():
     hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3)
     hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=0)
     hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=1)
-    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=1)
+    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=2)
     # print(train_loss, val_acc, test_acc)
 
 
