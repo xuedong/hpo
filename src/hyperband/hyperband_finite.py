@@ -112,7 +112,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                     i += 1
 
                 if s_run is None or i == s_run:
-                    print('i = %d, n = %d' % (i, n))
+                    print('s = %d, n = %d' % (i, n))
                     arms, result = sh_finite(model, resource_type, params, n, i, eta, big_r, director, data)
                     results[(k, s)] = arms
                     print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(
