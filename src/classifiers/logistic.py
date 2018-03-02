@@ -114,7 +114,7 @@ class LogisticRegression(Model):
         return arms
 
 
-def run_solver(epochs, arm, data, classifier=None, track_valid=np.array([1.]), verbose=False):
+def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose=False):
     train_input, train_target = data[0]
     valid_input, valid_target = data[1]
     test_input, test_target = data[2]
@@ -181,15 +181,15 @@ def run_solver(epochs, arm, data, classifier=None, track_valid=np.array([1.]), v
 
     best_valid_loss = 1.
     best_iter = 0
-    test_score = 0.
+    test_score = 1.
     train_loss = 0.
     start_time = timeit.default_timer()
-    if track_valid.size == 0:
+    if track.size == 0:
         current_best = 1.
-        current_track_valid = np.array([1.])
+        current_track = np.array([1.])
     else:
-        current_best = np.amin(track_valid)
-        current_track_valid = np.copy(track_valid)
+        current_best = np.amin(track)
+        current_track = np.copy(track)
 
     done = False
     epoch = 0
@@ -197,9 +197,9 @@ def run_solver(epochs, arm, data, classifier=None, track_valid=np.array([1.]), v
         epoch += 1
 
         if best_valid_loss < current_best:
-            current_track_valid = np.append(current_track_valid, best_valid_loss)
+            current_track = np.append(current_track, test_score)
         else:
-            current_track_valid = np.append(current_track_valid, current_best)
+            current_track = np.append(current_track, current_best)
 
         for batch_index in range(n_batches_train):
             batch_cost = train_model(batch_index)
@@ -270,4 +270,4 @@ def run_solver(epochs, arm, data, classifier=None, track_valid=np.array([1.]), v
            os.path.split(__file__)[1] +
            ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-    return train_loss, best_valid_loss, test_score, current_track_valid
+    return train_loss, best_valid_loss, test_score, current_track

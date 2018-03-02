@@ -8,7 +8,7 @@ import utils
 import logistic
 
 
-def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track_valid=np.array([1.])):
+def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track=np.array([1.])):
     """
 
     :param model:
@@ -20,13 +20,13 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
     :param big_r:
     :param director:
     :param data:
-    :param track_valid:
+    :param track:
     :return:
     """
     arms = model.generate_arms(n, director, params)
     remaining_arms = [list(a) for a in
                       zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
-    current_track_valid = np.copy(track_valid)
+    current_track = np.copy(track)
 
     for l in range(i+1):
         num_pulls = int(big_r * eta ** (l - i))
@@ -37,12 +37,12 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
             arm_key = remaining_arms[a][0]
             print(arms[arm_key])
             if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model.pkl'):
-                train_loss, val_err, test_err, current_track_valid = \
-                    logistic.run_solver(num_pulls, arms[arm_key], data, track_valid=current_track_valid)
+                train_loss, val_err, test_err, current_track = \
+                    logistic.run_solver(num_pulls, arms[arm_key], data, track=current_track)
             else:
                 classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
-                train_loss, val_err, test_err, current_track_valid = \
-                    logistic.run_solver(num_pulls, arms[arm_key], data, classifier, current_track_valid)
+                train_loss, val_err, test_err, current_track = \
+                    logistic.run_solver(num_pulls, arms[arm_key], data, classifier, current_track)
             print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
             arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
             remaining_arms[a][1] = train_loss
@@ -57,7 +57,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
             remaining_arms = remaining_arms[0:n_k1]
     best_arm = arms[remaining_arms[0][0]]
 
-    return arms, [best_arm, remaining_arms[0][1], remaining_arms[0][2], remaining_arms[0][3]], current_track_valid
+    return arms, [best_arm, remaining_arms[0][1], remaining_arms[0][2], remaining_arms[0][3]], current_track
 
 
 def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
@@ -104,7 +104,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
         s_max = int(min(budget / big_r - 1, int(np.floor(utils.log_eta(big_r / r, eta)))))
         s = s_max
         best_val = 1.
-        track_valid = np.array([1.])
+        track = np.array([1.])
         print('s_max = %i' % s_max)
 
         # inner loop
@@ -119,8 +119,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
 
                 if s_run is None or i == s_run:
                     print('s = %d, n = %d' % (i, n))
-                    arms, result, track_valid = \
-                        sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track_valid)
+                    arms, result, track = \
+                        sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track)
                     results[(k, s)] = arms
                     print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(
                         result[2]) + ", test error = " + str(
@@ -135,8 +135,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                         # best_arm = result[0]
 
                 if s_run is None:
-                    cPickle.dump([durations, results, track_valid], open(director + '/results.pkl', 'wb'))
+                    cPickle.dump([durations, results, track], open(director + '/results.pkl', 'wb'))
                 else:
-                    cPickle.dump([durations, results, track_valid],
+                    cPickle.dump([durations, results, track],
                                  open(director + '/results_' + str(s_run) + '.pkl', 'wb'))
                 s -= 1
