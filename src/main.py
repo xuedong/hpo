@@ -25,7 +25,7 @@ def main():
     output_dir = ''
     random.seed(1234)
     model_name = 'logistic_sgd_'
-    seed_id = 2
+    seed_id = 0
     director = output_dir + '../result/' + model_name + str(seed_id)
     if not os.path.exists(director):
         os.makedirs(director)
@@ -43,10 +43,10 @@ def main():
     # arms = model.generate_arms(1, "../result/", params, True)
     # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
 
-    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3)
-    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=0)
+    # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3)
+    # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=0)
     hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=1)
-    hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=2)
+    # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=2)
     # print(train_loss, val_acc, test_acc)
 
 

@@ -114,7 +114,7 @@ class LogisticRegression(Model):
         return arms
 
 
-def run_solver(epochs, arm, data, classifier=None, verbose=False):
+def run_solver(epochs, arm, data, classifier=None, track_valid=np.array([1.]), verbose=False):
     train_input, train_target = data[0]
     valid_input, valid_target = data[1]
     test_input, test_target = data[2]
@@ -184,11 +184,23 @@ def run_solver(epochs, arm, data, classifier=None, verbose=False):
     test_score = 0.
     train_loss = 0.
     start_time = timeit.default_timer()
+    if track_valid.size == 0:
+        current_best = 1.
+        current_track_valid = np.array([1.])
+    else:
+        current_best = np.amin(track_valid)
+        current_track_valid = np.copy(track_valid)
 
     done = False
     epoch = 0
     while (epoch < epochs) and not done:
         epoch += 1
+
+        if best_valid_loss < current_best:
+            current_track_valid = np.append(current_track_valid, best_valid_loss)
+        else:
+            current_track_valid = np.append(current_track_valid, current_best)
+
         for batch_index in range(n_batches_train):
             batch_cost = train_model(batch_index)
             iteration = (epoch - 1) * n_batches_train + batch_index
@@ -258,4 +270,4 @@ def run_solver(epochs, arm, data, classifier=None, verbose=False):
            os.path.split(__file__)[1] +
            ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-    return train_loss, best_valid_loss, test_score
+    return train_loss, best_valid_loss, test_score, current_track_valid
