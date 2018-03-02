@@ -102,9 +102,10 @@ ENV/
 
 # Data
 data/
+*.pkl
 
 # PyCharm IDE
 .idea/
 
-# data
-*.pkl
+# Macintosh
+.DS_Store
