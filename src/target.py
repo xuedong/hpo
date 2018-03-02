@@ -28,7 +28,8 @@ class Sine1:
     def __init__(self):
         self.fmax = 0.
 
-    def f(self, x):
+    @staticmethod
+    def f(x):
         return np.sin(x[0]) - 1.
 
     def fmax(self):
@@ -40,7 +41,8 @@ class Sine2:
         self.xmax = 3.614
         self.fmax = self.f([self.xmax])
 
-    def f(self, x):
+    @staticmethod
+    def f(x):
         return -np.cos(x[0])-np.sin(3*x[0])
 
     def fmax(self):
@@ -61,8 +63,8 @@ class DoubleSine:
             return u
         else:
             ew = math.pow(u, self.ep2) - math.pow(u, self.ep1)
-            mysin = (math.sin(math.pi*math.log(u, 2))+1)/2.
-            return mysin*ew - math.pow(u, self.ep2)
+            my_sin = (math.sin(math.pi*math.log(u, 2))+1)/2.
+            return my_sin*ew - math.pow(u, self.ep2)
 
     def fmax(self):
         return self.fmax
@@ -79,11 +81,11 @@ class DiffFunc:
             v = 0
         else:
             v = math.log(u, 2)
-        frac = v - math.floor(v)
+        fraction = v - math.floor(v)
 
         if u == 0:
             return u
-        elif frac <= 0.5:
+        elif fraction <= 0.5:
             return -math.pow(u, 2)
         else:
             return -math.sqrt(u)
@@ -96,7 +98,8 @@ class Garland:
     def __init__(self):
         self.fmax = 0.997772313413222
 
-    def f(self, x):
+    @staticmethod
+    def f(x):
         return 4*x[0]*(1-x[0])*(0.75+0.25*(1-np.sqrt(np.abs(np.sin(60*x[0])))))
 
     def fmax(self):
@@ -107,7 +110,8 @@ class Himmelblau:
     def __init__(self):
         self.fmax = 0.
 
-    def f(self, x):
+    @staticmethod
+    def f(x):
         return -(x[0]**2+x[1]-11.)**2-(x[0]+x[1]**2-7.)**2
 
     def fmax(self):
@@ -132,7 +136,8 @@ class Gramacy1:
         self.xmax = 0.54856343
         self.fmax = self.f([self.xmax])
 
-    def f(self, x):
+    @staticmethod
+    def f(x):
         return -np.sin(10*np.pi*x[0])/(2*x[0])-(x[0]-1)**4
 
     def fmax(self):
@@ -188,6 +193,7 @@ def std_center(support, support_type):
         elif support_type[i] == 'cont':
             a, b = support[i]
             center = (a+b)/2.
+            centers.append(center)
         else:
             raise ValueError('Unsupported variable type.')
 
@@ -230,8 +236,8 @@ def std_split(support, support_type, nsplits):
     else:
         raise ValueError("Unsupported variable type.")
 
-    supports = [None for i in range(nsplits)]
-    supports_type = [None for i in range(nsplits)]
+    supports = [None for _ in range(nsplits)]
+    supports_type = [None for _ in range(nsplits)]
     for i in range(nsplits):
         supports[i] = [support[j] for j in range(len(support))]
         supports[i][max_index] = split[i]

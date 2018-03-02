@@ -34,7 +34,7 @@ def load_data(dataset):
     with gzip.open(dataset, 'rb') as file:
         try:
             train, valid, test = cPickle.load(file, encoding='latin1')
-        except:
+        except FileNotFoundError:
             train, valid, test = cPickle.load(file)
 
     def shared_dataset(data, borrow=True):

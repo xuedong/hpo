@@ -2,7 +2,8 @@ import numpy as np
 
 
 class Param(object):
-    def __init__(self, name, min_val, max_val, init_val=None, dist='uniform', scale='log', log_base=np.e, interval=None):
+    def __init__(self, name, min_val, max_val,
+                 init_val=None, dist='uniform', scale='log', log_base=np.e, interval=None):
         """
 
         :param name:

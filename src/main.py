@@ -12,9 +12,11 @@ from params import Param
 
 
 def get_search_space():
-    params = {}
-    params['learning_rate'] = Param('learning_rate', numpy.log(1*10**(-3)), numpy.log(1*10**(-1)), dist='uniform', scale='log')
-    params['batch_size'] = Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1)
+    params = {
+        'learning_rate': Param('learning_rate', numpy.log(1 * 10 ** (-3)), numpy.log(1 * 10 ** (-1)), dist='uniform',
+                               scale='log'),
+        'batch_size': Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1)
+    }
 
     return params
 
@@ -23,7 +25,7 @@ def main():
     output_dir = ''
     random.seed(1234)
     model_name = 'logistic_sgd_'
-    seed_id = 1
+    seed_id = 2
     director = output_dir + '../result/' + model_name + str(seed_id)
     if not os.path.exists(director):
         os.makedirs(director)

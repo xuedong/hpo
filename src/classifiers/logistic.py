@@ -86,14 +86,10 @@ class LogisticRegression(Model):
         os.chdir(path)
         arms = {}
         if default:
-            arm = {}
             dirname = "default_arm"
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
-            arm['dir'] = path + "/" + dirname
-            arm['learning_rate'] = 0.001
-            arm['batch_size'] = 100
-            arm['results'] = []
+            arm = {'dir': path + "/" + dirname, 'learning_rate': 0.001, 'batch_size': 100, 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
@@ -105,8 +101,7 @@ class LogisticRegression(Model):
             dirname = "arm" + str(start_count + i)
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
-            arm = {}
-            arm['dir'] = path + "/" + dirname
+            arm = {'dir': path + "/" + dirname}
             hps = ['learning_rate', 'batch_size']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
