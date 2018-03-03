@@ -43,10 +43,12 @@ def main():
         # arms = model.generate_arms(1, "../result/", params, True)
         # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
 
-        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3)
-        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=0)
-        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=1)
-        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 9, 360, director, data, eta=3, s_run=2)
+        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4)
+        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=0)
+        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=1)
+        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=2)
+        hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=3)
+        # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
         # print(train_loss, val_acc, test_acc)
 
 

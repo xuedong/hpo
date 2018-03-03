@@ -8,7 +8,7 @@ import utils
 import logistic
 
 
-def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track=np.array([1.])):
+def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track=np.array([1.]), verbose=False):
     """
 
     :param model:
@@ -21,6 +21,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
     :param director:
     :param data:
     :param track:
+    :param verbose: verbose or not
     :return:
     """
     arms = model.generate_arms(n, director, params)
@@ -35,7 +36,8 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
         for a in range(len(remaining_arms)):
             start_time = timeit.default_timer()
             arm_key = remaining_arms[a][0]
-            print(arms[arm_key])
+            if verbose:
+                print(arms[arm_key])
             if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model.pkl'):
                 train_loss, val_err, test_err, current_track = \
                     logistic.run_solver(num_pulls, arms[arm_key], data, track=current_track)
@@ -43,7 +45,8 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
                 classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
                 train_loss, val_err, test_err, current_track = \
                     logistic.run_solver(num_pulls, arms[arm_key], data, classifier, current_track)
-            print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
+            if verbose:
+                print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
             arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
             remaining_arms[a][1] = train_loss
             remaining_arms[a][2] = val_err
@@ -61,7 +64,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
 
 
 def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
-                     eta=4., budget=0, n_hyperbands=1, s_run=None, doubling=False):
+                     eta=4., budget=0, n_hyperbands=1, s_run=None, doubling=False, verbose=False):
     """Hyperband with finite horizon.
 
     :param model: object with subroutines to generate arms and train models
@@ -77,6 +80,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
     :param n_hyperbands: maximum number of hyperbands to run
     :param s_run: option to repeat a specific bracket
     :param doubling: option to decide whether we want to double the per bracket budget in the outer loop
+    :param verbose: verbose or not
     :return: None
     """
     start_time = timeit.default_timer()
@@ -122,9 +126,10 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                     arms, result, track = \
                         sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track)
                     results[(k, s)] = arms
-                    print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(
-                        result[2]) + ", test error = " + str(
-                        result[3]) + " best arm dir: " + result[0]['dir'])
+                    if verbose:
+                        print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(
+                            result[2]) + ", test error = " + str(
+                            result[3]) + " best arm dir: " + result[0]['dir'])
                     durations.append([utils.s_to_m(start_time, timeit.default_timer()), result])
                     print("time elapsed: " + str(utils.s_to_m(start_time, timeit.default_timer())))
 

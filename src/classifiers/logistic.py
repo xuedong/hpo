@@ -123,7 +123,8 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
     n_batches_valid = valid_input.get_value(borrow=True).shape[0] // arm['batch_size']
     n_batches_test = test_input.get_value(borrow=True).shape[0] // arm['batch_size']
 
-    print('Building model...')
+    if verbose:
+        print('Building model...')
 
     # symbolic variables
     index = ts.lscalar()
@@ -171,7 +172,8 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
         }
     )
 
-    print('Training model...')
+    if verbose:
+        print('Training model...')
 
     # early-stopping parameters
     patience = 5000
@@ -257,17 +259,18 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
                 break
 
     end_time = timeit.default_timer()
-    print(
-        (
-            'Optimization completed with best validation score of %f %%, '
-            'obtained at iteration %i, with test performance %f %%'
+    if verbose:
+        print(
+            (
+                'Optimization completed with best validation score of %f %%, '
+                'obtained at iteration %i, with test performance %f %%'
+            )
+            % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
         )
-        % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
-    )
-    print('The code run for %d epochs, with %f epochs/sec' % (
-        epoch, 1. * epoch / (end_time - start_time)))
-    print(('The code for file ' +
-           os.path.split(__file__)[1] +
-           ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+        print('The code run for %d epochs, with %f epochs/sec' % (
+            epoch, 1. * epoch / (end_time - start_time)))
+        print(('The code for file ' +
+               os.path.split(__file__)[1] +
+               ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
     return train_loss, best_valid_loss, test_score, current_track
