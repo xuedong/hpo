@@ -69,7 +69,7 @@ def s_to_m(start_time, current_time):
 
 
 def log_eta(x, eta):
-    """
+    """Compute log of x with base eta.
 
     :param x: input value
     :param eta: base

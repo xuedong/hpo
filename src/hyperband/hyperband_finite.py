@@ -9,20 +9,20 @@ import logistic
 
 
 def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track=np.array([1.]), verbose=False):
-    """
+    """Successive halving.
 
     :param model:
-    :param resource_type:
-    :param params:
-    :param n:
-    :param i:
-    :param eta:
-    :param big_r:
-    :param director:
-    :param data:
-    :param track:
-    :param verbose: verbose or not
-    :return:
+    :param resource_type: type of resource to be allocated
+    :param params: hyperparameter search space
+    :param n: number of configurations in this successive halving phase
+    :param i: the number of the bracket
+    :param eta: elimination proportion
+    :param big_r: number of resources
+    :param director: where we store the results
+    :param data: dataset
+    :param track: initial track vector
+    :param verbose: verbose option
+    :return: the dictionary of arms, the stored results and the vector of test errors
     """
     arms = model.generate_arms(n, director, params)
     remaining_arms = [list(a) for a in
@@ -80,7 +80,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
     :param n_hyperbands: maximum number of hyperbands to run
     :param s_run: option to repeat a specific bracket
     :param doubling: option to decide whether we want to double the per bracket budget in the outer loop
-    :param verbose: verbose or not
+    :param verbose: verbose option
     :return: None
     """
     start_time = timeit.default_timer()

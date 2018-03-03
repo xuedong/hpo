@@ -75,12 +75,12 @@ class LogisticRegression(Model):
             raise NotImplementedError()
 
     def generate_arms(self, n, path, params, default=False):
-        """
+        """Function that generates a dictionary of configurations/arms.
 
-        :param n:
-        :param path:
-        :param params:
-        :param default:
+        :param n: number of arms to generate
+        :param path: path to which we store the results later
+        :param params: hyperparameter to be optimized
+        :param default: default arm option
         :return:
         """
         os.chdir(path)
@@ -115,6 +115,16 @@ class LogisticRegression(Model):
 
 
 def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose=False):
+    """
+
+    :param epochs: number of epochs
+    :param arm: hyperparameter configuration encoded as a dictionary
+    :param data: dataset to use
+    :param classifier: initial model, set as None by default
+    :param track: vector where we store the test errors
+    :param verbose: verbose option
+    :return:
+    """
     train_input, train_target = data[0]
     valid_input, valid_target = data[1]
     test_input, test_target = data[2]
