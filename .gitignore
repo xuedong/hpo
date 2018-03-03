@@ -109,3 +109,6 @@ data/
 
 # Macintosh
 .DS_Store
+
+# pdf files
+*.pdf

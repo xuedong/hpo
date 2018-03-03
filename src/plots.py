@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -6,7 +7,7 @@ from six.moves import cPickle
 
 
 def plot_hyperband(path, s_max, trials, model_name, dataset_name):
-    """
+    """Plot test error evaluation of hyperband with different s values.
 
     :param path: path to which the result image is stored
     :param s_max: maximum number of brackets
@@ -21,10 +22,18 @@ def plot_hyperband(path, s_max, trials, model_name, dataset_name):
 
     for s in range(s_max+1):
         tracks = np.array([None for _ in range(trials)])
+        shortest = sys.maxsize
+        # compute the length of the shortest test error vector
         for i in range(trials):
             [_, _, track] = cPickle.load(open(path + 'logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
-            tracks[i] = track
+            if len(track) < shortest:
+                shortest = len(track)
+        for i in range(trials):
+            [_, _, track] = cPickle.load(open(path + 'logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
+            # truncate each test error vector by the length of the shortest one
+            tracks[i] = track[0:shortest]
 
+        # compute the longest truncated test error vector among all s values
         length = len(tracks[0])
         if length > longest:
             longest = length

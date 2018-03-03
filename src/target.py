@@ -221,8 +221,12 @@ def std_rand(support, support_type):
 
 
 def std_split(support, support_type, nsplits):
-    """
-    Split a box uniformly.
+    """Split a box uniformly.
+
+    :param support: vector of support in each dimension
+    :param support_type: continuous or discrete
+    :param nsplits: number of splits
+    :return:
     """
     lens = np.array([support[i][1]-support[i][0] for i in range(len(support))])
     max_index = np.argmax(lens)
