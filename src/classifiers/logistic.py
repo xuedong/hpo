@@ -185,7 +185,7 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
     best_iter = 0
     test_score = 1.
     train_loss = 0.
-    start_time = timeit.default_timer()
+
     if track.size == 0:
         current_best = 1.
         current_track = np.array([1.])
@@ -193,6 +193,7 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
         current_best = np.amin(track)
         current_track = np.copy(track)
 
+    start_time = timeit.default_timer()
     done = False
     epoch = 0
     while (epoch < epochs) and not done:
@@ -259,6 +260,7 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
                 break
 
     end_time = timeit.default_timer()
+
     if verbose:
         print(
             (
