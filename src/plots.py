@@ -25,11 +25,11 @@ def plot_hyperband(path, s_max, trials, model_name, dataset_name):
         shortest = sys.maxsize
         # compute the length of the shortest test error vector
         for i in range(trials):
-            [_, _, track] = cPickle.load(open(path + 'logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
+            [_, _, track] = cPickle.load(open('logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
             if len(track) < shortest:
                 shortest = len(track)
         for i in range(trials):
-            [_, _, track] = cPickle.load(open(path + 'logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
+            [_, _, track] = cPickle.load(open('logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
             # truncate each test error vector by the length of the shortest one
             tracks[i] = track[0:shortest]
 
@@ -46,7 +46,7 @@ def plot_hyperband(path, s_max, trials, model_name, dataset_name):
 
     tracks = np.array([None for _ in range(trials)])
     for i in range(trials):
-        [_, _, track] = cPickle.load(open(path + 'logistic_sgd_' + str(i) + '/results.pkl', 'rb'))
+        [_, _, track] = cPickle.load(open('logistic_sgd_' + str(i) + '/results.pkl', 'rb'))
         tracks[i] = track[0:longest]
 
     # length = len(tracks[0])
@@ -59,8 +59,8 @@ def plot_hyperband(path, s_max, trials, model_name, dataset_name):
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Epochs')
-    save_path = os.path.join(os.path.abspath('..'), 'img/{}'.format(model_name))
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format(model_name))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    plt.savefig(os.path.join(os.path.abspath('..'), 'img/{}/{}.pdf'.format(model_name, dataset_name)))
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format(model_name, dataset_name)))
     plt.close(fig)
