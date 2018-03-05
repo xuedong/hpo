@@ -21,7 +21,7 @@ def main(model):
     rng = np.random.RandomState(12345)
     # random.seed(12345)
     model_name = model + '_sgd_'
-    exp_name = 'hyperband_' + model + '_2/'
+    exp_name = 'hyperband_' + model + '_0/'
 
     for seed_id in range(1):
         start_time = timeit.default_timer()
@@ -40,11 +40,16 @@ def main(model):
         # arms = model.generate_arms(1, "../result/", params, True)
         # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
 
-        # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 100, 360, director, data, eta=4)
-        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 4, 360, director, data, eta=4, s_run=0, verbose=True)
-        # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1)
-        # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=2)
-        # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=3)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+                                          verbose=True)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=0,
+                                          verbose=True)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
+                                          verbose=True)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=2,
+                                          verbose=True)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=3,
+                                          verbose=True)
         # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
         # print(train_loss, val_acc, test_acc)
 

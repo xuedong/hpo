@@ -273,7 +273,7 @@ class MLP(Model):
                             )
 
                         # save the best model
-                        with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
+                        with open(arm['dir'] + '/best_model.pkl', 'wb') as file:
                             cPickle.dump(classifier, file)
 
                 if patience <= iteration:
