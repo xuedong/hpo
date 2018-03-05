@@ -7,6 +7,7 @@ import theano.tensor as ts
 
 import logger
 import utils
+
 import logistic
 import mlp
 import hyperband_finite
@@ -17,7 +18,7 @@ def main(model):
     data = utils.load_data(data_dir)
 
     output_dir = ''
-    rng = np.random.RandomState(1234)
+    rng = np.random.RandomState(12345)
     # random.seed(12345)
     model_name = model + '_sgd_'
     exp_name = 'hyperband_' + model + '_2/'
@@ -34,12 +35,8 @@ def main(model):
         sys.stdout = logger.Logger(log_dir)
 
         x = ts.matrix('x')
-        if model == 'logistic':
-            test_model = logistic.LogisticRegression(x, 28*28, 10)
-            params = test_model.get_search_space()
-        elif model == 'mlp':
-            test_model = mlp.MLP(rng, x, 28*28, 500, 10)
-            params = mlp.get_search_space()
+        test_model = mlp.MLP(x, 28*28, 500, 10, rng=rng)
+        params = test_model.get_search_space()
         # arms = model.generate_arms(1, "../result/", params, True)
         # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
 
@@ -58,4 +55,4 @@ def main(model):
 
 
 if __name__ == "__main__":
-    main('logistic')
+    main('mlp')

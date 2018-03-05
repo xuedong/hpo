@@ -115,12 +115,13 @@ class LogisticRegression(Model):
         return arms
 
     @staticmethod
-    def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose=False):
+    def run_solver(epochs, arm, data, rng=None, classifier=None, track=np.array([1.]), verbose=False):
         """
 
         :param epochs: number of epochs
         :param arm: hyperparameter configuration encoded as a dictionary
         :param data: dataset to use
+        :param rng: not used here
         :param classifier: initial model, set as None by default
         :param track: vector where we store the test errors
         :param verbose: verbose option
