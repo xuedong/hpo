@@ -95,7 +95,7 @@ class MLP(Model):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname,
                    'learning_rate': 0.001, 'batch_size': 100, 'n_hidden': 500,
-                   'l1_reg': 1., 'l2_reg': 0., 'results': []}
+                   'l1_reg': 0., 'l2_reg': 1., 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
@@ -108,11 +108,11 @@ class MLP(Model):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname}
-            hps = ['learning_rate', 'batch_size', 'l1_reg']
+            hps = ['learning_rate', 'batch_size', 'l2_reg']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
                 arm[hp] = val[0]
-            arm['l2_reg'] = 0.
+            arm['l1_reg'] = 0.
             arm['n_hidden'] = 500
             arm['results'] = []
             arms[i] = arm
@@ -303,7 +303,7 @@ class MLP(Model):
             'learning_rate': Param('learning_rate', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform',
                                    scale='log'),
             'batch_size': Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1),
-            'l1_reg': Param('l1_reg', np.log(1 * 10 ** (-3)), np.log(1), dist='uniform', scale='log')
+            'l2_reg': Param('l2_reg', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform', scale='log')
         }
 
         return params

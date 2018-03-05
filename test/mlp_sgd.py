@@ -54,7 +54,7 @@ def sgd(dataset, learning_rate, l1_reg, l2_reg, epochs, batch_size, n_hidden):
     y = ts.ivector('y')
 
     # construct the classifier
-    classifier = mlp.MLP(rng=rng, input_data=x, n_in=28*28, n_hidden=n_hidden, n_out=10)
+    classifier = mlp.MLP(input_data=x, n_in=28*28, n_hidden=n_hidden, n_out=10, rng=rng)
     cost = classifier.neg_log_likelihood(y) + l1_reg * classifier.l1 + l2_reg * classifier.l2
 
     # construct a Theano function that computes the errors made
