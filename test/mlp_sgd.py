@@ -117,7 +117,7 @@ def sgd(dataset, learning_rate, l1_reg, l2_reg, epochs, batch_size, n_hidden):
 
             if (iteration + 1) % valid_freq == 0:
                 valid_losses = [valid_model(i) for i in range(n_batches_valid)]
-                current_valid_loss = np.mean(valid_losses)
+                current_valid_loss = float(np.mean(valid_losses))
 
                 print(
                     'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %

@@ -1,10 +1,12 @@
 from __future__ import print_function
 
+import os
 import numpy as np
 
 import theano
 import theano.tensor as ts
 
+from models import Model
 from classifiers.logistic import LogisticRegression
 
 
@@ -48,7 +50,7 @@ class HiddenLayer(object):
         self.params = [self.w, self.b]
 
 
-class MLP(object):
+class MLP(Model):
     def __init__(self, rng, input_data, n_in, n_hidden, n_out):
         """Single layer mlp.
 
@@ -70,3 +72,196 @@ class MLP(object):
         self.params = self.hidden_layer.params + self.logistic_layer.params
         # keep track of the input
         self.input_data = input_data
+
+    def generate_arms(self, n, path, params, default=False):
+        """Function that generates a dictionary of configurations/arms.
+
+        :param n: number of arms to generate
+        :param path: path to which we store the results later
+        :param params: hyperparameter to be optimized
+        :param default: default arm option
+        :return:
+        """
+        os.chdir(path)
+        arms = {}
+        if default:
+            dirname = "default_arm"
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            arm = {'dir': path + "/" + dirname,
+                   'learning_rate': 0.001, 'batch_size': 100, 'n_hidden': 500,
+                   'l1_reg': 1., 'l2_reg': 0., 'results': []}
+            arms[0] = arm
+            return arms
+        subdirs = next(os.walk('.'))[1]
+        if len(subdirs) == 0:
+            start_count = 0
+        else:
+            start_count = len(subdirs)
+        for i in range(n):
+            dirname = "arm" + str(start_count + i)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            arm = {'dir': path + "/" + dirname}
+            hps = ['learning_rate', 'batch_size', 'l1_reg']
+            for hp in hps:
+                val = params[hp].get_param_range(1, stochastic=True)
+                arm[hp] = val[0]
+            arm['l2_reg'] = 0.
+            arm['n_hidden'] = 500
+            arm['results'] = []
+            arms[i] = arm
+
+        os.chdir('../../../src')
+
+        return arms
+
+
+def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose=False):
+    """
+
+    :param epochs:
+    :param arm:
+    :param data:
+    :param classifier:
+    :param track:
+    :param verbose:
+    :return:
+    """
+    train_input, train_target = data[0]
+    valid_input, valid_target = data[1]
+    test_input, test_target = data[2]
+
+    n_batches_train = train_input.get_value(borrow=True).shape[0] // arm['batch_size']
+    n_batches_valid = valid_input.get_value(borrow=True).shape[0] // arm['batch_size']
+    n_batches_test = test_input.get_value(borrow=True).shape[0] // arm['batch_size']
+
+    if verbose:
+        print('Building model...')
+
+    # symbolic variables
+    index = ts.lscalar()
+    x = ts.matrix('x')
+    y = ts.ivector('y')
+
+    # construct the classifier
+    classifier = mlp.MLP(rng=rng, input_data=x, n_in=28*28, n_hidden=n_hidden, n_out=10)
+    cost = classifier.neg_log_likelihood(y) + l1_reg * classifier.l1 + l2_reg * classifier.l2
+
+    # construct a Theano function that computes the errors made
+    # by the model on a minibatch
+    test_model = theano.function(
+        inputs=[index],
+        outputs=classifier.zero_one(y),
+        givens={
+            x: test_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+            y: test_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
+        }
+    )
+    valid_model = theano.function(
+        inputs=[index],
+        outputs=classifier.zero_one(y),
+        givens={
+            x: valid_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+            y: valid_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
+        }
+    )
+
+    # construct a Theano function that updates the parameters of
+    # the training model using stochastic gradient descent
+    g_params = [ts.grad(cost=cost, wrt=param) for param in classifier.params]
+    updates = [
+        (param, param - learning_rate * g_param)
+        for param, g_param in zip(classifier.params, g_params)
+    ]
+
+    train_model = theano.function(
+        inputs=[index],
+        outputs=cost,
+        updates=updates,
+        givens={
+            x: train_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+            y: train_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
+        }
+    )
+
+    print('Training model...')
+
+    # early-stopping parameters
+    patience = 10000
+    patience_increase = 2
+    threshold = 0.995
+    valid_freq = min(n_batches_train, patience // 2)
+
+    best_valid_loss = np.inf
+    best_iter = 0
+    test_score = 0.
+    start_time = timeit.default_timer()
+
+    done = False
+    epoch = 0
+    while (epoch < epochs) and not done:
+        epoch += 1
+        for batch_index in range(n_batches_train):
+            batch_cost = train_model(batch_index)
+            iteration = (epoch - 1) * n_batches_train + batch_index
+
+            if (iteration + 1) % valid_freq == 0:
+                valid_losses = [valid_model(i) for i in range(n_batches_valid)]
+                current_valid_loss = float(np.mean(valid_losses))
+
+                print(
+                    'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
+                    (
+                        epoch,
+                        batch_index + 1,
+                        n_batches_train,
+                        batch_cost,
+                        current_valid_loss * 100.
+                    )
+                )
+
+                if current_valid_loss < best_valid_loss:
+                    if current_valid_loss < best_valid_loss * threshold:
+                        patience = max(patience, iteration * patience_increase)
+
+                    best_valid_loss = current_valid_loss
+                    best_iter = iteration
+
+                    test_losses = [test_model(i) for i in range(n_batches_test)]
+                    test_score = np.mean(test_losses)
+
+                    print(
+                        (
+                            '     epoch %i, batch %i/%i, test error of'
+                            ' best model %f %%'
+                        ) %
+                        (
+                            epoch,
+                            batch_index + 1,
+                            n_batches_train,
+                            test_score * 100.
+                        )
+                    )
+
+                    # save the best model
+                    with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
+                        cPickle.dump(classifier, file)
+
+            if patience <= iteration:
+                done = True
+                break
+
+    end_time = timeit.default_timer()
+    print(
+        (
+            'Optimization completed with best validation score of %f %%, '
+            'obtained at iteration %i, with test performance %f %%'
+        )
+        % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
+    )
+    print('The code run for %d epochs, with %f epochs/sec' % (
+        epoch, 1. * epoch / (end_time - start_time)))
+    print(('The code for file ' +
+           os.path.split(__file__)[1] +
+           ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)

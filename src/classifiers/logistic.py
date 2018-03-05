@@ -12,6 +12,7 @@ import theano.tensor as ts
 
 # import utils
 from models import Model
+from params import Param
 
 
 class LogisticRegression(Model):
@@ -286,3 +287,13 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
     return train_loss, best_valid_loss, test_score, current_track
+
+
+def get_search_space():
+    params = {
+        'learning_rate': Param('learning_rate', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform',
+                               scale='log'),
+        'batch_size': Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1)
+    }
+
+    return params
