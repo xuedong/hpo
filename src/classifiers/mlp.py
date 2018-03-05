@@ -1,12 +1,17 @@
 from __future__ import print_function
 
+import sys
+import timeit
 import os
 import numpy as np
+
+from six.moves import cPickle
 
 import theano
 import theano.tensor as ts
 
 from models import Model
+from params import Param
 from classifiers.logistic import LogisticRegression
 
 
@@ -117,12 +122,13 @@ class MLP(Model):
         return arms
 
 
-def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose=False):
+def run_solver(epochs, arm, data, rng, classifier=None, track=np.array([1.]), verbose=False):
     """
 
     :param epochs:
     :param arm:
     :param data:
+    :param rng:
     :param classifier:
     :param track:
     :param verbose:
@@ -145,8 +151,9 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
     y = ts.ivector('y')
 
     # construct the classifier
-    classifier = mlp.MLP(rng=rng, input_data=x, n_in=28*28, n_hidden=n_hidden, n_out=10)
-    cost = classifier.neg_log_likelihood(y) + l1_reg * classifier.l1 + l2_reg * classifier.l2
+    if not classifier:
+        classifier = MLP(rng=rng, input_data=x, n_in=28*28, n_hidden=arm['n_hidden'], n_out=10)
+    cost = classifier.neg_log_likelihood(y) + arm['l1_reg'] * classifier.l1 + arm['l2_reg'] * classifier.l2
 
     # construct a Theano function that computes the errors made
     # by the model on a minibatch
@@ -171,7 +178,7 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
     # the training model using stochastic gradient descent
     g_params = [ts.grad(cost=cost, wrt=param) for param in classifier.params]
     updates = [
-        (param, param - learning_rate * g_param)
+        (param, param - arm['learning_rate'] * g_param)
         for param, g_param in zip(classifier.params, g_params)
     ]
 
@@ -185,7 +192,8 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
         }
     )
 
-    print('Training model...')
+    if verbose:
+        print('Training model...')
 
     # early-stopping parameters
     patience = 10000
@@ -196,12 +204,26 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
     best_valid_loss = np.inf
     best_iter = 0
     test_score = 0.
-    start_time = timeit.default_timer()
+    train_loss = 0.
 
+    if track.size == 0:
+        current_best = 1.
+        current_track = np.array([1.])
+    else:
+        current_best = np.amin(track)
+        current_track = np.copy(track)
+
+    start_time = timeit.default_timer()
     done = False
     epoch = 0
     while (epoch < epochs) and not done:
         epoch += 1
+
+        if best_valid_loss < current_best:
+            current_track = np.append(current_track, test_score)
+        else:
+            current_track = np.append(current_track, current_best)
+
         for batch_index in range(n_batches_train):
             batch_cost = train_model(batch_index)
             iteration = (epoch - 1) * n_batches_train + batch_index
@@ -210,16 +232,17 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
                 valid_losses = [valid_model(i) for i in range(n_batches_valid)]
                 current_valid_loss = float(np.mean(valid_losses))
 
-                print(
-                    'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
-                    (
-                        epoch,
-                        batch_index + 1,
-                        n_batches_train,
-                        batch_cost,
-                        current_valid_loss * 100.
+                if verbose:
+                    print(
+                        'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
+                        (
+                            epoch,
+                            batch_index + 1,
+                            n_batches_train,
+                            batch_cost,
+                            current_valid_loss * 100.
+                        )
                     )
-                )
 
                 if current_valid_loss < best_valid_loss:
                     if current_valid_loss < best_valid_loss * threshold:
@@ -228,21 +251,25 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
                     best_valid_loss = current_valid_loss
                     best_iter = iteration
 
+                    train_losses = [train_model(i) for i in range(n_batches_train)]
+                    train_loss = np.mean(train_losses)
+
                     test_losses = [test_model(i) for i in range(n_batches_test)]
                     test_score = np.mean(test_losses)
 
-                    print(
-                        (
-                            '     epoch %i, batch %i/%i, test error of'
-                            ' best model %f %%'
-                        ) %
-                        (
-                            epoch,
-                            batch_index + 1,
-                            n_batches_train,
-                            test_score * 100.
+                    if verbose:
+                        print(
+                            (
+                                '     epoch %i, batch %i/%i, test error of'
+                                ' best model %f %%'
+                            ) %
+                            (
+                                epoch,
+                                batch_index + 1,
+                                n_batches_train,
+                                test_score * 100.
+                            )
                         )
-                    )
 
                     # save the best model
                     with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
@@ -253,15 +280,30 @@ def run_solver(epochs, arm, data, classifier=None, track=np.array([1.]), verbose
                 break
 
     end_time = timeit.default_timer()
-    print(
-        (
-            'Optimization completed with best validation score of %f %%, '
-            'obtained at iteration %i, with test performance %f %%'
+
+    if verbose:
+        print(
+            (
+                'Optimization completed with best validation score of %f %%, '
+                'obtained at iteration %i, with test performance %f %%'
+            )
+            % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
         )
-        % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
-    )
-    print('The code run for %d epochs, with %f epochs/sec' % (
-        epoch, 1. * epoch / (end_time - start_time)))
-    print(('The code for file ' +
-           os.path.split(__file__)[1] +
-           ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)
+        print('The code run for %d epochs, with %f epochs/sec' % (
+            epoch, 1. * epoch / (end_time - start_time)))
+        print(('The code for file ' +
+               os.path.split(__file__)[1] +
+               ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)
+
+    return train_loss, best_valid_loss, test_score, current_track
+
+
+def get_search_space():
+    params = {
+        'learning_rate': Param('learning_rate', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform',
+                               scale='log'),
+        'batch_size': Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1),
+        'l1_reg': Param('l1_reg', np.log(1 * 10 ** (-3)), np.log(1), dist='uniform', scale='log')
+    }
+
+    return params
