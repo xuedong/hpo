@@ -5,13 +5,13 @@ import os
 from six.moves import cPickle
 
 import utils
-import logistic
 
 
-def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track=np.array([1.]), verbose=False):
+def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
+              rng=None, track=np.array([1.]), verbose=False):
     """Successive halving.
 
-    :param model:
+    :param model: model to be trained
     :param resource_type: type of resource to be allocated
     :param params: hyperparameter search space
     :param n: number of configurations in this successive halving phase
@@ -40,11 +40,11 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, tr
                 print(arms[arm_key])
             if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model.pkl'):
                 train_loss, val_err, test_err, current_track = \
-                    logistic.run_solver(num_pulls, arms[arm_key], data, track=current_track)
+                    model.run_solver(num_pulls, arms[arm_key], data, track=current_track, verbose=verbose)
             else:
                 classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
                 train_loss, val_err, test_err, current_track = \
-                    logistic.run_solver(num_pulls, arms[arm_key], data, classifier, current_track)
+                    model.run_solver(num_pulls, arms[arm_key], data, classifier, current_track, verbose=verbose)
             if verbose:
                 print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
             arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
@@ -124,7 +124,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                 if s_run is None or i == s_run:
                     print('s = %d, n = %d' % (i, n))
                     arms, result, track = \
-                        sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track)
+                        sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, track,
+                                  verbose=verbose)
                     results[(k, s)] = arms
                     if verbose:
                         print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(

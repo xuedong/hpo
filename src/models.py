@@ -8,6 +8,10 @@ class Model:
     def generate_arms(self, n, path, params):
         pass
 
-    # @abc.abstractmethod
-    # def run_solver(self, iterations, arm, classifier):
-    #     pass
+    @abc.abstractmethod
+    def run_solver(self, iterations, arm, classifier):
+        pass
+
+    @abc.abstractmethod
+    def get_search_space(self):
+        pass
