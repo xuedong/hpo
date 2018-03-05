@@ -23,7 +23,7 @@ def main(model):
     model_name = model + '_sgd_'
     exp_name = 'hyperband_' + model + '_0/'
 
-    for seed_id in range(1):
+    for seed_id in range(5):
         start_time = timeit.default_timer()
 
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)

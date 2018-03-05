@@ -303,7 +303,7 @@ class MLP(Model):
             'learning_rate': Param('learning_rate', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform',
                                    scale='log'),
             'batch_size': Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1),
-            'l2_reg': Param('l2_reg', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform', scale='log')
+            'l2_reg': Param('l2_reg', np.log(1 * 10 ** (-4)), np.log(1 * 10 ** (-2)), dist='uniform', scale='log')
         }
 
         return params
