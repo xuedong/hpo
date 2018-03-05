@@ -6,14 +6,16 @@ import matplotlib.pyplot as plt
 from six.moves import cPickle
 
 
-def plot_hyperband(path, s_max, trials, model_name, dataset_name):
+def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset_name, id):
     """Plot test error evaluation of hyperband with different s values.
 
     :param path: path to which the result image is stored
     :param s_max: maximum number of brackets
     :param trials: number of trials of one algorithm
-    :param model_name: name of the target classifier
+    :param classifier_name: name of the classifier
+    :param optimizer_name: name of the optimizer
     :param dataset_name: name of the dataset
+    :param id: id of the experiments
     :return:
     """
     os.chdir(path)
@@ -25,11 +27,13 @@ def plot_hyperband(path, s_max, trials, model_name, dataset_name):
         shortest = sys.maxsize
         # compute the length of the shortest test error vector
         for i in range(trials):
-            [_, _, track] = cPickle.load(open('logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
+            [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                              + '/results_' + str(s) + '.pkl', 'rb'))
             if len(track) < shortest:
                 shortest = len(track)
         for i in range(trials):
-            [_, _, track] = cPickle.load(open('logistic_sgd_' + str(i) + '/results_' + str(s) + '.pkl', 'rb'))
+            [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                              + '/results_' + str(s) + '.pkl', 'rb'))
             # truncate each test error vector by the length of the shortest one
             tracks[i] = track[0:shortest]
 
@@ -59,8 +63,9 @@ def plot_hyperband(path, s_max, trials, model_name, dataset_name):
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Epochs')
-    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format(model_name))
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('hyperband_' + classifier_name + str(id)))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format(model_name, dataset_name)))
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hyperband_' + classifier_name + str(id),
+                                                                               dataset_name)))
     plt.close(fig)
