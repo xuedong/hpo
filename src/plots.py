@@ -50,7 +50,7 @@ def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset
 
     tracks = np.array([None for _ in range(trials)])
     for i in range(trials):
-        [_, _, track] = cPickle.load(open('logistic_sgd_' + str(i) + '/results.pkl', 'rb'))
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         tracks[i] = track[0:longest]
 
     # length = len(tracks[0])
