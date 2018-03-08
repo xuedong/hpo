@@ -11,7 +11,7 @@ from hyperopt import Trials
 from hyperopt import STATUS_OK
 
 
-EPOCHS = 10
+EPOCHS = 1
 DATA = utils.load_data('mnist.pkl.gz')
 
 
@@ -21,12 +21,10 @@ params = test_model.get_search_space()
 # arms = model.generate_arms(1, "../result/", params, True)
 # train_loss, val_err, test_err = logistic.run_solver(1000, arms[0], data)
 
-space = hp.choice('logistic_sgd', [
-    {
-        'learning_rate': hp.loguniform('learning_rate', 1 * 10 ** (-3), 1 * 10 ** (-1)),
-        'batch_size': hp.randint('batch_size', 1000),
-    },
-])
+space = [
+    hp.loguniform('learning_rate', 1 * 10 ** (-3), 1 * 10 ** (-1)),
+    hp.randint('batch_size', 1000),
+]
 trials = Trials()
 
 
@@ -37,9 +35,10 @@ def solver(learning_rate, batch_size, epochs, data):
     return test_err
 
 
-def objective(learning_rate):
+def objective(hps):
+    learning_rate, batch_size = hps
     return {
-        'loss': solver(learning_rate, 100, EPOCHS, DATA),
+        'loss': solver(learning_rate, batch_size, EPOCHS, DATA),
         'status': STATUS_OK,
         # -- store other results like this
         'eval_time': time.time()
@@ -48,8 +47,12 @@ def objective(learning_rate):
 
 if __name__ == "__main__":
     best = fmin(objective,
-                space=hp.loguniform('learning_rate', 1 * 10 ** (-3), 1 * 10 ** (-1)),
+                space=space,
                 algo=tpe.suggest,
-                max_evals=10,
+                max_evals=3,
                 trials=trials)
     print(best)
+    print(trials.trials)
+    print(trials.results)
+    print(trials.losses())
+    print(trials.statuses())
