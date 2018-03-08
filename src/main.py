@@ -8,9 +8,9 @@ import theano.tensor as ts
 import logger
 import utils
 
-import logistic
-import mlp
-import hyperband_finite
+# import logistic
+import classifiers.mlp as mlp
+import hyperband.hyperband_finite as hyperband_finite
 
 
 def main(model):

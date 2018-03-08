@@ -7,7 +7,7 @@ import random
 import numpy as np
 import math
 
-import hoo
+import ho.hoo as hoo
 
 
 class PTree:
@@ -31,7 +31,8 @@ class PTree:
     def add_children(self):
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
 
-        self.children = [PTree(supports[i], supports_type[i], self, self.depth + 1, self.rhos, self.nu, self.box) for i in range(len(supports))]
+        self.children = [PTree(supports[i], supports_type[i], self, self.depth + 1, self.rhos, self.nu, self.box)
+                         for i in range(len(supports))]
 
     def explore(self, k):
         if self.tvalues[k] == 0:
