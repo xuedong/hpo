@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from six.moves import cPickle
 
 
-def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset_name, id):
+def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset_name, idx):
     """Plot test error evaluation of hyperband with different s values.
 
     :param path: path to which the result image is stored
@@ -15,7 +15,7 @@ def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset
     :param classifier_name: name of the classifier
     :param optimizer_name: name of the optimizer
     :param dataset_name: name of the dataset
-    :param id: id of the experiments
+    :param idx: id of the experiments
     :return:
     """
     os.chdir(path)
@@ -63,9 +63,9 @@ def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Epochs')
-    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('hyperband_' + classifier_name + str(id)))
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('hyperband_' + classifier_name + str(idx)))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hyperband_' + classifier_name + str(id),
-                                                                               dataset_name)))
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hyperband_' + classifier_name +
+                                                                               str(idx), dataset_name)))
     plt.close(fig)
