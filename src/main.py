@@ -5,7 +5,7 @@ import os
 import timeit
 import theano.tensor as ts
 
-import logger
+import log.logger as logger
 import utils
 
 # import logistic

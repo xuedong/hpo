@@ -1,4 +1,4 @@
-import plots
+import src.plots as plots
 
 
 # path = "../result/hyperband_logistic_0/"
