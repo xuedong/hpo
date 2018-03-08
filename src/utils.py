@@ -76,3 +76,15 @@ def log_eta(x, eta):
     :return: rounded log_eta(x)
     """
     return np.round(np.log(x) / np.log(eta), decimals=10)
+
+
+def get_budget(min_units, max_units, eta):
+    """Compute the total budget.
+
+    :param min_units: minimum units of resources can be allocated to one configuration
+    :param max_units: maximum units of resources can be allocated to one configuration
+    :param eta: elimination proportion
+    :return: the corresponding total budget and the number of configurations
+    """
+    budget = int(np.floor(log_eta(max_units / min_units, eta)) + 1) * max_units
+    return budget, budget / max_units
