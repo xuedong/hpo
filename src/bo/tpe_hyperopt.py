@@ -25,7 +25,14 @@ def convert_params(params):
     return space
 
 
-def solver(model_solver, *args, **kwargs):
-    _, _, test_error, _ = model_solver.run_solver(*args, **kwargs)
+def solver(model, *args, **kwargs):
+    """
+
+    :param model: training model
+    :param args: hyperparameters for the model
+    :param kwargs: parameters for the model
+    :return: test error
+    """
+    _, _, test_error, _ = model.run_solver(*args, **kwargs)
 
     return test_error
