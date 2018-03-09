@@ -59,3 +59,12 @@ class Param(object):
         if self.interval:
             return 'integer'
         return 'continuous'
+
+    def get_name(self):
+        return self.name
+
+    def get_dist(self):
+        return self.dist
+
+    def get_scale(self):
+        return self.scale
