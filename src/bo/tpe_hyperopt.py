@@ -2,6 +2,11 @@ from hyperopt import hp
 
 
 def convert_params(params):
+    """
+
+    :param params: hyperparamter dictionary as defined in params.py
+    :return: search space for hyperopt
+    """
     space = []
     for param in params:
         if params[param].get_type() == 'integer':
@@ -18,3 +23,9 @@ def convert_params(params):
                 space.append(hp.lognormal(params[param].get_name(), params[param].get_min(), params[param].get_max()))
 
     return space
+
+
+def solver(model_solver, *args, **kwargs):
+    _, _, test_error, _ = model_solver.run_solver(*args, **kwargs)
+
+    return test_error

@@ -28,18 +28,20 @@ params = test_model.get_search_space()
 # ]
 trials = Trials()
 
-
+"""
 def solver(learning_rate, batch_size, epochs, data):
     arm = {'dir': ".", 'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
     _, _, test_err, _ = test_model.run_solver(epochs, arm, data, verbose=True)
 
     return test_err
+"""
 
 
 def objective(hps):
     learning_rate, batch_size = hps
+    arm = {'dir': ".", 'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
     return {
-        'loss': solver(learning_rate, batch_size, EPOCHS, DATA),
+        'loss': tpe_hyperopt.solver(test_model, EPOCHS, arm, DATA),
         'status': STATUS_OK,
         # -- store other results like this
         'eval_time': time.time()
