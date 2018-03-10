@@ -220,11 +220,6 @@ class MLP(Model):
         while (epoch < epochs) and not done:
             epoch += 1
 
-            if best_valid_loss < current_best:
-                current_track = np.append(current_track, test_score)
-            else:
-                current_track = np.append(current_track, current_best)
-
             for batch_index in range(n_batches_train):
                 batch_cost = train_model(batch_index)
                 iteration = (epoch - 1) * n_batches_train + batch_index
@@ -279,6 +274,11 @@ class MLP(Model):
                 if patience <= iteration:
                     done = True
                     break
+
+            if best_valid_loss < current_best:
+                current_track = np.append(current_track, test_score)
+            else:
+                current_track = np.append(current_track, current_best)
 
         end_time = timeit.default_timer()
 

@@ -52,5 +52,5 @@ if __name__ == "__main__":
     print(trials.losses())
     print(trials.statuses())
     msg = trials.trial_attachments(trials.trials[0])['track']
-    track = cPickle.loads(msg)
-    print(track)
+    current_track = cPickle.loads(msg)
+    print(current_track)
