@@ -3,13 +3,14 @@ import sys
 
 class Logger(object):
     """Write messages at the same time in a file and in the terminal"""
-    def __init__(self, path):
+    def __init__(self, path, name):
         """
 
         :param path: path to the place where we log messages
         """
         self.terminal = sys.stdout
-        self.log = open(path + '/hyperband_run.log', 'a')
+        self.name = name
+        self.log = open(path + '/' + self.name + '_run.log', 'a')
 
     def flush(self):
         pass

@@ -27,7 +27,8 @@ trials = Trials()
 def objective(hps):
     start_time = timeit.default_timer()
     learning_rate, batch_size = hps
-    arm = {'dir': "../result/tpe_logistic_0", 'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
+    arm = {'dir': "../result/tpe_logistic_0",
+           'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
     train_loss, best_valid_loss, test_score, track = test_model.run_solver(EPOCHS, arm, DATA, verbose=True)
     return {
         'loss': test_score,
@@ -51,6 +52,12 @@ if __name__ == "__main__":
     print(trials.results)
     print(trials.losses())
     print(trials.statuses())
-    msg = trials.trial_attachments(trials.trials[0])['track']
-    current_track = cPickle.loads(msg)
-    print(current_track)
+    msg0 = trials.trial_attachments(trials.trials[0])['track']
+    msg1 = trials.trial_attachments(trials.trials[1])['track']
+    msg2 = trials.trial_attachments(trials.trials[2])['track']
+    track0 = cPickle.loads(msg0)
+    track1 = cPickle.loads(msg1)
+    track2 = cPickle.loads(msg2)
+    print(len(trials.trials))
+    print(track0, track1, track2)
+    print(tpe_hyperopt.combine_tracks(trials))
