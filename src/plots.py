@@ -2,8 +2,9 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-
 from six.moves import cPickle
+
+from bo.tpe_hyperopt import combine_tracks
 
 
 def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset_name, idx):
@@ -15,7 +16,7 @@ def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset
     :param classifier_name: name of the classifier
     :param optimizer_name: name of the optimizer
     :param dataset_name: name of the dataset
-    :param idx: id of the experiments
+    :param idx: id of the experiment
     :return:
     """
     os.chdir(path)
@@ -67,5 +68,44 @@ def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hyperband_' + classifier_name +
+                                                                               str(idx), dataset_name)))
+    plt.close(fig)
+
+
+def plot_tpe(path, runs, classifier_name, optimizer_name, dataset_name, idx):
+    """
+
+    :param path: path to which the result image is stored
+    :param runs: number of runs
+    :param classifier_name: name of the classifier
+    :param optimizer_name: name of the optimizer
+    :param dataset_name: name of the dataset
+    :param idx: id of the experiment
+    :return:
+    """
+    os.chdir(path)
+    fig = plt.figure()
+    longest = 0
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        track = combine_tracks(trials)
+        tracks[i] = track
+
+    length = len(tracks[0])
+    x = range(length)
+    y = np.mean(tracks, axis=0)
+    plt.plot(x, y, label=r"TPE")
+
+    plt.grid()
+    plt.ylim((0, 0.2))
+    plt.legend(loc=0)
+    plt.ylabel('Test Error')
+    plt.xlabel('Number of Epochs')
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('tpe_' + classifier_name + str(idx)))
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('tpe_' + classifier_name +
                                                                                str(idx), dataset_name)))
     plt.close(fig)

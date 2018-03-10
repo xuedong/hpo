@@ -90,7 +90,7 @@ def main(model):
                     max_evals=4,
                     trials=trials)
 
-        with open(director + '/result.pkl', 'wb') as file:
+        with open(director + '/results.pkl', 'wb') as file:
             cPickle.dump([trials, best], file)
 
         end_time = timeit.default_timer()
