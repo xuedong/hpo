@@ -1,5 +1,6 @@
-import time
+import timeit
 import theano.tensor as ts
+from six.moves import cPickle
 
 import src.classifiers.logistic as logistic
 import src.utils as utils
@@ -24,13 +25,18 @@ trials = Trials()
 
 
 def objective(hps):
+    start_time = timeit.default_timer()
     learning_rate, batch_size = hps
-    arm = {'dir': ".", 'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
+    arm = {'dir': "../result/tpe_logistic_0", 'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
+    train_loss, best_valid_loss, test_score, track = test_model.run_solver(EPOCHS, arm, DATA, verbose=True)
     return {
-        'loss': tpe_hyperopt.solver(test_model, EPOCHS, arm, DATA, verbose=True),
+        'loss': test_score,
         'status': STATUS_OK,
         # -- store other results like this
-        'eval_time': time.time()
+        'eval_time': timeit.default_timer() - start_time,
+        # -- attachments are handled differently
+        'attachments':
+            {'track': cPickle.dumps(track)}
     }
 
 
@@ -45,3 +51,6 @@ if __name__ == "__main__":
     print(trials.results)
     print(trials.losses())
     print(trials.statuses())
+    msg = trials.trial_attachments(trials.trials[0])['track']
+    track = cPickle.loads(msg)
+    print(track)

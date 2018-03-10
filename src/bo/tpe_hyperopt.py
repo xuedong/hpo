@@ -26,7 +26,7 @@ def convert_params(params):
 
 
 def solver(model, *args, **kwargs):
-    """
+    """This high-order function may be not useful.
 
     :param model: training model
     :param args: hyperparameters for the model
