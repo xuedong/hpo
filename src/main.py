@@ -30,7 +30,7 @@ def main(model):
     model_name = model + '_sgd_'
     exp_name = 'tpe_' + model + '_0/'
 
-    for seed_id in range(1):
+    for seed_id in range(2):
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -70,9 +70,9 @@ def main(model):
 
         def objective(hps):
             learning_rate, batch_size = hps
-            arm = {'dir': "../result/tpe_logistic_0",
+            arm = {'dir': director,
                    'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
-            train_loss, best_valid_loss, test_score, track = test_model.run_solver(100, arm, data, verbose=True)
+            train_loss, best_valid_loss, test_score, track = test_model.run_solver(1, arm, data, verbose=True)
             return {
                 'loss': test_score,
                 'status': STATUS_OK,
@@ -89,6 +89,9 @@ def main(model):
                     algo=tpe.suggest,
                     max_evals=4,
                     trials=trials)
+
+        with open(director + '/result.pkl', 'wb') as file:
+            cPickle.dump([trials, best], file)
 
         end_time = timeit.default_timer()
 
