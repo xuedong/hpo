@@ -30,7 +30,7 @@ def main(model):
     model_name = model + '_sgd_'
     exp_name = 'tpe_' + model + '_0/'
 
-    for seed_id in range(2):
+    for seed_id in range(10):
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -72,7 +72,7 @@ def main(model):
             learning_rate, batch_size = hps
             arm = {'dir': director,
                    'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
-            train_loss, best_valid_loss, test_score, track = test_model.run_solver(1, arm, data, verbose=True)
+            train_loss, best_valid_loss, test_score, track = test_model.run_solver(100, arm, data, verbose=True)
             return {
                 'loss': test_score,
                 'status': STATUS_OK,

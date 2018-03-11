@@ -85,16 +85,21 @@ def plot_tpe(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     """
     os.chdir(path)
     fig = plt.figure()
-    longest = 0
+    shortest = sys.maxsize
 
     tracks = np.array([None for _ in range(runs)])
     for i in range(runs):
         [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         track = combine_tracks(trials)
-        tracks[i] = track
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + 'results.pkl', 'rb'))
+        track = combine_tracks(trials)
+        tracks[i] = track[0:shortest]
 
-    length = len(tracks[0])
-    x = range(length)
+    # length = len(tracks[0])
+    x = range(shortest)
     y = np.mean(tracks, axis=0)
     plt.plot(x, y, label=r"TPE")
 
