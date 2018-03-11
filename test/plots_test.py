@@ -7,5 +7,7 @@ if __name__ == "__main__":
     # path = "../result/hyperband_mlp_0/"
     # plots.plot_hyperband(path, 3, 5, 'mlp_', 'sgd_', 'mnist', 0)
 
-    path = "../result/tpe_logistic_0/"
-    plots.plot_tpe(path, 2, 'logistic_', 'sgd_', 'mnist', 0)
+    # path = "../result/tpe_logistic_0/"
+    # plots.plot_tpe(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
+    path = "../result/tpe_mlp_0"
+    plots.plot_tpe(path, 5, 'mlp_', 'sgd_', 'mnist', 0)

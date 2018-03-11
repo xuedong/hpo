@@ -25,12 +25,12 @@ def main(model):
     data = utils.load_data(data_dir)
 
     output_dir = ''
-    # rng = np.random.RandomState(12345)
-    random.seed(12345)
+    rng = np.random.RandomState(12345)
+    # random.seed(12345)
     model_name = model + '_sgd_'
     exp_name = 'tpe_' + model + '_0/'
 
-    for seed_id in range(10):
+    for seed_id in range(5):
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -40,7 +40,8 @@ def main(model):
         sys.stdout = logger.Logger(log_dir, 'tpe')
 
         x = ts.matrix('x')
-        test_model = logistic.LogisticRegression(x, 28*28, 10)
+        test_model = mlp.MLP(x, 28*28, 500, 10, rng=rng)
+        # test_model = logistic.LogisticRegression(x, 28*28, 10)
         params = test_model.get_search_space()
 
         # <-- Running Hyperband
@@ -69,9 +70,11 @@ def main(model):
         trials = Trials()
 
         def objective(hps):
-            learning_rate, batch_size = hps
+            learning_rate, batch_size, l2_reg = hps
             arm = {'dir': director,
-                   'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
+                   'learning_rate': learning_rate, 'batch_size': int(batch_size), 'n_hidden': 500,
+                   'l1_reg': 0., 'l2_reg': l2_reg,
+                   'results': []}
             train_loss, best_valid_loss, test_score, track = test_model.run_solver(100, arm, data, verbose=True)
             return {
                 'loss': test_score,
@@ -101,4 +104,5 @@ def main(model):
 
 
 if __name__ == "__main__":
-    main('logistic')
+    # main('logistic')
+    main('mlp')

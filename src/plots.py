@@ -94,7 +94,7 @@ def plot_tpe(path, runs, classifier_name, optimizer_name, dataset_name, idx):
         if len(track) < shortest:
             shortest = len(track)
     for i in range(runs):
-        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + 'results.pkl', 'rb'))
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         track = combine_tracks(trials)
         tracks[i] = track[0:shortest]
 
