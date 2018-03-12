@@ -10,7 +10,7 @@ import math
 import random
 import pickle
 
-import target
+import ho.target as target
 import ho.hoo as hoo
 import ho.poo as poo
 
