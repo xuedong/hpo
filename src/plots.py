@@ -101,6 +101,11 @@ def plot_tpe(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     # length = len(tracks[0])
     x = range(shortest)
     y = np.mean(tracks, axis=0)
+    # if devs:
+    #     err = np.std(tracks, axis=0)
+    #     lower = y - err
+    #     higher = y + err
+    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
     plt.plot(x, y, label=r"TPE")
 
     plt.grid()
@@ -116,13 +121,13 @@ def plot_tpe(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     plt.close(fig)
 
 
-def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset_name, idx):
+def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
     os.chdir(path1)
     fig = plt.figure()
 
     # Hyperband brackets
     longest = 0
-    for s in range(s_max + 1):
+    for s in [0, s_max]:
         tracks = np.array([None for _ in range(runs)])
         shortest = sys.maxsize
         # compute the length of the shortest test error vector
@@ -144,9 +149,19 @@ def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset
         x = range(length)
         y = np.mean(tracks, axis=0)
         if s == 0:
+            if devs:
+                err = np.std(tracks, axis=0)
+                lower = y - err
+                higher = y + err
+                plt.fill_between(x, lower, higher, alpha=0.5)
             plt.plot(x, y, label=r"Random Search")
         else:
-            plt.plot(x, y, label=r"$\mathtt{s=}$" + str(s))
+            if devs:
+                err = np.std(tracks, axis=0)
+                lower = y - err
+                higher = y + err
+                plt.fill_between(x, lower, higher, alpha=0.5)
+            plt.plot(x, y, label=r"Hyperband, $\mathtt{s=}$" + str(s))
 
     # Hyperband
     tracks = np.array([None for _ in range(runs)])
@@ -157,6 +172,11 @@ def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset
     # length = len(tracks[0])
     x = range(longest)
     y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, alpha=0.5)
     plt.plot(x, y, label=r"Hyperband")
 
     # TPE
@@ -177,6 +197,11 @@ def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset
     # length = len(tracks[0])
     x = range(shortest)
     y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, alpha=0.5)
     plt.plot(x, y, label=r"TPE")
 
     plt.grid()
