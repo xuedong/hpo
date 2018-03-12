@@ -137,7 +137,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                                   rng=rng, data=data, track=track, verbose=verbose)
                     results[(k, s)] = arms
                     if verbose:
-                        print("k = " + str(k) + ", l = " + str(s) + ", validation error = " + str(
+                        print("k = " + str(k) + ", lscale = " + str(s) + ", validation error = " + str(
                             result[2]) + ", test error = " + str(
                             result[3]) + " best arm dir: " + result[0]['dir'])
                     durations.append([utils.s_to_m(start_time, timeit.default_timer()), result])

@@ -185,8 +185,8 @@ class BO:
         if not resume:
             self.init_evals = init_evals
             self._firstRun(self.init_evals)
-            self.logger._printInit(self)
+            self.logger._print_init(self)
         for iteration in range(max_iter):
             self._optimizeAcq()
             self.updateGP()
-            self.logger._printCurrent(self)
+            self.logger._print_current(self)

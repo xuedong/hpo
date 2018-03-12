@@ -13,9 +13,9 @@ from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler
 
 from bo.bo import BO
-from bo.surrogates.GaussianProcess import GaussianProcess
+from bo.surrogates.gaussian_process import GaussianProcess
 from bo.acquisition import Acquisition
-from bo.covfunc import squaredExponential
+from bo.covfunc import SquaredExponential
 
 import ho.hoo as hoo
 import ho.poo as poo
@@ -175,7 +175,7 @@ def evaluateDataset(csv_path, target_index, problem, model, parameter_dict, meth
     """
     print('Evluating PI')
     np.random.seed(seed)
-    sexp = squaredExponential()
+    sexp = SquaredExponential()
     gp = GaussianProcess(sexp, optimize=True, usegrads=True)
     acq_pi = Acquisition(mode='ProbabilityImprovement')
     gpgo_pi = BO(gp, acq_pi, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
@@ -183,7 +183,7 @@ def evaluateDataset(csv_path, target_index, problem, model, parameter_dict, meth
     """
     print('Evaluating EI')
     np.random.seed(seed)
-    sexp = squaredExponential()
+    sexp = SquaredExponential()
     gp = GaussianProcess(sexp, optimize=True, usegrads=True)
     acq_ei = Acquisition(mode='ExpectedImprovement')
     gpgo_ei = BO(gp, acq_ei, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
@@ -192,7 +192,7 @@ def evaluateDataset(csv_path, target_index, problem, model, parameter_dict, meth
     # Also add UCB, beta = 0.5, beta = 1.5
     print('Evaluating GP-UCB beta = 0.5')
     np.random.seed(seed)
-    sexp = squaredExponential()
+    sexp = SquaredExponential()
     gp = GaussianProcess(sexp, optimize=True, usegrads=True)
     acq_ucb = Acquisition(mode='UCB', beta=0.5)
     gpgo_ucb = BO(gp, acq_ucb, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
@@ -200,7 +200,7 @@ def evaluateDataset(csv_path, target_index, problem, model, parameter_dict, meth
 
     #print('Evaluating GP-UCB beta = 1.5')
     #np.random.seed(seed)
-    #sexp = squaredExponential()
+    #sexp = SquaredExponential()
     #gp = GaussianProcess(sexp, optimize=True, usegrads=True)
     #acq_ucb2 = Acquisition(mode='UCB', beta=1.5)
     #gpgo_ucb2 = BO(gp, acq_ucb2, wrapper.evaluateLoss, parameter_dict, n_jobs=1)

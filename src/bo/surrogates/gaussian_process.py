@@ -3,6 +3,7 @@ from scipy.linalg import cholesky, solve
 from collections import OrderedDict
 from scipy.optimize import minimize
 
+
 class GaussianProcess:
     def __init__(self, covfunc, optimize=False, usegrads=False, mprior=0):
         """
@@ -31,7 +32,7 @@ class GaussianProcess:
 
         Notes
         -----
-        [1] Rasmussen, C. E., & Williams, C. K. I. (2004). Gaussian processes for machine learning.
+        [1] Rasmussen, C. E., & Williams, C. cov. I. (2004). Gaussian processes for machine learning.
         International journal of neural systems (Vol. 14). http://doi.org/10.1142/S0129065704001899
         """
         self.covfunc = covfunc
@@ -39,7 +40,7 @@ class GaussianProcess:
         self.usegrads = usegrads
         self.mprior = mprior
 
-    def getcovparams(self):
+    def get_cov_params(self):
         """
         Returns current covariance function hyperparameters
 
@@ -53,28 +54,28 @@ class GaussianProcess:
             d[param] = self.covfunc.__dict__[param]
         return d
 
-    def fit(self, X, y):
+    def fit(self, x, y):
         """
         Fits a Gaussian Process regressor
 
         Parameters
         ----------
-        X: np.ndarray, shape=(nsamples, nfeatures)
+        x: np.ndarray, shape=(nsamples, nfeatures)
             Training instances to fit the GP.
         y: np.ndarray, shape=(nsamples,)
             Corresponding continuous target values to X.
 
         """
-        self.X = X
+        self.x = x
         self.y = y
-        self.nsamples = self.X.shape[0]
+        self.nsamples = self.x.shape[0]
         if self.optimize:
             grads = None
             if self.usegrads:
                 grads = self._grad
-            self.optHyp(param_key=self.covfunc.parameters, param_bounds=self.covfunc.bounds, grads=grads)
+            self.opt_hyp(param_key=self.covfunc.parameters, param_bounds=self.covfunc.bounds, grads=grads)
 
-        self.K = self.covfunc.K(self.X, self.X)
+        self.K = self.covfunc.cov(self.x, self.x)
         self.L = cholesky(self.K).T
         self.alpha = solve(self.L.T, solve(self.L, y - self.mprior))
         self.logp = -.5 * np.dot(self.y, self.alpha) - np.sum(np.log(np.diag(self.L))) - self.nsamples / 2 * np.log(
@@ -96,14 +97,14 @@ class GaussianProcess:
         """
         k_param_key = list(k_param.keys())
         covfunc = self.covfunc.__class__(**k_param)
-        n = self.X.shape[0]
-        K = covfunc.K(self.X, self.X)
+        n = self.x.shape[0]
+        K = covfunc.cov(self.x, self.x)
         L = cholesky(K).T
         alpha = solve(L.T, solve(L, self.y))
         inner = np.dot(np.atleast_2d(alpha).T, np.atleast_2d(alpha)) - np.linalg.inv(K)
         grads = []
         for param in k_param_key:
-            gradK = covfunc.gradK(self.X, self.X, param=param)
+            gradK = covfunc.grad_matrix(self.X, self.X, param=param)
             gradK = .5 * np.trace(np.dot(inner, gradK))
             grads.append(gradK)
         return np.array(grads)
@@ -140,7 +141,7 @@ class GaussianProcess:
 
         self.optimize = original_opt
         self.usegrads = original_grad
-        return (- self.logp)
+        return - self.logp
 
     def _grad(self, param_vector, param_key):
         """
@@ -164,7 +165,7 @@ class GaussianProcess:
             k_param[k] = v
         return - self.param_grad(k_param)
 
-    def optHyp(self, param_key, param_bounds, grads=None, n_trials=5):
+    def opt_hyp(self, param_key, param_bounds, grads=None, n_trials=5):
         """
         Optimizes the negative marginal log-likelihood for given hyperparameters and bounds.
         This is an empirical Bayes approach (or Type II maximum-likelihood).
@@ -217,10 +218,10 @@ class GaussianProcess:
             Covariance of the posterior process for testing instances.
         """
         Xstar = np.atleast_2d(Xstar)
-        kstar = self.covfunc.K(self.X, Xstar).T
+        kstar = self.covfunc.cov(self.X, Xstar).T
         fmean = self.mprior + np.dot(kstar, self.alpha)
         v = solve(self.L, kstar.T)
-        fcov = self.covfunc.K(Xstar, Xstar) - np.dot(v.T, v)
+        fcov = self.covfunc.cov(Xstar, Xstar) - np.dot(v.T, v)
         if return_std:
             fcov = np.diag(fcov)
         return fmean, fcov
