@@ -10,13 +10,12 @@ import math
 import random
 import pickle
 
-import ho.target as target
 import ho.hoo as hoo
 import ho.poo as poo
 
 
 def std_box(f, fmax, nsplits, sigma, support, support_type):
-    box = target.Box(f, fmax, nsplits, support, support_type)
+    box = Box(f, fmax, nsplits, support, support_type)
     box.std_partition()
     box.std_noise(sigma)
 
@@ -271,3 +270,130 @@ def get_rhos(nsplits, rhomax, horizon):
         n = n + big_n
 
     return np.unique(np.sort(rhos))
+
+
+# Function domain partitioning
+def std_center(support, support_type):
+    """Pick the center of a subregion.
+    """
+    centers = []
+    for i in range(len(support)):
+        if support_type[i] == 'int':
+            a, b = support[i]
+            center = (a+b)/2
+            centers.append(center)
+        elif support_type[i] == 'cont':
+            a, b = support[i]
+            center = (a+b)/2.
+            centers.append(center)
+        else:
+            raise ValueError('Unsupported variable type.')
+
+    return centers
+
+
+def std_rand(support, support_type):
+    """Randomly pick a point in a subregion.
+    """
+    rands = []
+    for i in range(len(support)):
+        if support_type[i] == 'int':
+            a, b = support[i]
+            rand = np.random.randint(a, b+1)
+            rands.append(rand)
+        elif support_type[i] == 'cont':
+            a, b = support[i]
+            rand = a + (b-a)*random.random()
+            rands.append(rand)
+        else:
+            raise ValueError('Unsupported variable type.')
+
+    return rands
+
+
+def std_split(support, support_type, nsplits):
+    """Split a box uniformly.
+
+    :param support: vector of support in each dimension
+    :param support_type: continuous or discrete
+    :param nsplits: number of splits
+    :return:
+    """
+    lens = np.array([support[i][1]-support[i][0] for i in range(len(support))])
+    max_index = np.argmax(lens)
+    max_length = np.max(lens)
+    a, b = support[max_index]
+    step = max_length/float(nsplits)
+    if support_type[max_index] == 'int':
+        split = [(a+int(step*i), a+int(step*(i+1))) for i in range(nsplits)]
+    elif support_type[max_index] == 'cont':
+        split = [(a+step*i, a+step*(i+1)) for i in range(nsplits)]
+    else:
+        raise ValueError("Unsupported variable type.")
+
+    supports = [None for _ in range(nsplits)]
+    supports_type = [None for _ in range(nsplits)]
+    for i in range(nsplits):
+        supports[i] = [support[j] for j in range(len(support))]
+        supports[i][max_index] = split[i]
+        supports_type[i] = support_type
+
+    return supports, supports_type
+
+
+class Box:
+    def __init__(self, f, fmax, nsplits, support, support_type):
+        self.f_noised = None
+        self.f_mean = f
+        self.fmax = fmax
+        self.split = None
+        self.center = None
+        self.rand = None
+        self.nsplits = nsplits
+        self.support = support
+        self.support_type = support_type
+
+    def std_partition(self):
+        """Standard partitioning of a black box.
+        """
+        self.center = std_center
+        self.rand = std_rand
+        self.split = std_split
+
+    def std_noise(self, sigma):
+        """Stochastic target with Gaussian or uniform noise.
+        """
+        self.f_noised = lambda x: self.f_mean(x) + sigma*np.random.normal(0, sigma)
+        # self.f_noised = lambda x: self.f_mean(x) + sigma*random.random()
+
+    """
+    def plot1D(self):
+        a, b = self.side
+        fig, ax = plt.subplots()
+        ax.set_xlim(a, b)
+        x = np.array([a+i/10000. for i in range(int((b-a)*10000))])
+        y = np.array([self.f_mean([x[i]]) for i in range(int((b-a)*10000))])
+        plt.plot(x, y)
+        plt.show()
+
+    def plot2D(self):
+        # 2D spaced down level curve plot
+        x = np.array([(i-600)/100. for i in range(1199)])
+        y = np.array([(j-600)/100. for j in range(1199)])
+        x, Y = pl.meshgrid(x, y)
+        Z = np.array([[self.f_mean([(i-600)/100., (j-600)/100.]) for i in range(1199)] for j in range(1199)])
+
+        im = pl.imshow(Z, cmap=pl.cm.RdBu)
+        cset = pl.contour(Z, np.arange(-1, 1.5, 0.2), linewidths=2, cmap=pl.cm.Set2)
+        pl.colorbar(im)
+        pl.show()
+
+        # 3D plot
+        fig = mpl.pyplot.figure()
+        ax = fig.gca(projection='3d')
+        surf = ax.plot_surface(x, Y, Z, rstride=1, cstride=1, cmap=pl.cm.RdBu, linewidth=0, antialiased=False)
+        ax.zaxis.set_major_locator(mpl.ticker.LinearLocator(10))
+        ax.zaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%.02f'))
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+        mpl.pyplot.show()
+    """

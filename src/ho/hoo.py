@@ -29,7 +29,8 @@ class HTree:
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
         # print(supports)
 
-        self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1, self.rho, self.nu, self.box) for i in range(len(supports))]
+        self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1, self.rho, self.nu, self.box)
+                         for i in range(len(supports))]
 
     def explore(self):
         if self.tvalue == 0:
