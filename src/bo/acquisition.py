@@ -1,139 +1,101 @@
 import numpy as np
-from scipy.stats import norm, t
+from scipy.stats import norm
 
 
 class Acquisition:
     def __init__(self, mode, eps=1e-06, **params):
-        """
-        Acquisition function class.
+        """Acquisition function class.
 
-        Parameters
-        ----------
-        mode: str
-            Defines the behaviour of the acquisition strategy. Currently supported values are
-            `ExpectedImprovement`, `ProbabilityImprovement`, `UCB`, `Entropy`.
-        eps: float
-            Small floating value to avoid `np.sqrt` or zero-division warnings.
-        params: float
-            Extra parameters needed for certain acquisition functions, e.g. UCB needs
-            to be supplied with `beta`.
+        :type mode: str
+        :param mode: the behaviour of the acquisition strategy, currently supported values are
+        `expected_improvement`, `probability_improvement`, `gpucb`, `entropy`.
+        :type eps: float
+        :param eps: small floating value to avoid `np.sqrt` or zero-division warnings.
         """
         self.params = params
         self.eps = eps
+        self.tau = None
+        self.mean = None
+        self.std = None
 
         mode_dict = {
-            'ExpectedImprovement': self.ExpectedImprovement,
-            'ProbabilityImprovement': self.ProbabilityImprovement,
-            'UCB': self.UCB,
-            'Entropy': self.Entropy
+            'expected_improvement': self.expected_improvement,
+            'probability_improvement': self.probability_improvement,
+            'gpucb': self.gpucb,
+            'entropy': self.entropy
         }
 
         self.f = mode_dict[mode]
 
-    def ProbabilityImprovement(self, tau, mean, std):
-        """
-        Probability of Improvement acquisition function.
+    def probability_improvement(self, tau, mean, std):
+        """Probability of improvement acquisition function.
 
-        Parameters
-        ----------
-        tau: float
-            Best observed function evaluation.
-        mean: float
-            Point mean of the posterior process.
-        std: float
-            Point std of the posterior process.
-
-        Returns
-        -------
-        float
-            Probability of improvement.
+        :type tau: float
+        :param tau: best observed function evaluation
+        :type mean: float
+        :param mean: point mean of the posterior process
+        :type std: float
+        :param std: point std of the posterior process
+        :return: the probability of improvement
         """
         z = (mean - tau - self.eps) / (std + self.eps)
         return norm.cdf(z)
 
-    def ExpectedImprovement(self, tau, mean, std):
-        """
-        Expected Improvement acquisition function.
+    def expected_improvement(self, tau, mean, std):
+        """Expected Improvement acquisition function.
 
-        Parameters
-        ----------
-        tau: float
-            Best observed function evaluation.
-        mean: float
-            Point mean of the posterior process.
-        std: float
-            Point std of the posterior process.
-
-        Returns
-        -------
-        float
-            Expected improvement.
+        :type tau: float
+        :param tau: best observed function evaluation
+        :type mean: float
+        :param mean: point mean of the posterior process
+        :type std: float
+        :param std: point std of the posterior process
+        :return: the expected improvement
         """
         z = (mean - tau - self.eps) / (std + self.eps)
         return (mean - tau) * norm.cdf(z) + std * norm.pdf(z)[0]
 
-    def UCB(self, tau, mean, std, beta):
-        """
-        Upper-confidence bound acquisition function.
+    def gpucb(self, mean, std, beta):
+        """Upper-confidence bound acquisition function.
 
-        Parameters
-        ----------
-        tau: float
-            Best observed function evaluation.
-        mean: float
-            Point mean of the posterior process.
-        std: float
-            Point std of the posterior process.
-        beta: float
-            Hyperparameter controlling exploitation/exploration ratio.
-
-        Returns
-        -------
-        float
-            Upper confidence bound.
+        :type mean: float
+        :param mean: point mean of the posterior process
+        :type std: float
+        :param std: point std of the posterior process
+        :type beta: float
+        :param beta: constant
+        :return: the upper-confidence bound
         """
+        self.mean = mean  # unnecessary code to avoid code inspection
         return mean + beta * std
 
-    def Entropy(self, tau, mean, std, sigman):
-        """
-        Predictive entropy acquisition function
+    def entropy(self, tau, mean, std, sigman):
+        """Predictive entropy acquisition function.
 
-        Parameters
-        ----------
-        tau: float
-            Best observed function evaluation.
-        mean: float
-            Point mean of the posterior process.
-        std: float
-            Point std of the posterior process.
-        sigman: float
-            Noise variance
-
-        Returns
-        -------
-        float:
-            Predictive entropy.
+        :type tau: float
+        :param tau: best observed function evaluation
+        :type mean: float
+        :param mean: point mean of the posterior process
+        :type std: float
+        :param std: point std of the posterior process
+        :type sigman: float
+        :param sigman: noise variance
+        :return: the predictive entropy
         """
-        sp2 = std **2 + sigman
+        self.tau = tau
+        self.mean = mean
+        sp2 = std ** 2 + sigman
         return 0.5 * np.log(2 * np.pi * np.e * sp2)
 
     def eval(self, tau, mean, std):
-        """
-        Evaluates selected acquisition function.
+        """Evaluates selected acquisition function.
 
-        Parameters
-        ----------
-        tau: float
-            Best observed function evaluation.
-        mean: float
-            Point mean of the posterior process.
-        std: float
-            Point std of the posterior process.
-
-        Returns
-        -------
-        float
-            Acquisition function value.
-
+        :type tau: float
+        :param tau: best observed function evaluation
+        :type mean: float
+        :param mean: point mean of the posterior process
+        :type std: float
+        :param std: point std of the posterior process
+        :return: acquisition function value
         """
         return self.f(tau, mean, std, **self.params)

@@ -177,7 +177,7 @@ def evaluateDataset(csv_path, target_index, problem, model, parameter_dict, meth
     np.random.seed(seed)
     sexp = SquaredExponential()
     gp = GaussianProcess(sexp, optimize=True, usegrads=True)
-    acq_pi = Acquisition(mode='ProbabilityImprovement')
+    acq_pi = Acquisition(mode='probability_improvement')
     gpgo_pi = BO(gp, acq_pi, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
     gpgo_pi.run(max_iter=max_iter)
     """
@@ -185,24 +185,24 @@ def evaluateDataset(csv_path, target_index, problem, model, parameter_dict, meth
     np.random.seed(seed)
     sexp = SquaredExponential()
     gp = GaussianProcess(sexp, optimize=True, usegrads=True)
-    acq_ei = Acquisition(mode='ExpectedImprovement')
+    acq_ei = Acquisition(mode='expected_improvement')
     gpgo_ei = BO(gp, acq_ei, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
     gpgo_ei.run(max_iter=max_iter)
 
-    # Also add UCB, beta = 0.5, beta = 1.5
-    print('Evaluating GP-UCB beta = 0.5')
+    # Also add gpucb, beta = 0.5, beta = 1.5
+    print('Evaluating GP-gpucb beta = 0.5')
     np.random.seed(seed)
     sexp = SquaredExponential()
     gp = GaussianProcess(sexp, optimize=True, usegrads=True)
-    acq_ucb = Acquisition(mode='UCB', beta=0.5)
+    acq_ucb = Acquisition(mode='gpucb', beta=0.5)
     gpgo_ucb = BO(gp, acq_ucb, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
     gpgo_ucb.run(max_iter=max_iter)
 
-    #print('Evaluating GP-UCB beta = 1.5')
+    #print('Evaluating GP-gpucb beta = 1.5')
     #np.random.seed(seed)
     #sexp = SquaredExponential()
     #gp = GaussianProcess(sexp, optimize=True, usegrads=True)
-    #acq_ucb2 = Acquisition(mode='UCB', beta=1.5)
+    #acq_ucb2 = Acquisition(mode='gpucb', beta=1.5)
     #gpgo_ucb2 = BO(gp, acq_ucb2, wrapper.evaluateLoss, parameter_dict, n_jobs=1)
     #gpgo_ucb2.run(max_iter=max_iter)
 
@@ -245,7 +245,7 @@ def plotRes(gpgoei_history, gpgoucb_history, random, datasetname, model, problem
 def evaluateRandom(gpgo, loss, n_eval=20):
     res = []
     for i in range(n_eval):
-        param = gpgo._sampleParam()
+        param = gpgo._sample_param()
         l = loss(**param)
         res.append(l)
         print('Param {}, loss: {}'.format(param, l))

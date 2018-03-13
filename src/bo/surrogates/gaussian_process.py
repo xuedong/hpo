@@ -6,33 +6,17 @@ from scipy.optimize import minimize
 
 class GaussianProcess:
     def __init__(self, covfunc, optimize=False, usegrads=False, mprior=0):
-        """Gaussian Process regressor class. Based on Rasmussen & Williams [1]_ algorithm 2.1.
+        """Gaussian Process regressor class.
 
-        Parameters
-        ----------
-        covfunc: instance from a class of covfunc module
-            Covariance function. An instance from a class in the `covfunc` module.
-        optimize: bool:
-            Whether to perform covariance function hyperparameter optimization.
-        usegrads: bool
-            Whether to use gradient information on hyperparameter optimization. Only used
-            if `optimize=True`.
-
-        Attributes
-        ----------
-        covfunc: object
-            Internal covariance function.
-        optimize: bool
-            User chosen optimization configuration.
-        usegrads: bool
-            Gradient behavior
-        mprior: float
-            Explicit value for the mean function of the prior Gaussian Process.
-
-        Notes
-        -----
-        [1] Rasmussen, C. E., & Williams, C. cov. I. (2004). Gaussian processes for machine learning.
-        International journal of neural systems (Vol. 14). http://doi.org/10.1142/S0129065704001899
+        :type covfunc: instance from a class of covfunc module
+        :param covfunc: covariance function
+        :type optimize: bool
+        :param optimize: whether to perform covariance function hyperparameter optimization
+        :type usegrads: bool
+        :param usegrads: whether to use gradient information on hyperparameter optimization, only used
+        if `optimize=True`
+        :type mprior: float
+        :param mprior: explicit value for the mean function of the prior Gaussian Process
         """
         self.covfunc = covfunc
         self.optimize = optimize
@@ -43,16 +27,13 @@ class GaussianProcess:
         self.nsamples = None
         self.alpha = None
         self.logp = None
-        
+        self.K = None
+        self.L = None
 
     def get_cov_params(self):
-        """
-        Returns current covariance function hyperparameters
+        """Current covariance function hyperparameters.
 
-        Returns
-        -------
-        dict
-            Dictionary containing covariance function hyperparameters
+        :return: the dictionary containing covariance function hyperparameters
         """
         d = {}
         for param in self.covfunc.parameters:
@@ -60,16 +41,12 @@ class GaussianProcess:
         return d
 
     def fit(self, x, y):
-        """
-        Fits a Gaussian Process regressor
+        """Fits a Gaussian Process regressor.
 
-        Parameters
-        ----------
-        x: np.ndarray, shape=(nsamples, nfeatures)
-            Training instances to fit the GP.
-        y: np.ndarray, shape=(nsamples,)
-            Corresponding continuous target values to X.
-
+        :type x: np.ndarray, shape=(nsamples, nfeatures)
+        :param x: training instances to fit the GP
+        :type y: np.ndarray, shape=(nsamples,)
+        :param y: corresponding continuous target values to x
         """
         self.x = x
         self.y = y
@@ -87,26 +64,19 @@ class GaussianProcess:
             2 * np.pi)
 
     def param_grad(self, k_param):
-        """
-        Returns gradient over hyperparameters. It is recommended to use `self._grad` instead.
+        """Gradient over hyperparameters. It is recommended to use `self._grad` instead.
 
-        Parameters
-        ----------
-        k_param: dict
-            Dictionary with keys being hyperparameters and values their queried values.
-
-        Returns
-        -------
-        np.ndarray
-            Gradient corresponding to each hyperparameters. Order given by `k_param.keys()`
+        :type k_param: dict
+        :param k_param: dictionary with keys being hyperparameters and values their queried values
+        :return: the gradient corresponding to each hyperparameters, order given by `k_param.keys()`
         """
         k_param_key = list(k_param.keys())
         covfunc = self.covfunc.__class__(**k_param)
         # n = self.x.shape[0]
-        K = covfunc.cov(self.x, self.x)
-        L = cholesky(K).T
-        alpha = solve(L.T, solve(L, self.y))
-        inner = np.dot(np.atleast_2d(alpha).T, np.atleast_2d(alpha)) - np.linalg.inv(K)
+        cov_matrix = covfunc.cov(self.x, self.x)
+        lower_matrix = cholesky(cov_matrix).T
+        alpha = solve(lower_matrix.T, solve(lower_matrix, self.y))
+        inner = np.dot(np.atleast_2d(alpha).T, np.atleast_2d(alpha)) - np.linalg.inv(cov_matrix)
         grads = []
         for param in k_param_key:
             grad_matrix = covfunc.grad_matrix(self.x, self.x, param=param)
@@ -115,21 +85,13 @@ class GaussianProcess:
         return np.array(grads)
 
     def _lmlik(self, param_vector, param_key):
-        """
-        Returns marginal negative log-likelihood for given covariance hyperparameters.
+        """Marginal negative log-likelihood for given covariance hyperparameters.
 
-        Parameters
-        ----------
-        param_vector: list
-            List of values corresponding to hyperparameters to query.
-        param_key: list
-            List of hyperparameter strings corresponding to `param_vector`.
-
-        Returns
-        -------
-        float
-            Negative log-marginal likelihood for chosen hyperparameters.
-
+        :type param_vector: list
+        :param param_vector: list of values corresponding to hyperparameters to query
+        :type param_key: list
+        :param param_key: list of hyperparameter strings corresponding to `param_vector`
+        :return: the negative log-marginal likelihood for chosen hyperparameters
         """
         k_param = OrderedDict()
         for k, v in zip(param_key, param_vector):
@@ -142,28 +104,20 @@ class GaussianProcess:
         self.optimize = False
         self.usegrads = False
 
-        self.fit(self.X, self.y)
+        self.fit(self.x, self.y)
 
         self.optimize = original_opt
         self.usegrads = original_grad
         return - self.logp
 
     def _grad(self, param_vector, param_key):
-        """
-        Returns gradient for each hyperparameter, evaluated at a given point.
+        """Gradient for each hyperparameter, evaluated at a given point.
 
-        Parameters
-        ----------
-        param_vector: list
-            List of values corresponding to hyperparameters to query.
-        param_key: list
-            List of hyperparameter strings corresponding to `param_vector`.
-
-        Returns
-        -------
-        np.ndarray
-            Gradient for each evaluated hyperparameter.
-
+        :type param_vector: list
+        :param param_vector: list of values corresponding to hyperparameters to query
+        :type param_key: list
+        :param: list of hyperparameter strings corresponding to `param_vector`
+        :return: the gradient for each evaluated hyperparameter
         """
         k_param = OrderedDict()
         for k, v in zip(param_key, param_vector):
@@ -171,17 +125,15 @@ class GaussianProcess:
         return - self.param_grad(k_param)
 
     def opt_hyp(self, param_key, param_bounds, grads=None, n_trials=5):
-        """
-        Optimizes the negative marginal log-likelihood for given hyperparameters and bounds.
+        """Optimizes the negative marginal log-likelihood for given hyperparameters and bounds.
         This is an empirical Bayes approach (or Type II maximum-likelihood).
 
-        Parameters
-        ----------
-        param_key: list
-            List of hyperparameters to optimize.
-        param_bounds: list
-            List containing tuples defining bounds for each hyperparameter to optimize over.
-
+        :type param_key: list
+        :param param_key: list of hyperparameters to optimize
+        :type param_bounds: list
+        :param param_bounds: list containing tuples defining bounds for each hyperparameter to optimize over
+        :param grads: gradient matrix
+        :param n_trials: number of trials
         """
         xs = [[1, 1, 1]]
         fs = [self._lmlik(xs[0], param_key)]
@@ -190,40 +142,31 @@ class GaussianProcess:
             for param, bound in zip(param_key, param_bounds):
                 x0.append(np.random.uniform(bound[0], bound[1], 1)[0])
             if grads is None:
-                res = minimize(self._lmlik, x0=x0, args=(param_key), method='L-BFGS-B', bounds=param_bounds)
+                res = minimize(self._lmlik, x0=np.array(x0), args=param_key, method='L-BFGS-B', bounds=param_bounds)
             else:
-                res = minimize(self._lmlik, x0=x0, args=(param_key), method='L-BFGS-B', bounds=param_bounds, jac=grads)
+                res = minimize(self._lmlik, x0=np.array(x0), args=param_key, method='L-BFGS-B', bounds=param_bounds,
+                               jac=grads)
             xs.append(res.x)
             fs.append(res.fun)
 
         arg_min = np.argmin(fs)
-        opt_param = xs[arg_min]
+        opt_param = xs[int(arg_min)]
         k_param = OrderedDict()
         for k, x in zip(param_key, opt_param):
             k_param[k] = x
         self.covfunc = self.covfunc.__class__(**k_param)
 
     def predict(self, x_star, return_std=False):
-        """
-        Returns mean and covariances for the posterior Gaussian Process.
+        """Mean and covariances for the posterior Gaussian Process.
 
-        Parameters
-        ----------
-        x_star: np.ndarray, shape=((nsamples, nfeatures))
-            Testing instances to predict.
-        return_std: bool
-            Whether to return the standard deviation of the posterior process. Otherwise,
-            it returns the whole covariance matrix of the posterior process.
-
-        Returns
-        -------
-        np.ndarray
-            Mean of the posterior process for testing instances.
-        np.ndarray
-            Covariance of the posterior process for testing instances.
+        :type x_star: np.ndarray, shape=((nsamples, nfeatures))
+        :param x_star: testing instances to predict
+        :type return_std: bool
+        :param return_std: whether to return the standard deviation of the posterior process
+        :return: mean and covariance of the posterior process for testing instances
         """
         x_star = np.atleast_2d(x_star)
-        k_star = self.covfunc.cov(self.X, x_star).T
+        k_star = self.covfunc.cov(self.x, x_star).T
         fmean = self.mprior + np.dot(k_star, self.alpha)
         v = solve(self.L, k_star.T)
         fcov = self.covfunc.cov(x_star, x_star) - np.dot(v.T, v)
@@ -232,15 +175,12 @@ class GaussianProcess:
         return fmean, fcov
 
     def update(self, x_new, y_new):
-        """
-        Updates the internal model with `xnew` and `y_new` instances.
+        """Updates the internal model with `x_new` and `y_new` instances.
 
-        Parameters
-        ----------
-        x_new: np.ndarray, shape=((m, nfeatures))
-            New training instances to update the model with.
-        y_new: np.ndarray, shape=((m,))
-            New training targets to update the model with.
+        :type x_new: np.ndarray, shape=((m, nfeatures))
+        :param x_new: new training instances to update the model with
+        :type y_new: np.ndarray, shape=((m,))
+        :param y_new: new training targets to update the model with
         """
         y = np.concatenate((self.y, y_new), axis=0)
         x = np.concatenate((self.x, x_new), axis=0)
