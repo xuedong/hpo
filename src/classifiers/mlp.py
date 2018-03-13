@@ -70,7 +70,7 @@ class MLP(Model):
         # regularization
         self.l1 = abs(self.hidden_layer.w).sum() + abs(self.logistic_layer.w).sum()
         self.l2 = (self.hidden_layer.w ** 2).sum() + (self.logistic_layer.w ** 2).sum()
-        # loss functions
+        # Loss functions
         self.neg_log_likelihood = self.logistic_layer.neg_log_likelihood
         self.zero_one = self.logistic_layer.zero_one
         # parameters of the model

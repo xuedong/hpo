@@ -51,7 +51,7 @@ class LogisticRegression(Model):
         self.input_data = input_data
 
     def neg_log_likelihood(self, y):
-        """Log-likelihood loss.
+        """Log-likelihood Loss.
 
         :param y: correct label vector
         :return: the mean of the negative log-likelihood of the prediction, we use mean instead of sum here
@@ -60,10 +60,10 @@ class LogisticRegression(Model):
         return -ts.mean(ts.log(self.p_y_x)[ts.arange(y.shape[0]), y])
 
     def zero_one(self, y):
-        """Zero-one loss.
+        """Zero-one Loss.
 
         :param y: correct label vector
-        :return: the zero-one loss over the size of minibatch
+        :return: the zero-one Loss over the size of minibatch
         """
         if y.ndim != self.y_pred.ndim:
             raise TypeError(

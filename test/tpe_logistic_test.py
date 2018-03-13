@@ -27,7 +27,7 @@ trials = Trials()
 def objective(hps):
     start_time = timeit.default_timer()
     learning_rate, batch_size = hps
-    arm = {'dir': "../result/tpe_logistic_0",
+    arm = {'dir': ".",
            'learning_rate': learning_rate, 'batch_size': int(batch_size), 'results': []}
     train_loss, best_valid_loss, test_score, track = test_model.run_solver(EPOCHS, arm, DATA, verbose=True)
     return {

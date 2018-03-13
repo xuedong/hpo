@@ -121,6 +121,26 @@ def plot_tpe(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     plt.close(fig)
 
 
+def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem):
+    x = np.arange(1, len(random) + 1)
+    fig = plt.figure()
+    plt.plot(x, -random, label='Random search', color='red')
+    plt.plot(x, -bo_ei_history, label='EI', color='blue')
+    # plt.plot(x, -bo_pi_history, label='PI', color='cyan')
+    plt.plot(x, -bo_ucb_history, label=r'GPUCB ($\beta=.5$)', color='yellow')
+    # plt.plot(x, -bo_ucb2_history, label=r'GPUCB ($\beta=1.5$)', color='green')
+    plt.grid()
+    plt.legend(loc=0)
+    plt.xlabel('Number of evaluations')
+    if problem == 'binary':
+        plt.ylabel('Log-Loss')
+    else:
+        plt.ylabel('MSE')
+    dataset_name = dataset_name.split('.')[0]
+    plt.savefig(os.path.join(os.path.abspath('.'), 'testing/results/{}/{}.pdf'.format(model.name, dataset_name)))
+    plt.close(fig)
+
+
 def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
     os.chdir(path1)
     fig = plt.figure()

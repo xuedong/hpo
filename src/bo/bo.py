@@ -38,7 +38,7 @@ class BO:
         self.history = []
         self.logger = EventLogger(self)
 
-    def _sample_param(self):
+    def sample_param(self):
         """Randomly samples parameters over bounds.
 
         :return a random sample of specified parameters
@@ -61,7 +61,7 @@ class BO:
         self.X = np.empty((n_eval, len(self.parameter_key)))
         self.y = np.empty((n_eval,))
         for i in range(n_eval):
-            s_param = self._sample_param()
+            s_param = self.sample_param()
             s_param_val = list(s_param.values())
             self.X[i] = s_param_val
             self.y[i] = self.f(**s_param)
@@ -88,7 +88,7 @@ class BO:
         :type n_start: int
         :param n_start: number of starting points for the optimization procedure, default is 100
         """
-        start_points_dict = [self._sample_param() for _ in range(n_start)]
+        start_points_dict = [self.sample_param() for _ in range(n_start)]
         start_points_arr = np.array([list(s.values()) for s in start_points_dict])
         x_best = np.empty((n_start, len(self.parameter_key)))
         f_best = np.empty((n_start,))

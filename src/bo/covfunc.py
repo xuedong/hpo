@@ -197,7 +197,7 @@ class Matern32:
         return self.sigmaf * one * two + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
@@ -264,7 +264,7 @@ class Matern52:
         return self.sigmaf * one * two + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
@@ -320,7 +320,7 @@ class GammaExponential:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """Computes covariance function values over `X` and `x_star`.
+        """Computes covariance function values over `x` and `x_star`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
@@ -332,7 +332,7 @@ class GammaExponential:
         return self.sigmaf * (np.exp(-(r / self.lscale) ** self.gamma)) + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances

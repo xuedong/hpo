@@ -146,32 +146,32 @@ class Gramacy1:
 
 """
 class LossSVM:
-    def __init__(self, model, X, y, method, problem):
-        self.loss = utils.loss(model, X, y, method, problem)
+    def __init__(self, model, x, y, method, problem):
+        self.Loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluateLoss(C=x[0], gamma=x[1])
+        return self.Loss.evaluate_loss(C=x[0], gamma=x[1])
 
 class LossGBM:
-    def __init__(self, model, X, y, method, problem):
-        self.loss = utils.loss(model, X, y, method, problem)
+    def __init__(self, model, x, y, method, problem):
+        self.Loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluateLoss(learning_rate=x[0], n_estimators=x[1], max_depth=x[2], min_samples_split=x[3])
+        return self.Loss.evaluate_loss(learning_rate=x[0], n_estimators=x[1], max_depth=x[2], min_samples_split=x[3])
 
 class LossKNN:
-    def __init__(self, model, X, y, method, problem):
-        self.loss = utils.loss(model, X, y, method, problem)
+    def __init__(self, model, x, y, method, problem):
+        self.Loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluateLoss(n_neighbors=x[0])
+        return self.Loss.evaluate_loss(n_neighbors=x[0])
 
 class LossMLP:
-    def __init__(self, model, X, y, method, problem):
-        self.loss = utils.loss(model, X, y, method, problem)
+    def __init__(self, model, x, y, method, problem):
+        self.Loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluateLoss(hidden_layer_size=x[0], alpha=x[1])
+        return self.Loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
 """
 
 
@@ -291,7 +291,7 @@ class Box:
         # 2D spaced down level curve plot
         x = np.array([(i-600)/100. for i in range(1199)])
         y = np.array([(j-600)/100. for j in range(1199)])
-        X, Y = pl.meshgrid(x, y)
+        x, Y = pl.meshgrid(x, y)
         Z = np.array([[self.f_mean([(i-600)/100., (j-600)/100.]) for i in range(1199)] for j in range(1199)])
 
         im = pl.imshow(Z, cmap=pl.cm.RdBu)
@@ -302,7 +302,7 @@ class Box:
         # 3D plot
         fig = mpl.pyplot.figure()
         ax = fig.gca(projection='3d')
-        surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=pl.cm.RdBu, linewidth=0, antialiased=False)
+        surf = ax.plot_surface(x, Y, Z, rstride=1, cstride=1, cmap=pl.cm.RdBu, linewidth=0, antialiased=False)
         ax.zaxis.set_major_locator(mpl.ticker.LinearLocator(10))
         ax.zaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%.02f'))
         fig.colorbar(surf, shrink=0.5, aspect=5)
