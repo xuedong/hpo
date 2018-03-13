@@ -39,7 +39,6 @@ d_gbm['max_depth'] = ('int', (2, 100))
 d_gbm['min_samples_split'] = ('int', (2, 100))
 
 
-
 class Tree:
     def __init__(self, problem='binary', max_features=0.5, max_depth=1, min_samples_split=2):
         self.problem = problem
@@ -110,9 +109,9 @@ class GBM:
 
 
 class SVM:
-    def __init__(self, problem='binary', C=0, gamma=0, kernel='rbf'):
+    def __init__(self, problem='binary', c=0, gamma=0, kernel='rbf'):
         self.problem = problem
-        self.C = 10**C
+        self.C = 10 ** c
         self.gamma = 10**gamma
         self.kernel = kernel
         self.name = 'SVM'
