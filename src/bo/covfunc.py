@@ -19,7 +19,7 @@ def l2_norm(x, x_star):
     :type x: np.ndarray, shape=((n, nfeatures))
     :param x: instances
     :type x_star: np.ndarray, shape((m, nfeatures))
-    :param: instances
+    :param x_star: instances
     :return: pairwise Euclidean distance between row pairs of `x` and `x_star`
     """
     return cdist(x, x_star)
@@ -31,14 +31,14 @@ def kronecker_delta(x, x_star):
     :type x: np.ndarray, shape=((n, nfeatures))
     :param x: instances
     :type x_star: np.ndarray, shape((m, nfeatures))
-    :param: instances
+    :param x_star: instances
     :return: Kronecker delta between row pairs of `x` and `x_star`
     """
     return cdist(x, x_star) < np.finfo(np.float32).eps
 
 
 class SquaredExponential:
-    def __init__(self, lscale=1, sigmaf=1.0, sigman=1e-6, bounds=None, parameters=['lscale', 'sigmaf', 'sigman']):
+    def __init__(self, lscale=1, sigmaf=1.0, sigman=1e-6, bounds=None, parameters={'lscale', 'sigmaf', 'sigman'}):
         """Squared exponential kernel class.
 
         :type lscale: float
@@ -65,7 +65,7 @@ class SquaredExponential:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """Computes covariance function values over `x` and `x_star`
+        """Computes covariance function values over `x` and `x_star`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
@@ -77,12 +77,12 @@ class SquaredExponential:
         return self.sigmaf * np.exp(-.5 * r ** 2 / self.lscale ** 2) + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param='lscale'):
-        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
+        :param x_star: instances
         :type param: str
         :param param: parameter to compute gradient matrix for
         :return: gradient matrix for parameter `param`
@@ -108,7 +108,7 @@ class SquaredExponential:
 
 class Matern:
     def __init__(self, v=1, lscale=1, sigmaf=1, sigman=1e-6, bounds=None,
-                 parameters=['v', 'lscale', 'sigmaf', 'sigman']):
+                 parameters={'v', 'lscale', 'sigmaf', 'sigman'}):
         """Matern kernel class.
 
         :type v: float
@@ -137,20 +137,13 @@ class Matern:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """
-        Computes covariance function values over `X` and `x_star`
+        """Computes covariance function values over `x` and `x_star`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-
-        :return:
-        -------
-        np.ndarray
-            the computed covariance matrix
+        :param x_star: instances
+        :return: the computed covariance matrix
         """
         r = l2_norm(x, x_star)
         bessel = kv(self.v, np.sqrt(2 * self.v) * r / self.lscale)
@@ -162,7 +155,7 @@ class Matern:
 
 
 class Matern32:
-    def __init__(self, lscale=1, sigmaf=1, sigman=1e-6, bounds=None, parameters=['lscale', 'sigmaf', 'sigman']):
+    def __init__(self, lscale=1, sigmaf=1, sigman=1e-6, bounds=None, parameters={'lscale', 'sigmaf', 'sigman'}):
         """Matern v=3/2 kernel class.
 
         :type lscale: float
@@ -190,20 +183,13 @@ class Matern32:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """
-        Computes covariance function values over `X` and `x_star`
+        """Computes covariance function values over `x` and `x_star`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-
-        :return:
-        -------
-        np.ndarray
-            the computed covariance matrix
+        :param x_star: instances
+        :return: the computed covariance matrix
         """
         r = l2_norm(x, x_star)
         one = (1 + np.sqrt(3 * (r / self.lscale) ** 2))
@@ -211,22 +197,15 @@ class Matern32:
         return self.sigmaf * one * two + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """
-        Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
+        :param x_star: instances
         :type param: str
         :param param: parameter to compute gradient matrix for
-
-        :return:
-        -------
-        np.ndarray
-            the gradient matrix for parameter `param`
+        :return: the gradient matrix for parameter `param`
         """
         if param == 'lscale':
             r = l2_norm(x, x_star)
@@ -244,7 +223,7 @@ class Matern32:
 
 
 class Matern52:
-    def __init__(self, lscale=1, sigmaf=1, sigman=1e-6, bounds=None, parameters=['lscale', 'sigmaf', 'sigman']):
+    def __init__(self, lscale=1, sigmaf=1, sigman=1e-6, bounds=None, parameters={'lscale', 'sigmaf', 'sigman'}):
         """Matern v=5/2 kernel class.
 
         :type lscale: float
@@ -271,20 +250,13 @@ class Matern52:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """
-        Computes covariance function values over `X` and `x_star`
+        """Computes covariance function values over `x` and `x_star`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
         :param: instances
-
-        :return:
-        -------
-        np.ndarray
-            the computed covariance matrix
+        :return: the computed covariance matrix
         """
         r = l2_norm(x, x_star)
         one = (1 + np.sqrt(5 * (r / self.lscale) ** 2) + 5 * (r / self.lscale) ** 2 / 3)
@@ -292,22 +264,15 @@ class Matern52:
         return self.sigmaf * one * two + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """
-        Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-        param: str
-            Parameter to compute gradient matrix for.
-
-        :return:
-        -------
-        np.ndarray
-            the gradient matrix for parameter `param`
+        :param x_star: instances
+        :type param: str
+        :param param: parameter to compute gradient matrix for
+        :return:the gradient matrix for parameter `param`
         """
         r = l2_norm(x, x_star)
         if param == 'lscale':
@@ -325,12 +290,9 @@ class Matern52:
 
 class GammaExponential:
     def __init__(self, exp_gamma=1, lscale=1, sigmaf=1, sigman=1e-6, bounds=None,
-                 parameters=['exp_gamma', 'lscale', 'sigmaf', 'sigman']):
-        """
-        Gamma-exponential kernel class.
+                 parameters={'exp_gamma', 'lscale', 'sigmaf', 'sigman'}):
+        """Gamma-exponential kernel class.
 
-        Parameters
-        ----------
         :type exp_gamma: float
         :param exp_gamma: hyperparameter of the Gamma-exponential covariance function
         :type lscale: float
@@ -358,42 +320,27 @@ class GammaExponential:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """
-        Computes covariance function values over `X` and `x_star`
+        """Computes covariance function values over `X` and `x_star`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-
-        :return:
-        -------
-        np.ndarray
-            the computed covariance matrix
+        :param x_star: instances
+        :return: the computed covariance matrix
         """
         r = l2_norm(x, x_star)
-        return self.sigmaf * (np.exp(-(r / self.lscale) ** self.gamma)) + \
-               self.sigman * kronecker_delta(x, x_star)
+        return self.sigmaf * (np.exp(-(r / self.lscale) ** self.gamma)) + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """
-        Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-        param: str
-            Parameter to compute gradient matrix for.
-
-        :return:
-        -------
-        np.ndarray
-            the gradient matrix for parameter `param`
+        :param x_star: instances
+        :type param: str
+        :param param: parameter to compute gradient matrix for.
+        :return: the gradient matrix for parameter `param`
         """
         if param == 'gamma':
             eps = 10e-6
@@ -420,12 +367,9 @@ class GammaExponential:
 
 class RationalQuadratic:
     def __init__(self, alpha=1, lscale=1, sigmaf=1, sigman=1e-6, bounds=None,
-                 parameters=['alpha', 'lscale', 'sigmaf', 'sigman']):
-        """
-        Rational-quadratic kernel class.
+                 parameters={'alpha', 'lscale', 'sigmaf', 'sigman'}):
+        """Rational-quadratic kernel class.
 
-        Parameters
-        ----------
         :type alpha: float
         :param alpha: hyperparameter of the rational-quadratic covariance function
         :type lscale: float
@@ -453,38 +397,28 @@ class RationalQuadratic:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """
-        Computes covariance function values over `X` and `x_star`
+        """Computes covariance function values over `x` and `x_star`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-
-        :return:
-        -------
-        np.ndarray
-            the computed covariance matrix
+        :param x_star: instances
+        :return: the computed covariance matrix
         """
         r = l2_norm(x, x_star)
-        return self.sigmaf * ((1 + r ** 2 / (2 * self.alpha * self.lscale ** 2)) ** (-self.alpha)) \
-               + self.sigman * kronecker_delta(x, x_star)
+        return self.sigmaf * ((1 + r ** 2 / (2 * self.alpha * self.lscale ** 2))
+                              ** (-self.alpha)) + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """
-        Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
+        :param x_star: instances
         :type param: str
         :param param: parameter to compute gradient matrix for
-        :return: gradient matrix for parameter `param`
+        :return: the gradient matrix for parameter `param`
         """
         if param == 'alpha':
             r = l2_norm(x, x_star)
@@ -510,7 +444,7 @@ class RationalQuadratic:
 
 
 class ExpSine:
-    def __init__(self, lscale=1.0, period=1.0, bounds=None, parameters=['lscale', 'period']):
+    def __init__(self, lscale=1.0, period=1.0, bounds=None, parameters={'lscale', 'period'}):
         """Exponential sine kernel class.
 
         :type lscale: float
@@ -534,16 +468,12 @@ class ExpSine:
                 self.bounds.append(default_bounds[param])
 
     def cov(self, x, x_star):
-        """
-        Computes covariance function values over `x` and `x_star`
+        """Computes covariance function values over `x` and `x_star`.
 
-        Parameters
-        ----------
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-
+        :param x_star: instances
         :return: the computed covariance matrix
         """
         r = l2_norm(x, x_star)
@@ -551,14 +481,14 @@ class ExpSine:
         return np.exp(num / self.lscale) ** 2 + 1e-4
 
     def grad_matrix(self, x, x_star, param):
-        """
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
         
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
         :param: instances 
         :param param: 
-        :return: 
+        :return: the gradient matrix for parameter `param`
         """
         if param == 'lscale':
             r = l2_norm(x, x_star)
@@ -573,22 +503,7 @@ class ExpSine:
 
 
 class DotProd:
-    """
-    Dot-product kernel class.
-
-    Parameters
-    ----------
-    sigmaf: float
-        Signal variance. Controls the overall scale of the covariance function.
-    sigman: float
-        Noise variance. Additive noise in output space.
-    bounds: list
-        List of tuples specifying hyperparameter range in optimization procedure.
-    parameters: list
-        List of strings specifying which hyperparameters should be optimized.
-    """
-
-    def __init__(self, sigmaf=1.0, sigman=1e-6, bounds=None, parameters=['sigmaf', 'sigman']):
+    def __init__(self, sigmaf=1.0, sigman=1e-6, bounds=None, parameters={'sigmaf', 'sigman'}):
         """Dot-product kernel class.
 
         :type sigmaf: float
@@ -616,22 +531,20 @@ class DotProd:
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
-
+        :param x_star: instances
         :return: the computed covariance matrix
         """
         return self.sigmaf * np.dot(x, x_star.T) + self.sigman * kronecker_delta(x, x_star)
 
     def grad_matrix(self, x, x_star, param):
-        """Computes gradient matrix for instances `X`, `x_star` and hyperparameter `param`.
+        """Computes gradient matrix for instances `x`, `x_star` and hyperparameter `param`.
 
         :type x: np.ndarray, shape=((n, nfeatures))
         :param x: instances
         :type x_star: np.ndarray, shape((m, nfeatures))
-        :param: instances
+        :param x_star: instances
         :type param: str
         :param param: parameter to compute gradient matrix for
-
         :return: the gradient matrix for parameter `param`
         """
         if param == 'sigmaf':

@@ -6,8 +6,7 @@ from scipy.optimize import minimize
 
 class GaussianProcess:
     def __init__(self, covfunc, optimize=False, usegrads=False, mprior=0):
-        """
-        Gaussian Process regressor class. Based on Rasmussen & Williams [1]_ algorithm 2.1.
+        """Gaussian Process regressor class. Based on Rasmussen & Williams [1]_ algorithm 2.1.
 
         Parameters
         ----------
@@ -39,6 +38,12 @@ class GaussianProcess:
         self.optimize = optimize
         self.usegrads = usegrads
         self.mprior = mprior
+        self.x = None
+        self.y = None
+        self.nsamples = None
+        self.alpha = None
+        self.logp = None
+        
 
     def get_cov_params(self):
         """
@@ -97,16 +102,16 @@ class GaussianProcess:
         """
         k_param_key = list(k_param.keys())
         covfunc = self.covfunc.__class__(**k_param)
-        n = self.x.shape[0]
+        # n = self.x.shape[0]
         K = covfunc.cov(self.x, self.x)
         L = cholesky(K).T
         alpha = solve(L.T, solve(L, self.y))
         inner = np.dot(np.atleast_2d(alpha).T, np.atleast_2d(alpha)) - np.linalg.inv(K)
         grads = []
         for param in k_param_key:
-            gradK = covfunc.grad_matrix(self.X, self.X, param=param)
-            gradK = .5 * np.trace(np.dot(inner, gradK))
-            grads.append(gradK)
+            grad_matrix = covfunc.grad_matrix(self.x, self.x, param=param)
+            grad_matrix = .5 * np.trace(np.dot(inner, grad_matrix))
+            grads.append(grad_matrix)
         return np.array(grads)
 
     def _lmlik(self, param_vector, param_key):
@@ -191,20 +196,20 @@ class GaussianProcess:
             xs.append(res.x)
             fs.append(res.fun)
 
-        argmin = np.argmin(fs)
-        opt_param = xs[argmin]
+        arg_min = np.argmin(fs)
+        opt_param = xs[arg_min]
         k_param = OrderedDict()
         for k, x in zip(param_key, opt_param):
             k_param[k] = x
         self.covfunc = self.covfunc.__class__(**k_param)
 
-    def predict(self, Xstar, return_std=False):
+    def predict(self, x_star, return_std=False):
         """
         Returns mean and covariances for the posterior Gaussian Process.
 
         Parameters
         ----------
-        Xstar: np.ndarray, shape=((nsamples, nfeatures))
+        x_star: np.ndarray, shape=((nsamples, nfeatures))
             Testing instances to predict.
         return_std: bool
             Whether to return the standard deviation of the posterior process. Otherwise,
@@ -217,26 +222,26 @@ class GaussianProcess:
         np.ndarray
             Covariance of the posterior process for testing instances.
         """
-        Xstar = np.atleast_2d(Xstar)
-        kstar = self.covfunc.cov(self.X, Xstar).T
-        fmean = self.mprior + np.dot(kstar, self.alpha)
-        v = solve(self.L, kstar.T)
-        fcov = self.covfunc.cov(Xstar, Xstar) - np.dot(v.T, v)
+        x_star = np.atleast_2d(x_star)
+        k_star = self.covfunc.cov(self.X, x_star).T
+        fmean = self.mprior + np.dot(k_star, self.alpha)
+        v = solve(self.L, k_star.T)
+        fcov = self.covfunc.cov(x_star, x_star) - np.dot(v.T, v)
         if return_std:
             fcov = np.diag(fcov)
         return fmean, fcov
 
-    def update(self, xnew, ynew):
+    def update(self, x_new, y_new):
         """
-        Updates the internal model with `xnew` and `ynew` instances.
+        Updates the internal model with `xnew` and `y_new` instances.
 
         Parameters
         ----------
-        xnew: np.ndarray, shape=((m, nfeatures))
+        x_new: np.ndarray, shape=((m, nfeatures))
             New training instances to update the model with.
-        ynew: np.ndarray, shape=((m,))
+        y_new: np.ndarray, shape=((m,))
             New training targets to update the model with.
         """
-        y = np.concatenate((self.y, ynew), axis=0)
-        X = np.concatenate((self.X, xnew), axis=0)
-        self.fit(X, y)
+        y = np.concatenate((self.y, y_new), axis=0)
+        x = np.concatenate((self.x, x_new), axis=0)
+        self.fit(x, y)
