@@ -1,5 +1,6 @@
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, AdaBoostClassifier, AdaBoostRegressor, \
-    GradientBoostingClassifier, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import AdaBoostClassifier, AdaBoostRegressor
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
@@ -17,7 +18,6 @@ d_knn['n_neighbors'] = ('int', (10, 50))
 d_mlp = OrderedDict()
 d_mlp['hidden_layer_size'] = ('int', (5, 50))
 d_mlp['alpha'] = ('cont', (1e-5, 0.9))
-
 
 d_svm = OrderedDict()
 d_svm['C'] = ('cont', (-4, 5))
