@@ -5,6 +5,7 @@
 
 import numpy as np
 import math
+import theano.tensor as ts
 # import random
 # import operator as op
 # import pylab as pl
@@ -12,10 +13,15 @@ import math
 # import matplotlib.pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
+import src.utils as utils
+import src.classifiers.logistic as logistic
+
 # from sklearn.metrics import log_loss, mean_squared_error
 # from sklearn.model_selection import train_test_split, KFold
 # from sklearn.preprocessing import StandardScaler
 
+
+# Black box functions
 
 class Sine1:
     def __init__(self):
@@ -137,32 +143,50 @@ class Gramacy1:
         return self.fmax
 
 
-"""
-class LossSVM:
+# Scikit-learn functions
+
+class SklearnSVM:
     def __init__(self, model, x, y, method, problem):
-        self.Loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.Loss.evaluate_loss(C=x[0], gamma=x[1])
+        return self.loss.evaluate_loss(C=x[0], gamma=x[1])
 
-class LossGBM:
+
+class SklearnGBM:
     def __init__(self, model, x, y, method, problem):
-        self.Loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.Loss.evaluate_loss(learning_rate=x[0], n_estimators=x[1], max_depth=x[2], min_samples_split=x[3])
+        return self.loss.evaluate_loss(learning_rate=x[0], n_estimators=x[1], max_depth=x[2], min_samples_split=x[3])
 
-class LossKNN:
+
+class SklearnKNN:
     def __init__(self, model, x, y, method, problem):
-        self.Loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.Loss.evaluate_loss(n_neighbors=x[0])
+        return self.loss.evaluate_loss(n_neighbors=x[0])
 
-class LossMLP:
+
+class SklearnMLP:
     def __init__(self, model, x, y, method, problem):
-        self.Loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.Loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
-"""
+        return self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
+
+
+# Theano functions
+
+class TheanoLogistic:
+    def __init__(self, epochs, data):
+        x = ts.matrix('x')
+        self.model = logistic.LogisticRegression(x, 28*28, 10)
+        self.epochs = epochs
+        self.data = data
+
+    def f(self, x):
+        arm = {'dir': ".", 'learning_rate': x[0], 'batch_size': x[1], 'results': []}
+        train_loss, best_valid_loss, test_score, track = self.model.run_solver(self.epochs, arm, self.data)
+        return test_score
