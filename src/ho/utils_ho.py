@@ -49,7 +49,7 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
 def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     losses = [0. for _ in range(horizon)]
     htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, bbox)
-    best = -float("inf")
+    best = -np.float('inf')
 
     for i in range(horizon):
         if update and alpha < math.log(i + 1) * (sigma ** 2):
@@ -92,7 +92,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
 def loss_hct(bbox, rho, nu, c, c1, delta, horizon):
     losses = [0. for _ in range(horizon)]
     hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
-    best = -float("inf")
+    best = -np.float('inf')
 
     for i in range(1, horizon+1):
         tplus = int(2 ** (math.ceil(math.log(i))))

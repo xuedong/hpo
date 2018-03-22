@@ -187,6 +187,7 @@ class TheanoLogistic:
         self.data = data
 
     def f(self, x):
-        arm = {'dir': ".", 'learning_rate': x[0], 'batch_size': int(x[1]), 'results': []}
-        train_loss, best_valid_loss, test_score, track = self.model.run_solver(self.epochs, arm, self.data)
-        return test_score
+        arm = {'dir': ".", 'learning_rate': np.exp(x[0]), 'batch_size': int(x[1]), 'results': []}
+        train_loss, best_valid_loss, test_score, track = self.model.run_solver(self.epochs, arm, self.data,
+                                                                               verbose=True)
+        return -test_score

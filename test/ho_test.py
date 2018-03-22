@@ -27,7 +27,8 @@ if __name__ == '__main__':
                              (params['batch_size'].get_min(), params['batch_size'].get_max())],
                             [params['learning_rate'].get_type(), params['batch_size'].get_type()])
 
-    current = [0. for _ in range(100)]
+    current = [0. for _ in range(5)]
     c = 2 * math.sqrt(1./(1-0.66))
     c1 = (0.66/(3*1.)) ** (1./8)
-    losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, horizon=100)
+    losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, horizon=5)
+    print(losses)
