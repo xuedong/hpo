@@ -1,5 +1,5 @@
 import math
-import numpy as np
+# import numpy as np
 import timeit
 import theano.tensor as ts
 

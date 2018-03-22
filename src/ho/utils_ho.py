@@ -70,7 +70,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
     y_cum = [0. for _ in range(horizon)]
     y_sim = [0. for _ in range(horizon)]
     x_sel = [None for _ in range(horizon)]
-    hctree = hct.HCTree(bbox.support, None, 0, rho, nu, 1, 1, bbox)
+    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
     cum = 0.
 
     for i in range(1, horizon+1):
@@ -91,7 +91,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
 
 def loss_hct(bbox, rho, nu, c, c1, delta, horizon):
     losses = [0. for _ in range(horizon)]
-    hctree = hct.HCTree(bbox.support, None, 0, rho, nu, 1, 1, bbox)
+    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
     best = -float("inf")
 
     for i in range(1, horizon+1):
@@ -345,9 +345,9 @@ def std_split(support, support_type, nsplits):
     max_length = np.max(lens)
     a, b = support[max_index]
     step = max_length/float(nsplits)
-    if support_type[max_index] == 'int':
+    if support_type[max_index] == 'int' or 'integer':
         split = [(a+int(step*i), a+int(step*(i+1))) for i in range(nsplits)]
-    elif support_type[max_index] == 'cont':
+    elif support_type[max_index] == 'cont' or 'continuous':
         split = [(a+step*i, a+step*(i+1)) for i in range(nsplits)]
     else:
         raise ValueError("Unsupported variable type.")

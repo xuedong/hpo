@@ -6,7 +6,7 @@ import math
 
 
 class HCTree:
-    def __init__(self, support, father, depth, rho, nu, tvalue, tau, box):
+    def __init__(self, support, support_type, father, depth, rho, nu, tvalue, tau, box):
         self.bvalue = float('inf')
         self.uvalue = float('inf')
         self.tvalue = tvalue
@@ -15,6 +15,7 @@ class HCTree:
         self.noisy = None
         self.evaluated = None
         self.support = support
+        self.support_type = support_type
         self.father = father
         self.depth = depth
         self.rho = rho
@@ -23,11 +24,13 @@ class HCTree:
         self.children = []
 
     def add_children(self, c, dvalue):
-        supports = self.box.split(self.support, self.box.nsplits)
+        supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
         # print(supports)
 
         tau = c**2 * math.log(1./dvalue) * self.rho**(-2*(self.depth+1))/(self.nu**2)
-        self.children = [HCTree(s, self, self.depth + 1, self.rho, self.nu, 0, tau, self.box) for s in supports]
+        self.children = [HCTree(supports[i], supports_type[i],
+                                self, self.depth + 1, self.rho, self.nu, 0, tau, self.box)
+                         for i in range(len(supports))]
 
     def explore(self, c, dvalue):
         if self.tvalue < self.tau:
@@ -76,7 +79,7 @@ class HCTree:
         existed = False
 
         if leaf.noisy is None:
-            x = self.box.center(leaf.support)
+            x = self.box.center(leaf.support, leaf.support_type)
             leaf.evaluated = x
             leaf.noisy = self.box.f_noised(x)
             existed = True
