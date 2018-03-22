@@ -12,6 +12,7 @@ import pickle
 
 import ho.hoo as hoo
 import ho.poo as poo
+import ho.hct as hct
 
 
 def std_box(f, fmax, nsplits, sigma, support, support_type):
@@ -65,17 +66,16 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     return losses
 
 
-"""
-def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
-    y_cum = [0. for i in range(horizon)]
-    y_sim = [0. for i in range(horizon)]
-    x_sel = [None for i in range(horizon)]
+def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
+    y_cum = [0. for _ in range(horizon)]
+    y_sim = [0. for _ in range(horizon)]
+    x_sel = [None for _ in range(horizon)]
     hctree = hct.HCTree(bbox.support, None, 0, rho, nu, 1, 1, bbox)
     cum = 0.
 
     for i in range(1, horizon+1):
-        tplus = int(2**(math.ceil(math.log(i))))
-        dvalue = min(c1*delta/tplus, 0.5)
+        tplus = int(2 ** (math.ceil(math.log(i))))
+        dvalue = min(c1 * delta/tplus, 0.5)
 
         if i == tplus:
             hctree.update(c, dvalue)
@@ -87,7 +87,28 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
         y_sim[i-1] = bbox.fmax - bbox.f_mean(z)
 
     return y_cum, y_sim, x_sel
-"""
+
+
+def loss_hct(bbox, rho, nu, c, c1, delta, horizon):
+    losses = [0. for _ in range(horizon)]
+    hctree = hct.HCTree(bbox.support, None, 0, rho, nu, 1, 1, bbox)
+    best = -float("inf")
+
+    for i in range(1, horizon+1):
+        tplus = int(2 ** (math.ceil(math.log(i))))
+        dvalue = min(c1 * delta / tplus, 0.5)
+
+        if i == tplus:
+            hctree.update(c, dvalue)
+        x, _, _ = hctree.sample(c, dvalue)
+        current = bbox.f_mean(x)
+        if current > best:
+            best = current
+            losses[i-1] = best
+        else:
+            losses[i-1] = best
+
+    return losses
 
 
 def regret_poo(bbox, rhos, nu, alpha, horizon, epoch):
@@ -278,11 +299,11 @@ def std_center(support, support_type):
     """
     centers = []
     for i in range(len(support)):
-        if support_type[i] == 'int':
+        if support_type[i] == 'int' or 'integer':
             a, b = support[i]
             center = (a+b)/2
             centers.append(center)
-        elif support_type[i] == 'cont':
+        elif support_type[i] == 'cont' or 'continuous':
             a, b = support[i]
             center = (a+b)/2.
             centers.append(center)
@@ -297,11 +318,11 @@ def std_rand(support, support_type):
     """
     rands = []
     for i in range(len(support)):
-        if support_type[i] == 'int':
+        if support_type[i] == 'int' or 'integer':
             a, b = support[i]
             rand = np.random.randint(a, b+1)
             rands.append(rand)
-        elif support_type[i] == 'cont':
+        elif support_type[i] == 'cont' or 'continuous':
             a, b = support[i]
             rand = a + (b-a)*random.random()
             rands.append(rand)
