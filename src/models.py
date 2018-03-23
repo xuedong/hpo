@@ -12,6 +12,7 @@ class Model:
     def run_solver(self, iterations, arm, classifier):
         pass
 
+    @staticmethod
     @abc.abstractmethod
-    def get_search_space(self):
+    def get_search_space():
         pass

@@ -289,7 +289,8 @@ class LogisticRegression(Model):
 
         return train_loss, best_valid_loss, test_score, current_track
 
-    def get_search_space(self):
+    @staticmethod
+    def get_search_space():
         params = {
             'learning_rate': Param('learning_rate', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform',
                                    scale='log'),

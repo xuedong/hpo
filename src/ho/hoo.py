@@ -31,6 +31,7 @@ class HTree:
 
         self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1, self.rho, self.nu, self.box)
                          for i in range(len(supports))]
+        # print(self.depth)
 
     def explore(self):
         if self.tvalue == 0:
