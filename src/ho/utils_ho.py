@@ -5,7 +5,7 @@
 
 import pylab as pl
 import numpy as np
-import sys
+import progressbar
 import math
 import random
 import pickle
@@ -51,14 +51,9 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, bbox)
     best = -np.float('inf')
 
-    toolbar_width = horizon
+    bar = progressbar.ProgressBar()
 
-    # setup toolbar
-    sys.stdout.write("[%s]" % (" " * toolbar_width))
-    sys.stdout.flush()
-    sys.stdout.write("\b" * (toolbar_width + 1))
-
-    for i in range(horizon):
+    for i in bar(range(horizon)):
         # print(str(i+1) + '/' + str(horizon))
         if update and alpha < math.log(i + 1) * (sigma ** 2):
             alpha += 1
@@ -70,11 +65,6 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
             losses[i] = best
         else:
             losses[i] = best
-
-        sys.stdout.write("-")
-        sys.stdout.flush()
-
-    sys.stdout.write("\n")
 
     return losses
 
