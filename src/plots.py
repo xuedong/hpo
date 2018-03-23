@@ -188,8 +188,8 @@ def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem)
     plt.close(fig)
 
 
-def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
-    os.chdir(path1)
+def plot_all(paths, s_max, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
+    os.chdir(paths[0])
     fig = plt.figure()
 
     # Hyperband brackets
@@ -247,7 +247,7 @@ def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset
     plt.plot(x, y, label=r"Hyperband")
 
     # TPE
-    os.chdir(path2)
+    os.chdir(paths[1])
     shortest = sys.maxsize
 
     tracks = np.array([None for _ in range(runs)])
@@ -270,6 +270,28 @@ def plot_all(path1, path2, s_max, runs, classifier_name, optimizer_name, dataset
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     plt.plot(x, y, label=r"TPE")
+
+    # HO family
+    os.chdir(paths[2])
+
+    losses = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(loss) < shortest:
+            shortest = len(loss)
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        losses[i] = loss[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    y = np.mean(losses, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    plt.plot(x, y, label=r"HOO")
 
     plt.grid()
     plt.ylim((0, 0.2))

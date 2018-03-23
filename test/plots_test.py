@@ -14,8 +14,17 @@ if __name__ == "__main__":
 
     # path1 = "../result/hyperband_mlp_0"
     # path2 = "../tpe_mlp_0"
-    # plots.plot_all(path1, path2, 3, 5, 'mlp_', 'sgd_', 'mnist', 0)
+    # paths = [path1, path2]
+    # plots.plot_all(paths, 3, 5, 'mlp_', 'sgd_', 'mnist', 0)
+
+    # path1 = "../result/hyperband_logistic_0"
+    # path2 = "../tpe_logistic_0"
+    # paths = [path1, path2]
+    # plots.plot_all(paths, 3, 10, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
 
     path1 = "../result/hyperband_logistic_0"
     path2 = "../tpe_logistic_0"
-    plots.plot_all(path1, path2, 3, 10, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
+    path3 = "../hoo_logistic_0"
+    paths = [path1, path2, path3]
+    # plots.plot_ho(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
+    plots.plot_all(paths, 3, 10, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
