@@ -1,10 +1,10 @@
 import numpy as np
 
-from src.bo.bo import BO
-from src.bo.surrogates.gaussian_process import GaussianProcess
-from src.bo.acquisition import Acquisition
-from src.bo.covfunc import SquaredExponential
-from src.utils import build, Loss, cum_max
+from bo.bo import BO
+from bo.surrogates.gaussian_process import GaussianProcess
+from bo.acquisition import Acquisition
+from bo.covfunc import SquaredExponential
+from utils import build, Loss, cum_max
 
 
 def evaluate_dataset(csv_path, target_index, problem, model, parameter_dict, method='holdout', seed=20, max_iter=50):

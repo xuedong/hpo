@@ -4,7 +4,7 @@ import numpy as np
 from scipy.optimize import minimize
 from joblib import Parallel, delayed
 
-from src.bo.logger import EventLogger
+from bo.logger import EventLogger
 
 
 class BO:
