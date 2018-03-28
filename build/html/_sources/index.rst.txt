@@ -11,17 +11,24 @@ Welcome to hpo's documentation!
    :caption: Contents:
 
 .. automodule:: models
-.. autoclass:: Model
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 .. automodule:: params
-.. autoclass:: Param
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 .. automodule:: classifiers.logistic
-.. autoclass:: LogisticRegression
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 .. automodule:: classifiers.mlp
-.. autoclass:: HiddenLayer
-.. autoclass:: MLP
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Indices and tables
 ==================

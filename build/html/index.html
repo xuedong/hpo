@@ -46,27 +46,221 @@
 <span class="target" id="module-models"></span><dl class="class">
 <dt id="models.Model">
 <em class="property">class </em><code class="descclassname">models.</code><code class="descname">Model</code><a class="reference internal" href="_modules/models.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="models.Model.generate_arms">
+<code class="descname">generate_arms</code><span class="sig-paren">(</span><em>n</em>, <em>path</em>, <em>params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Model.generate_arms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.Model.generate_arms" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="models.Model.get_search_space">
+<em class="property">static </em><code class="descname">get_search_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Model.get_search_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.Model.get_search_space" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="models.Model.run_solver">
+<code class="descname">run_solver</code><span class="sig-paren">(</span><em>iterations</em>, <em>arm</em>, <em>classifier</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Model.run_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.Model.run_solver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <span class="target" id="module-params"></span><dl class="class">
 <dt id="params.Param">
 <em class="property">class </em><code class="descclassname">params.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>name</em>, <em>min_val</em>, <em>max_val</em>, <em>init_val=None</em>, <em>dist='uniform'</em>, <em>scale='log'</em>, <em>log_base=2.718281828459045</em>, <em>interval=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="params.Param.get_dist">
+<code class="descname">get_dist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_dist" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="params.Param.get_max">
+<code class="descname">get_max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_max" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="params.Param.get_min">
+<code class="descname">get_min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_min" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="params.Param.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="params.Param.get_param_range">
+<code class="descname">get_param_range</code><span class="sig-paren">(</span><em>num</em>, <em>stochastic=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_param_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_param_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="params.Param.get_scale">
+<code class="descname">get_scale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_scale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="params.Param.get_type">
+<code class="descname">get_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params.html#Param.get_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.Param.get_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <span class="target" id="module-classifiers.logistic"></span><dl class="class">
 <dt id="classifiers.logistic.LogisticRegression">
 <em class="property">class </em><code class="descclassname">classifiers.logistic.</code><code class="descname">LogisticRegression</code><span class="sig-paren">(</span><em>input_data</em>, <em>n</em>, <em>m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/logistic.html#LogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.logistic.LogisticRegression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#models.Model" title="models.Model"><code class="xref py py-class docutils literal"><span class="pre">models.Model</span></code></a></p>
+<dl class="method">
+<dt id="classifiers.logistic.LogisticRegression.generate_arms">
+<code class="descname">generate_arms</code><span class="sig-paren">(</span><em>n</em>, <em>path</em>, <em>params</em>, <em>default=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/logistic.html#LogisticRegression.generate_arms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.logistic.LogisticRegression.generate_arms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that generates a dictionary of configurations/arms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> – number of arms to generate</li>
+<li><strong>path</strong> – path to which we store the results later</li>
+<li><strong>params</strong> – hyperparameter to be optimized</li>
+<li><strong>default</strong> – default arm option</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="classifiers.logistic.LogisticRegression.get_search_space">
+<em class="property">static </em><code class="descname">get_search_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/logistic.html#LogisticRegression.get_search_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.logistic.LogisticRegression.get_search_space" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="classifiers.logistic.LogisticRegression.neg_log_likelihood">
+<code class="descname">neg_log_likelihood</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/logistic.html#LogisticRegression.neg_log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.logistic.LogisticRegression.neg_log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log-likelihood Loss.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>y</strong> – correct label vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the mean of the negative log-likelihood of the prediction, we use mean instead of sum here</td>
+</tr>
+</tbody>
+</table>
+<p>to make the learning rate less dependent of the size of the minibatch size</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="classifiers.logistic.LogisticRegression.run_solver">
+<em class="property">static </em><code class="descname">run_solver</code><span class="sig-paren">(</span><em>epochs</em>, <em>arm</em>, <em>data</em>, <em>rng=None</em>, <em>classifier=None</em>, <em>track=array([ 1.])</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/logistic.html#LogisticRegression.run_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.logistic.LogisticRegression.run_solver" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>epochs</strong> – number of epochs</li>
+<li><strong>arm</strong> – hyperparameter configuration encoded as a dictionary</li>
+<li><strong>data</strong> – dataset to use</li>
+<li><strong>rng</strong> – not used here</li>
+<li><strong>classifier</strong> – initial model, set as None by default</li>
+<li><strong>track</strong> – vector where we store the test errors</li>
+<li><strong>verbose</strong> – verbose option</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="classifiers.logistic.LogisticRegression.zero_one">
+<code class="descname">zero_one</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/logistic.html#LogisticRegression.zero_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.logistic.LogisticRegression.zero_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zero-one Loss.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>y</strong> – correct label vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the zero-one Loss over the size of minibatch</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 <span class="target" id="module-classifiers.mlp"></span><dl class="class">
 <dt id="classifiers.mlp.HiddenLayer">
 <em class="property">class </em><code class="descclassname">classifiers.mlp.</code><code class="descname">HiddenLayer</code><span class="sig-paren">(</span><em>rng</em>, <em>input_data</em>, <em>n</em>, <em>m</em>, <em>w=None</em>, <em>b=None</em>, <em>activation=&lt;theano.tensor.elemwise.Elemwise object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/mlp.html#HiddenLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.mlp.HiddenLayer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
 
 <dl class="class">
 <dt id="classifiers.mlp.MLP">
 <em class="property">class </em><code class="descclassname">classifiers.mlp.</code><code class="descname">MLP</code><span class="sig-paren">(</span><em>input_data</em>, <em>n_in</em>, <em>n_hidden</em>, <em>n_out</em>, <em>rng=&lt;mtrand.RandomState object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/mlp.html#MLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.mlp.MLP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#models.Model" title="models.Model"><code class="xref py py-class docutils literal"><span class="pre">models.Model</span></code></a></p>
+<dl class="method">
+<dt id="classifiers.mlp.MLP.generate_arms">
+<code class="descname">generate_arms</code><span class="sig-paren">(</span><em>n</em>, <em>path</em>, <em>params</em>, <em>default=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/mlp.html#MLP.generate_arms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.mlp.MLP.generate_arms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that generates a dictionary of configurations/arms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> – number of arms to generate</li>
+<li><strong>path</strong> – path to which we store the results later</li>
+<li><strong>params</strong> – hyperparameter to be optimized</li>
+<li><strong>default</strong> – default arm option</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="classifiers.mlp.MLP.get_search_space">
+<em class="property">static </em><code class="descname">get_search_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/mlp.html#MLP.get_search_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.mlp.MLP.get_search_space" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="classifiers.mlp.MLP.run_solver">
+<em class="property">static </em><code class="descname">run_solver</code><span class="sig-paren">(</span><em>epochs</em>, <em>arm</em>, <em>data</em>, <em>rng=&lt;mtrand.RandomState object&gt;</em>, <em>classifier=None</em>, <em>track=array([ 1.])</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/classifiers/mlp.html#MLP.run_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#classifiers.mlp.MLP.run_solver" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>epochs</strong> – </li>
+<li><strong>arm</strong> – </li>
+<li><strong>data</strong> – </li>
+<li><strong>rng</strong> – </li>
+<li><strong>classifier</strong> – </li>
+<li><strong>track</strong> – </li>
+<li><strong>verbose</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="indices-and-tables">

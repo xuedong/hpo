@@ -92,16 +92,16 @@
         <span class="c1"># keep track of the input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span>
 
-    <span class="k">def</span> <span class="nf">neg_log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="LogisticRegression.neg_log_likelihood"><a class="viewcode-back" href="../../index.html#classifiers.logistic.LogisticRegression.neg_log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">neg_log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log-likelihood Loss.</span>
 
 <span class="sd">        :param y: correct label vector</span>
 <span class="sd">        :return: the mean of the negative log-likelihood of the prediction, we use mean instead of sum here</span>
 <span class="sd">        to make the learning rate less dependent of the size of the minibatch size</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">ts</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_y_x</span><span class="p">)[</span><span class="n">ts</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">y</span><span class="p">])</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">ts</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_y_x</span><span class="p">)[</span><span class="n">ts</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">y</span><span class="p">])</span></div>
 
-    <span class="k">def</span> <span class="nf">zero_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="LogisticRegression.zero_one"><a class="viewcode-back" href="../../index.html#classifiers.logistic.LogisticRegression.zero_one">[docs]</a>    <span class="k">def</span> <span class="nf">zero_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Zero-one Loss.</span>
 
 <span class="sd">        :param y: correct label vector</span>
@@ -115,9 +115,9 @@
         <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">neq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">generate_arms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="LogisticRegression.generate_arms"><a class="viewcode-back" href="../../index.html#classifiers.logistic.LogisticRegression.generate_arms">[docs]</a>    <span class="k">def</span> <span class="nf">generate_arms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Function that generates a dictionary of configurations/arms.</span>
 
 <span class="sd">        :param n: number of arms to generate</span>
@@ -154,9 +154,9 @@
 
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;../../../src&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">arms</span>
+        <span class="k">return</span> <span class="n">arms</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="LogisticRegression.run_solver"><a class="viewcode-back" href="../../index.html#classifiers.logistic.LogisticRegression.run_solver">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">run_solver</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">arm</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -329,9 +329,9 @@
                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
                    <span class="s1">&#39; ran for </span><span class="si">%.1f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">best_valid_loss</span><span class="p">,</span> <span class="n">test_score</span><span class="p">,</span> <span class="n">current_track</span>
+        <span class="k">return</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">best_valid_loss</span><span class="p">,</span> <span class="n">test_score</span><span class="p">,</span> <span class="n">current_track</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="LogisticRegression.get_search_space"><a class="viewcode-back" href="../../index.html#classifiers.logistic.LogisticRegression.get_search_space">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_search_space</span><span class="p">():</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
@@ -339,7 +339,7 @@
             <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="p">}</span>
 
-        <span class="k">return</span> <span class="n">params</span></div>
+        <span class="k">return</span> <span class="n">params</span></div></div>
 </pre></div>
 
           </div>

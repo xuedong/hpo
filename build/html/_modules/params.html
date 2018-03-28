@@ -70,7 +70,7 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(</span><span class="si">%f</span><span class="s2">, </span><span class="si">%f</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_param_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">stochastic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Param.get_param_range"><a class="viewcode-back" href="../index.html#params.Param.get_param_range">[docs]</a>    <span class="k">def</span> <span class="nf">get_param_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">stochastic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">stochastic</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
                 <span class="c1"># if Gaussian, then min_val = mean, max_val = sigma</span>
@@ -89,27 +89,27 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">values</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">values</span>
+        <span class="k">return</span> <span class="n">values</span></div>
 
-    <span class="k">def</span> <span class="nf">get_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_val</span>
+<div class="viewcode-block" id="Param.get_min"><a class="viewcode-back" href="../index.html#params.Param.get_min">[docs]</a>    <span class="k">def</span> <span class="nf">get_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_val</span></div>
 
-    <span class="k">def</span> <span class="nf">get_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_val</span>
+<div class="viewcode-block" id="Param.get_max"><a class="viewcode-back" href="../index.html#params.Param.get_max">[docs]</a>    <span class="k">def</span> <span class="nf">get_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_val</span></div>
 
-    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Param.get_type"><a class="viewcode-back" href="../index.html#params.Param.get_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;integer&#39;</span>
-        <span class="k">return</span> <span class="s1">&#39;continuous&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;continuous&#39;</span></div>
 
-    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+<div class="viewcode-block" id="Param.get_name"><a class="viewcode-back" href="../index.html#params.Param.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-    <span class="k">def</span> <span class="nf">get_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span>
+<div class="viewcode-block" id="Param.get_dist"><a class="viewcode-back" href="../index.html#params.Param.get_dist">[docs]</a>    <span class="k">def</span> <span class="nf">get_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span></div>
 
-    <span class="k">def</span> <span class="nf">get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span></div>
+<div class="viewcode-block" id="Param.get_scale"><a class="viewcode-back" href="../index.html#params.Param.get_scale">[docs]</a>    <span class="k">def</span> <span class="nf">get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span></div></div>
 </pre></div>
 
           </div>

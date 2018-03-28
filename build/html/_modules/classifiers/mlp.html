@@ -120,7 +120,7 @@
         <span class="c1"># keep track of the input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span>
 
-    <span class="k">def</span> <span class="nf">generate_arms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MLP.generate_arms"><a class="viewcode-back" href="../../index.html#classifiers.mlp.MLP.generate_arms">[docs]</a>    <span class="k">def</span> <span class="nf">generate_arms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Function that generates a dictionary of configurations/arms.</span>
 
 <span class="sd">        :param n: number of arms to generate</span>
@@ -161,9 +161,9 @@
 
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;../../../src&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">arms</span>
+        <span class="k">return</span> <span class="n">arms</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MLP.run_solver"><a class="viewcode-back" href="../../index.html#classifiers.mlp.MLP.run_solver">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">run_solver</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">arm</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
                    <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">1234</span><span class="p">),</span> <span class="n">classifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">track</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -338,9 +338,9 @@
                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
                    <span class="s1">&#39; ran for </span><span class="si">%.2f</span><span class="s1">m&#39;</span> <span class="o">%</span> <span class="p">((</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.</span><span class="p">)),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">best_valid_loss</span><span class="p">,</span> <span class="n">test_score</span><span class="p">,</span> <span class="n">current_track</span>
+        <span class="k">return</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">best_valid_loss</span><span class="p">,</span> <span class="n">test_score</span><span class="p">,</span> <span class="n">current_track</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MLP.get_search_space"><a class="viewcode-back" href="../../index.html#classifiers.mlp.MLP.get_search_space">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_search_space</span><span class="p">():</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
@@ -349,7 +349,7 @@
             <span class="s1">&#39;l2_reg&#39;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="s1">&#39;l2_reg&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)),</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
         <span class="p">}</span>
 
-        <span class="k">return</span> <span class="n">params</span></div>
+        <span class="k">return</span> <span class="n">params</span></div></div>
 </pre></div>
 
           </div>
