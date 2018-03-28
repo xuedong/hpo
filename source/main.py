@@ -31,29 +31,29 @@ def main(model):
     # rng = np.random.RandomState(12345)
     random.seed(12345)
     model_name = model + '_sgd_'
-    exp_name = 'hoo_' + model + '_0/'
+    exp_name = 'hyperband_' + model + '_2/'
 
-    for seed_id in range(10):
+    for seed_id in range(5):
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
         log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
-        sys.stdout = logger.Logger(log_dir, 'hoo')
+        sys.stdout = logger.Logger(log_dir, 'hyperband')
 
-        # x = ts.matrix('x')
-        # test_model = logistic.LogisticRegression(x, 28*28, 10)
+        x = ts.matrix('x')
+        test_model = logistic.LogisticRegression(x, 28*28, 10)
         # test_model = mlp.MLP(x, 28*28, 500, 10, rng)
         params = logistic.LogisticRegression.get_search_space()
         # params = mlp.MLP.get_search_space()
 
         # <-- Running Hyperband
 
-        # start_time = timeit.default_timer()
+        start_time = timeit.default_timer()
 
-        # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-        #                                   verbose=True)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
+                                          verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=0,
         #                                   verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
@@ -63,9 +63,8 @@ def main(model):
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=3,
         #                                   verbose=True)
         # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
-        # print(train_loss, val_acc, test_acc)
 
-        # end_time = timeit.default_timer()
+        end_time = timeit.default_timer()
 
         # <-- Running TPE
 
@@ -104,23 +103,23 @@ def main(model):
 
         # <-- Running HOO
 
-        start_time = timeit.default_timer()
-
-        f_target = target.TheanoLogistic(1, data, director)
-        bbox = utils_ho.std_box(f_target.f, None, 2, 0.1,
-                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-                                 (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                                [params['learning_rate'].get_type(), params['batch_size'].get_type()])
-
-        alpha = math.log(10) * (0.1 ** 2)
-        # losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, horizon=10)
-        losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=401, update=False)
-        losses = np.array(losses)
-
-        with open(director + '/results.pkl', 'wb') as file:
-            cPickle.dump(-losses, file)
-
-        end_time = timeit.default_timer()
+        # start_time = timeit.default_timer()
+        #
+        # f_target = target.TheanoLogistic(1, data, director)
+        # bbox = utils_ho.std_box(f_target.f, None, 2, 0.1,
+        #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+        #                          (params['batch_size'].get_min(), params['batch_size'].get_max())],
+        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+        #
+        # alpha = math.log(10) * (0.1 ** 2)
+        # # losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, horizon=10)
+        # losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=401, update=False)
+        # losses = np.array(losses)
+        #
+        # with open(director + '/results.pkl', 'wb') as file:
+        #     cPickle.dump(-losses, file)
+        #
+        # end_time = timeit.default_timer()
 
         print(('The code for the trial number ' +
                str(seed_id) +

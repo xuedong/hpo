@@ -97,14 +97,16 @@ def loss_hct(bbox, rho, nu, c, c1, delta, horizon):
     hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
     best = -np.float('inf')
 
-    for i in range(1, horizon+1):
+    bar = progressbar.ProgressBar()
+
+    for i in bar(range(1, horizon+1)):
         tplus = int(2 ** (math.ceil(math.log(i))))
         dvalue = min(c1 * delta / tplus, 0.5)
 
         if i == tplus:
             hctree.update(c, dvalue)
         x, _, _ = hctree.sample(c, dvalue)
-        current = bbox.f_mean(x)
+        current = bbox.f_noised(x)
         if current > best:
             best = current
             losses[i-1] = best
