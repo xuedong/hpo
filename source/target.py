@@ -13,8 +13,8 @@ import theano.tensor as ts
 # import matplotlib.pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
-import src.utils as utils
-import src.classifiers.logistic as logistic
+import source.utils as utils
+import source.classifiers.logistic as logistic
 
 # from sklearn.metrics import log_loss, mean_squared_error
 # from sklearn.model_selection import train_test_split, KFold
