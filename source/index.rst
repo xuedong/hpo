@@ -10,7 +10,9 @@ Welcome to hpo's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. automodule:: classifiers.logistic
 
+.. autoclass:: LogisticRegression
 
 Indices and tables
 ==================
