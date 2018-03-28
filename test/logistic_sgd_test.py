@@ -8,8 +8,8 @@ from six.moves import cPickle
 
 import sys
 
-import src.classifiers.logistic as logistic
-import src.utils as utils
+import source.classifiers.logistic as logistic
+import source.utils as utils
 
 # Hyperparameters
 LEARNING_RATE = 0.13

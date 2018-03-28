@@ -8,10 +8,10 @@ import theano.tensor as ts
 
 import sys
 
-import src.classifiers.logistic as logistic
-import src.classifiers.mlp as mlp
-import src.classifiers.cnn as cnn
-import src.utils as utils
+import source.classifiers.logistic as logistic
+import source.classifiers.mlp as mlp
+import source.classifiers.cnn as cnn
+import source.utils as utils
 
 # Parameters
 LEARNING_RATE = 0.1

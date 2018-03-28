@@ -1,4 +1,4 @@
-import src.plots as plots
+import source.plots as plots
 
 
 if __name__ == "__main__":

@@ -2,9 +2,9 @@ import timeit
 import theano.tensor as ts
 from six.moves import cPickle
 
-import src.classifiers.logistic as logistic
-import src.utils as utils
-import src.bo.tpe_hyperopt as tpe_hyperopt
+import source.classifiers.logistic as logistic
+import source.utils as utils
+import source.bo.tpe_hyperopt as tpe_hyperopt
 
 from hyperopt import tpe
 from hyperopt import fmin

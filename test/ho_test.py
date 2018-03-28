@@ -3,12 +3,12 @@ import math
 import timeit
 import theano.tensor as ts
 
-import src.target as target
+import source.target as target
 # import src.ho.hoo as hoo
 # import src.ho.hct as hct
-import src.ho.utils_ho as utils_ho
-import src.utils as utils
-import src.classifiers.logistic as logistic
+import source.ho.utils_ho as utils_ho
+import source.utils as utils
+import source.classifiers.logistic as logistic
 
 
 if __name__ == '__main__':

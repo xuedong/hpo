@@ -8,8 +8,8 @@ from six.moves import cPickle
 
 import sys
 
-import src.classifiers.mlp as mlp
-import src.utils as utils
+import source.classifiers.mlp as mlp
+import source.utils as utils
 
 # Parameters
 LEARNING_RATE = 0.01

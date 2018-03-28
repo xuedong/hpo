@@ -3,8 +3,8 @@ import unittest
 import theano.tensor as ts
 from hyperopt import hp
 
-import src.classifiers.logistic as logistic
-from src.bo.tpe_hyperopt import convert_params
+import source.classifiers.logistic as logistic
+from source.bo.tpe_hyperopt import convert_params
 
 
 x = ts.matrix('x')
