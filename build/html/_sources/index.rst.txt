@@ -10,9 +10,18 @@ Welcome to hpo's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: classifiers.logistic
+.. automodule:: models
+.. autoclass:: Model
 
+.. automodule:: params
+.. autoclass:: Param
+
+.. automodule:: classifiers.logistic
 .. autoclass:: LogisticRegression
+
+.. automodule:: classifiers.mlp
+.. autoclass:: HiddenLayer
+.. autoclass:: MLP
 
 Indices and tables
 ==================
