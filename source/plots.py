@@ -7,6 +7,51 @@ from six.moves import cPickle
 from bo.tpe_hyperopt import combine_tracks
 
 
+def plot_random(path, trials, classifier_name, optimizer_name, dataset_name, idx):
+    """Plot test error evaluation of random search.
+
+    :param path:
+    :param s:
+    :param trials:
+    :param classifier_name:
+    :param optimizer_name:
+    :param dataset_name:
+    :param idx:
+    :return:
+    """
+    os.chdir(path)
+    fig = plt.figure()
+
+    tracks = np.array([None for _ in range(trials)])
+    shortest = sys.maxsize
+    for i in range(trials):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                          + '/results_0.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(trials):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                          + '/results_0.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    length = len(tracks[0])
+    x = range(length)
+    y = np.mean(tracks, axis=0)
+    plt.plot(x, y, label=r"Random Search")
+
+    plt.grid()
+    plt.ylim((0, 0.2))
+    plt.legend(loc=0)
+    plt.ylabel('Test Error')
+    plt.xlabel('Number of Epochs')
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('random_' + classifier_name + str(idx)))
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('random_' + classifier_name +
+                                                                               str(idx), dataset_name)))
+    plt.close(fig)
+
+
 def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset_name, idx):
     """Plot test error evaluation of hyperband with different s values.
 
