@@ -12,6 +12,7 @@ import theano.tensor as ts
 # import matplotlib as mpl
 # import matplotlib.pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
+from six.moves import cPickle
 
 import source.utils as utils
 import source.classifiers.logistic as logistic
@@ -183,6 +184,7 @@ class TheanoLogistic:
     def __init__(self, epochs, data, director):
         x = ts.matrix('x')
         self.model = logistic.LogisticRegression(x, 28*28, 10)
+        self.classifier = None
         self.epochs = epochs
         self.data = data
         self.track = None
@@ -190,6 +192,12 @@ class TheanoLogistic:
 
     def f(self, x):
         arm = {'dir': self.director, 'learning_rate': np.exp(x[0]), 'batch_size': int(x[1]), 'results': []}
-        train_loss, best_valid_loss, test_score, track = self.model.run_solver(self.epochs, arm, self.data)
+        train_loss, best_valid_loss, test_score, track = self.model.run_solver(self.epochs, arm, self.data,
+                                                                               classifier=self.classifier,
+                                                                               verbose=True)
+        self.classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
         self.track = track
         return -test_score
+
+    def reset(self):
+        self.classifier = None

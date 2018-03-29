@@ -10,7 +10,8 @@ if __name__ == "__main__":
     # plots.plot_hyperband(path, 0, 5, 'logistic_', 'sgd_', 'mnist', 2)
 
     path = "../result/hyperband_logistic_2"
-    plots.plot_random(path, 5, 'logistic_', 'sgd_', 'mnist', 2)
+    # plots.plot_random(path, 5, 'logistic_', 'sgd_', 'mnist', 2)
+    plots.plot_hyperband_only(path, 5, 'logistic_', 'sgd_', 'mnist', 2)
 
     # path = "../result/tpe_logistic_0/"
     # plots.plot_tpe(path, 10, 'logistic_', 'sgd_', 'mnist', 0)

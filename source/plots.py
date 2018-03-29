@@ -52,6 +52,48 @@ def plot_random(path, trials, classifier_name, optimizer_name, dataset_name, idx
     plt.close(fig)
 
 
+def plot_hyperband_only(path, trials, classifier_name, optimizer_name, dataset_name, idx):
+    """Plot test error evaluation of hyperband with different s values.
+
+    :param path: path to which the result image is stored
+    :param trials: number of trials of one algorithm
+    :param classifier_name: name of the classifier
+    :param optimizer_name: name of the optimizer
+    :param dataset_name: name of the dataset
+    :param idx: id of the experiment
+    :return:
+    """
+    os.chdir(path)
+    fig = plt.figure()
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(trials)])
+    for i in range(trials):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(trials):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    y = np.mean(tracks, axis=0)
+    plt.plot(x, y, label=r"Hyperband")
+
+    plt.grid()
+    plt.ylim((0, 0.2))
+    plt.legend(loc=0)
+    plt.ylabel('Test Error')
+    plt.xlabel('Number of Epochs')
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('hyperband_' + classifier_name + str(idx)))
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hyperband_' + classifier_name +
+                                                                               str(idx), dataset_name)))
+    plt.close(fig)
+
+
 def plot_hyperband(path, s_max, trials, classifier_name, optimizer_name, dataset_name, idx):
     """Plot test error evaluation of hyperband with different s values.
 

@@ -22,6 +22,7 @@ class HCTree:
         self.nu = nu
         self.box = box
         self.children = []
+        self.change_status = False
 
     def add_children(self, c, dvalue):
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
@@ -35,9 +36,11 @@ class HCTree:
 
     def explore(self, c, dvalue):
         if self.tvalue < self.tau:
+            self.change_status = False
             return self
         elif not self.children:
             self.add_children(c, dvalue)
+            self.change_status = True
             return random.choice(self.children)
         else:
             return max(self.children, key=lambda x: x.bvalue).explore(c, dvalue)
@@ -87,3 +90,6 @@ class HCTree:
         leaf.update_path(leaf.noisy, c, dvalue)
 
         return leaf.evaluated, leaf.noisy, existed
+
+    def get_change_status(self):
+        return self.change_status

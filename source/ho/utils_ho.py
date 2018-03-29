@@ -15,12 +15,71 @@ import ho.poo as poo
 import ho.hct as hct
 
 
-def std_box(f, fmax, nsplits, sigma, support, support_type):
-    box = Box(f, fmax, nsplits, support, support_type)
+def std_box(target, fmax, nsplits, sigma, support, support_type):
+    box = Box(target, fmax, nsplits, support, support_type)
     box.std_partition()
     box.std_noise(sigma)
 
     return box
+
+
+class Box:
+    def __init__(self, target, fmax, nsplits, support, support_type):
+        self.target = target
+        self.f_noised = None
+        self.f_mean = target.f
+        self.fmax = fmax
+        self.split = None
+        self.center = None
+        self.rand = None
+        self.nsplits = nsplits
+        self.support = support
+        self.support_type = support_type
+
+    def std_partition(self):
+        """Standard partitioning of a black box.
+        """
+        self.center = std_center
+        self.rand = std_rand
+        self.split = std_split
+
+    def std_noise(self, sigma):
+        """Stochastic target with Gaussian or uniform noise.
+        """
+        self.f_noised = lambda x: self.f_mean(x) + sigma*np.random.normal(0, sigma)
+        # self.f_noised = lambda x: self.f_mean(x) + sigma*random.random()
+
+    """
+    def plot1D(self):
+        a, b = self.side
+        fig, ax = plt.subplots()
+        ax.set_xlim(a, b)
+        x = np.array([a+i/10000. for i in range(int((b-a)*10000))])
+        y = np.array([self.f_mean([x[i]]) for i in range(int((b-a)*10000))])
+        plt.plot(x, y)
+        plt.show()
+
+    def plot2D(self):
+        # 2D spaced down level curve plot
+        x = np.array([(i-600)/100. for i in range(1199)])
+        y = np.array([(j-600)/100. for j in range(1199)])
+        x, Y = pl.meshgrid(x, y)
+        Z = np.array([[self.f_mean([(i-600)/100., (j-600)/100.]) for i in range(1199)] for j in range(1199)])
+
+        im = pl.imshow(Z, cmap=pl.cm.RdBu)
+        cset = pl.contour(Z, np.arange(-1, 1.5, 0.2), linewidths=2, cmap=pl.cm.Set2)
+        pl.colorbar(im)
+        pl.show()
+
+        # 3D plot
+        fig = mpl.pyplot.figure()
+        ax = fig.gca(projection='3d')
+        surf = ax.plot_surface(x, Y, Z, rstride=1, cstride=1, cmap=pl.cm.RdBu, linewidth=0, antialiased=False)
+        ax.zaxis.set_major_locator(mpl.ticker.LinearLocator(10))
+        ax.zaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%.02f'))
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+        mpl.pyplot.show()
+    """
 
 
 # Regret for HOO
@@ -92,7 +151,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
     return y_cum, y_sim, x_sel
 
 
-def loss_hct(bbox, rho, nu, c, c1, delta, horizon):
+def loss_hct(bbox: Box, rho, nu, c, c1, delta, horizon):
     losses = [0. for _ in range(horizon)]
     hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
     best = -np.float('inf')
@@ -106,7 +165,11 @@ def loss_hct(bbox, rho, nu, c, c1, delta, horizon):
         if i == tplus:
             hctree.update(c, dvalue)
         x, _, _ = hctree.sample(c, dvalue)
-        current = bbox.f_noised(x)
+        # The following if-statement is only valid for HCT
+        # TODO: generalization
+        if hctree.get_change_status():
+            bbox.target.reset()
+        current = bbox.f_mean(x)
         if current > best:
             best = current
             losses[i-1] = best
@@ -365,61 +428,3 @@ def std_split(support, support_type, nsplits):
         supports_type[i] = support_type
 
     return supports, supports_type
-
-
-class Box:
-    def __init__(self, f, fmax, nsplits, support, support_type):
-        self.f_noised = None
-        self.f_mean = f
-        self.fmax = fmax
-        self.split = None
-        self.center = None
-        self.rand = None
-        self.nsplits = nsplits
-        self.support = support
-        self.support_type = support_type
-
-    def std_partition(self):
-        """Standard partitioning of a black box.
-        """
-        self.center = std_center
-        self.rand = std_rand
-        self.split = std_split
-
-    def std_noise(self, sigma):
-        """Stochastic target with Gaussian or uniform noise.
-        """
-        self.f_noised = lambda x: self.f_mean(x) + sigma*np.random.normal(0, sigma)
-        # self.f_noised = lambda x: self.f_mean(x) + sigma*random.random()
-
-    """
-    def plot1D(self):
-        a, b = self.side
-        fig, ax = plt.subplots()
-        ax.set_xlim(a, b)
-        x = np.array([a+i/10000. for i in range(int((b-a)*10000))])
-        y = np.array([self.f_mean([x[i]]) for i in range(int((b-a)*10000))])
-        plt.plot(x, y)
-        plt.show()
-
-    def plot2D(self):
-        # 2D spaced down level curve plot
-        x = np.array([(i-600)/100. for i in range(1199)])
-        y = np.array([(j-600)/100. for j in range(1199)])
-        x, Y = pl.meshgrid(x, y)
-        Z = np.array([[self.f_mean([(i-600)/100., (j-600)/100.]) for i in range(1199)] for j in range(1199)])
-
-        im = pl.imshow(Z, cmap=pl.cm.RdBu)
-        cset = pl.contour(Z, np.arange(-1, 1.5, 0.2), linewidths=2, cmap=pl.cm.Set2)
-        pl.colorbar(im)
-        pl.show()
-
-        # 3D plot
-        fig = mpl.pyplot.figure()
-        ax = fig.gca(projection='3d')
-        surf = ax.plot_surface(x, Y, Z, rstride=1, cstride=1, cmap=pl.cm.RdBu, linewidth=0, antialiased=False)
-        ax.zaxis.set_major_locator(mpl.ticker.LinearLocator(10))
-        ax.zaxis.set_major_formatter(mpl.ticker.FormatStrFormatter('%.02f'))
-        fig.colorbar(surf, shrink=0.5, aspect=5)
-        mpl.pyplot.show()
-    """
