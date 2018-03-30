@@ -75,7 +75,8 @@ class LogisticRegression(Model):
         else:
             raise NotImplementedError()
 
-    def generate_arms(self, n, path, params, default=False):
+    @staticmethod
+    def generate_arms(n, path, params, default=False):
         """Function that generates a dictionary of configurations/arms.
 
         :param n: number of arms to generate
@@ -140,12 +141,15 @@ class LogisticRegression(Model):
 
         # symbolic variables
         index = ts.lscalar()
-        x = ts.matrix('x')
+        # x = ts.matrix('x')
         y = ts.ivector('y')
 
         # construct a classifier
         if not classifier:
+            x = ts.matrix('x')
             classifier = LogisticRegression(input_data=x, n=28*28, m=10)
+        else:
+            x = classifier.input_data
         cost = classifier.neg_log_likelihood(y)
 
         # construct a Theano function that computes the errors made

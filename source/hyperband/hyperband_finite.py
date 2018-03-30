@@ -41,12 +41,12 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
             if verbose:
                 print(arms[arm_key])
 
-            if not os.path.exists('../' + arms[arm_key]['dir'] + '/best_model.pkl'):
+            if not os.path.exists(arms[arm_key]['dir'] + '/best_model.pkl'):
                 train_loss, val_err, test_err, current_track = \
                     model.run_solver(num_pulls, arms[arm_key], data,
                                      rng=rng, track=current_track, verbose=verbose)
             else:
-                classifier = cPickle.load(open('../' + arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
+                classifier = cPickle.load(open(arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
                 train_loss, val_err, test_err, current_track = \
                     model.run_solver(num_pulls, arms[arm_key], data,
                                      rng=rng, classifier=classifier, track=current_track, verbose=verbose)

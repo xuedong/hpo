@@ -42,9 +42,10 @@ def main(model):
             os.makedirs(log_dir)
         sys.stdout = logger.Logger(log_dir, 'hyperband')
 
-        x = ts.matrix('x')
-        test_model = logistic.LogisticRegression(x, 28*28, 10)
+        # x = ts.matrix('x')
+        # test_model = logistic.LogisticRegression(x, 28*28, 10)
         # test_model = mlp.MLP(x, 28*28, 500, 10, rng)
+        test_model = logistic.LogisticRegression
         params = logistic.LogisticRegression.get_search_space()
         # params = mlp.MLP.get_search_space()
 

@@ -4,12 +4,14 @@ import abc
 class Model:
     __metaclass__ = abc.ABCMeta
 
+    @staticmethod
     @abc.abstractmethod
-    def generate_arms(self, n, path, params):
+    def generate_arms(n, path, params):
         pass
 
+    @staticmethod
     @abc.abstractmethod
-    def run_solver(self, iterations, arm, classifier):
+    def run_solver(iterations, arm, classifier):
         pass
 
     @staticmethod

@@ -13,7 +13,7 @@ from source.classifiers.clfs_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 2
+    horizon = 10
     c = 2 * math.sqrt(1. / (1 - 0.66))
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     # f_target = target.Rosenbrock(1, 100)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # test_model = logistic.LogisticRegression(x, 28*28, 10)
     params = logistic.LogisticRegression.get_search_space()
 
-    f_target = target.TheanoLogistic(10, data, ".")
+    f_target = target.TheanoLogistic(1, data, ".")
     bbox = utils_ho.std_box(f_target, None, 2, 0.1,
                             [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
                              (params['batch_size'].get_min(), params['batch_size'].get_max())],

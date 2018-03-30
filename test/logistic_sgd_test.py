@@ -201,7 +201,7 @@ def predict(path, test_input):
 
 
 if __name__ == '__main__':
-    # sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
+    sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
     # test_data = utils.load_data(DATASET)
     # test_inputs, _ = test_data[2]
     # predict('best_model_logistic_sgd.pkl', test_inputs)

@@ -78,7 +78,8 @@ class MLP(Model):
         # keep track of the input
         self.input_data = input_data
 
-    def generate_arms(self, n, path, params, default=False):
+    @staticmethod
+    def generate_arms(n, path, params, default=False):
         """Function that generates a dictionary of configurations/arms.
 
         :param n: number of arms to generate
