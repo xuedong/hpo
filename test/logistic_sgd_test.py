@@ -20,13 +20,14 @@ BATCH_SIZE = 100
 DATASET = 'mnist.pkl.gz'
 
 
-def sgd(dataset, learning_rate, epochs, batch_size):
+def sgd(dataset, learning_rate, epochs, batch_size, classifier=None):
     """Applying stochastic gradient descent on a logistic regression model.
 
     :param dataset: path to the dataset
     :param learning_rate: learning rate used
     :param epochs: number of times to run the optimizer
     :param batch_size: size of the minibatch
+    :param classifier: initial model
     :return: None
     """
     data = utils.load_data(dataset)
@@ -42,11 +43,15 @@ def sgd(dataset, learning_rate, epochs, batch_size):
 
     # symbolic variables
     index = ts.lscalar()
-    x = ts.matrix('x')
+    # x = ts.matrix('x')
     y = ts.ivector('y')
 
     # construct the classifier
-    classifier = logistic.LogisticRegression(input_data=x, n=28*28, m=10)
+    if not classifier:
+        x = ts.matrix('x')
+        classifier = logistic.LogisticRegression(input_data=x, n=28*28, m=10)
+    else:
+        x = classifier.input_data
     cost = classifier.neg_log_likelihood(y)
 
     # construct a Theano function that computes the errors made
@@ -145,7 +150,7 @@ def sgd(dataset, learning_rate, epochs, batch_size):
                     )
 
                     # save the best model
-                    with open('../log/best_model_logistic_sgd.pkl', 'wb') as file:
+                    with open('best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
             if patience <= iteration:
@@ -196,7 +201,9 @@ def predict(path, test_input):
 
 
 if __name__ == '__main__':
-    sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
+    # sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE)
     # test_data = utils.load_data(DATASET)
     # test_inputs, _ = test_data[2]
-    # predict('../log/best_model_logistic_sgd.pkl', test_inputs)
+    # predict('best_model_logistic_sgd.pkl', test_inputs)
+    clf = cPickle.load(open('best_model_logistic_sgd.pkl', 'rb'))
+    sgd(DATASET, LEARNING_RATE, EPOCHS, BATCH_SIZE, classifier=clf)

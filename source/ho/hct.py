@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
 import random
-# import numpy as np
+import numpy as np
 import math
 
 
 class HCTree:
-    def __init__(self, support, support_type, father, depth, rho, nu, tvalue, tau, box):
+    def __init__(self, support, support_type, father, depth, rho, nu, tvalue, tau, sigma, box):
         self.bvalue = float('inf')
         self.uvalue = float('inf')
         self.tvalue = tvalue
         self.tau = tau
         self.reward = 0.
+        self.mean_reward = None
         self.noisy = None
         self.evaluated = None
         self.support = support
@@ -20,6 +21,7 @@ class HCTree:
         self.depth = depth
         self.rho = rho
         self.nu = nu
+        self.sigma = sigma
         self.box = box
         self.children = []
         self.change_status = False
@@ -30,7 +32,7 @@ class HCTree:
 
         tau = c**2 * math.log(1./dvalue) * self.rho**(-2*(self.depth+1))/(self.nu**2)
         self.children = [HCTree(supports[i], supports_type[i],
-                                self, self.depth + 1, self.rho, self.nu, 0, tau, self.box)
+                                self, self.depth + 1, self.rho, self.nu, 0, tau, self.sigma, self.box)
                          for i in range(len(supports))]
         print(self.depth)
 
@@ -85,11 +87,14 @@ class HCTree:
         if leaf.noisy is None:
             x = self.box.center(leaf.support, leaf.support_type)
             leaf.evaluated = x
-            leaf.noisy = self.box.f_noised(x)
+            leaf.mean_reward = self.box.f_mean(x)
+            leaf.noisy = leaf.mean_reward + self.sigma * np.random.normal(0, self.sigma)
             existed = True
+        else:
+            leaf.mean_reward = self.box.f_mean(leaf.evaluated)
         leaf.update_path(leaf.noisy, c, dvalue)
 
-        return leaf.evaluated, leaf.noisy, existed
+        return leaf.evaluated, leaf.mean_reward, leaf.noisy, existed
 
     def get_change_status(self):
         return self.change_status

@@ -182,19 +182,17 @@ class SklearnMLP:
 
 class TheanoLogistic:
     def __init__(self, epochs, data, director):
-        x = ts.matrix('x')
-        self.model = logistic.LogisticRegression(x, 28*28, 10)
         self.classifier = None
         self.epochs = epochs
         self.data = data
         self.track = None
         self.director = director
 
-    def f(self, x):
-        arm = {'dir': self.director, 'learning_rate': np.exp(x[0]), 'batch_size': int(x[1]), 'results': []}
-        train_loss, best_valid_loss, test_score, track = self.model.run_solver(self.epochs, arm, self.data,
-                                                                               classifier=self.classifier,
-                                                                               verbose=True)
+    def f(self, hps):
+        arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
+        train_loss, best_valid_loss, test_score, track = \
+            logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
+                                                   classifier=self.classifier, verbose=True)
         self.classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
         self.track = track
         return -test_score

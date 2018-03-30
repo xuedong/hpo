@@ -31,9 +31,9 @@ def main(model):
     # rng = np.random.RandomState(12345)
     random.seed(12345)
     model_name = model + '_sgd_'
-    exp_name = 'hyperband_' + model + '_2/'
+    exp_name = 'hyperband_' + model + '_3/'
 
-    for seed_id in range(5):
+    for seed_id in range(1):
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -52,10 +52,10 @@ def main(model):
 
         start_time = timeit.default_timer()
 
-        # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
-        #                                  verbose=True)
-        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
-                                          verbose=False)
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 9, 360, director, data, eta=4,
+                                          verbose=True)
+        # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
+        #                                   verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
         #                                   verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=2,

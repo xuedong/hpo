@@ -16,7 +16,7 @@ import ho.hct as hct
 
 
 def std_box(target, fmax, nsplits, sigma, support, support_type):
-    box = Box(target, fmax, nsplits, support, support_type)
+    box = Box(target, fmax, nsplits, sigma, support, support_type)
     box.std_partition()
     box.std_noise(sigma)
 
@@ -24,7 +24,7 @@ def std_box(target, fmax, nsplits, sigma, support, support_type):
 
 
 class Box:
-    def __init__(self, target, fmax, nsplits, support, support_type):
+    def __init__(self, target, fmax, nsplits, sigma, support, support_type):
         self.target = target
         self.f_noised = None
         self.f_mean = target.f
@@ -33,6 +33,7 @@ class Box:
         self.center = None
         self.rand = None
         self.nsplits = nsplits
+        self.sigma = sigma
         self.support = support
         self.support_type = support_type
 
@@ -46,7 +47,7 @@ class Box:
     def std_noise(self, sigma):
         """Stochastic target with Gaussian or uniform noise.
         """
-        self.f_noised = lambda x: self.f_mean(x) + sigma*np.random.normal(0, sigma)
+        self.f_noised = lambda x: self.f_mean(x) + sigma * np.random.normal(0, sigma)
         # self.f_noised = lambda x: self.f_mean(x) + sigma*random.random()
 
     """
@@ -151,30 +152,30 @@ def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
     return y_cum, y_sim, x_sel
 
 
-def loss_hct(bbox: Box, rho, nu, c, c1, delta, horizon):
+def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon):
     losses = [0. for _ in range(horizon)]
-    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
+    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
     best = -np.float('inf')
 
     bar = progressbar.ProgressBar()
 
-    for i in bar(range(1, horizon+1)):
-        tplus = int(2 ** (math.ceil(math.log(i))))
+    for i in bar(range(horizon)):
+        tplus = int(2 ** (math.ceil(math.log(i+1))))
         dvalue = min(c1 * delta / tplus, 0.5)
 
-        if i == tplus:
+        if i+1 == tplus:
             hctree.update(c, dvalue)
-        x, _, _ = hctree.sample(c, dvalue)
+        x, current, _, _ = hctree.sample(c, dvalue)
         # The following if-statement is only valid for HCT
         # TODO: generalization
         if hctree.get_change_status():
             bbox.target.reset()
-        current = bbox.f_mean(x)
+        # current = bbox.f_mean(x)
         if current > best:
             best = current
-            losses[i-1] = best
+            losses[i] = best
         else:
-            losses[i-1] = best
+            losses[i] = best
 
     return losses
 
