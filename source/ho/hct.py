@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import random
+# import random
 import numpy as np
 import math
 
@@ -43,7 +43,7 @@ class HCTree:
         elif not self.children:
             self.add_children(c, dvalue)
             self.change_status = True
-            return random.choice(self.children)
+            return self.children[np.random.choice(len(self.children))]
         else:
             return max(self.children, key=lambda x: x.bvalue).explore(c, dvalue)
 

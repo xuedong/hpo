@@ -3,8 +3,8 @@
 # This code is based on the original code of Jean-Bastien Grill
 # https://team.inria.fr/sequel/Software/POO/
 
-import random
-# import numpy as np
+# import random
+import numpy as np
 import math
 
 
@@ -38,7 +38,7 @@ class HTree:
             return self
         elif not self.children:
             self.add_children()
-            return random.choice(self.children)
+            return self.children[np.random.choice(len(self.children))]
         else:
             return max(self.children, key=lambda x: x.bvalue).explore()
 
