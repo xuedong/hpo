@@ -2,6 +2,7 @@ import numpy as np
 import sys
 import os
 import timeit
+from six.moves import cPickle
 
 import log.logger as logger
 import source.utils as utils
@@ -33,10 +34,12 @@ if __name__ == '__main__':
 
         start_time = timeit.default_timer()
 
-        random_search.random_search(test_model, 10, director, params, 10, data, rng, verbose=True)
+        best, results, track = random_search.random_search(test_model, 5, director, params, 5, data, rng, verbose=True)
+        cPickle.dump([best, results, track], open(director + '/results.pkl', 'wb'))
 
         end_time = timeit.default_timer()
 
         print(('The code for the trial number ' +
                str(seed_id) +
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+        print(track)
