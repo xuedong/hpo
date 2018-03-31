@@ -13,7 +13,7 @@ from source.classifiers.clfs_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 10
+    horizon = 100
     c = 2 * math.sqrt(1. / (1 - 0.66))
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     # f_target = target.Rosenbrock(1, 100)

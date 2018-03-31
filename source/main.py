@@ -53,7 +53,7 @@ def main(model):
 
         start_time = timeit.default_timer()
 
-        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 9, 360, director, data, eta=4,
+        hyperband_finite.hyperband_finite(test_model, 'epoch', params, 3, 27, 360, director, data, eta=4,
                                           verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)

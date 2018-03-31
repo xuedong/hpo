@@ -187,10 +187,11 @@ class TheanoLogistic:
         self.data = data
         self.track = None
         self.director = director
+        self.change_status = False
 
     def f(self, hps):
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
-        if not os.path.exists(self.director + '/best_model.pkl'):
+        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
             train_loss, best_valid_loss, test_score, track = \
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
         else:
@@ -198,8 +199,8 @@ class TheanoLogistic:
             train_loss, best_valid_loss, test_score, track = \
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
                                                        classifier=classifier, verbose=True)
-        self.track = track
         return -test_score
 
-    def reset(self):
-        self.classifier = None
+    def set_status(self, flag):
+        self.change_status = flag
+        print(self.change_status)

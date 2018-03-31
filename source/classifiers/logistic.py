@@ -266,9 +266,9 @@ class LogisticRegression(Model):
                         with open(arm['dir'] + '/best_model.pkl', 'wb') as file:
                             cPickle.dump(classifier, file)
 
-                if patience <= iteration:
-                    done = True
-                    break
+                # if patience <= iteration:
+                #    done = True
+                #    break
 
             if best_valid_loss < current_best:
                 current_track = np.append(current_track, test_score)

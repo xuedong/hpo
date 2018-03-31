@@ -38,7 +38,6 @@ class HCTree:
 
     def explore(self, c, dvalue):
         if self.tvalue < self.tau:
-            self.change_status = False
             return self
         elif not self.children:
             self.add_children(c, dvalue)
@@ -98,3 +97,6 @@ class HCTree:
 
     def get_change_status(self):
         return self.change_status
+
+    def reset_change_status(self):
+        self.change_status = False

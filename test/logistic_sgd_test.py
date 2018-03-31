@@ -13,7 +13,7 @@ import source.utils as utils
 
 # Hyperparameters
 LEARNING_RATE = 0.13
-EPOCHS = 1000
+EPOCHS = 200
 BATCH_SIZE = 100
 
 # Dataset
@@ -153,9 +153,9 @@ def sgd(dataset, learning_rate, epochs, batch_size, classifier=None):
                     with open('best_model_logistic_sgd.pkl', 'wb') as file:
                         cPickle.dump(classifier, file)
 
-            if patience <= iteration:
-                done = True
-                break
+            # if patience <= iteration:
+            #    done = True
+            #    break
 
     end_time = timeit.default_timer()
     print(

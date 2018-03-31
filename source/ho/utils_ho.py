@@ -7,7 +7,7 @@ import pylab as pl
 import numpy as np
 import progressbar
 import math
-import random
+# import random
 import pickle
 
 import ho.hoo as hoo
@@ -42,7 +42,7 @@ class Box:
         """
         self.center = std_center
         self.rand = std_rand
-        self.split = std_split
+        self.split = std_split_rand
 
     def std_noise(self, sigma):
         """Stochastic target with Gaussian or uniform noise.
@@ -100,7 +100,7 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
         cum += bbox.fmax - bbox.f_mean(x)
         y_cum[i] = cum / (i + 1)
         x_sel[i] = x
-        z = random.choice(x_sel[0:(i + 1)])
+        z = x_sel[0:(i+1)][np.random.choice(len(x_sel[0:(i+1)]))]
         y_sim[i] = bbox.fmax - bbox.f_mean(z)
 
     return y_cum, y_sim, x_sel
@@ -129,11 +129,11 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     return losses
 
 
-def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
+def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
     y_cum = [0. for _ in range(horizon)]
     y_sim = [0. for _ in range(horizon)]
     x_sel = [None for _ in range(horizon)]
-    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, bbox)
+    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
     cum = 0.
 
     for i in range(1, horizon+1):
@@ -146,7 +146,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, horizon):
         cum += bbox.fmax - bbox.f_mean(x)
         y_cum[i-1] = cum/i
         x_sel[i-1] = x
-        z = random.choice(x_sel[0:i])
+        z = x_sel[0:i][np.random.choice(len(x_sel[0:i]))]
         y_sim[i-1] = bbox.fmax - bbox.f_mean(z)
 
     return y_cum, y_sim, x_sel
@@ -167,7 +167,10 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon):
             hctree.update(c, dvalue)
         x, current, _, _ = hctree.sample(c, dvalue)
         if hctree.get_change_status():
-            bbox.target.reset()
+            bbox.target.set_status(True)
+        else:
+            bbox.target.set_status(False)
+        hctree.reset_change_status()
         # current = bbox.f_mean(x)
         if current > best:
             best = current
@@ -202,7 +205,7 @@ def regret_poo(bbox, rhos, nu, alpha, horizon, epoch):
                     best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
                     y_cum[i][count - 1] = 1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
                     x_sel[i][count - 1] = x
-                    z = random.choice(x_sel[i][0:count])
+                    z = x_sel[i][0:count][np.random.choice(len(x_sel[i][0:count]))]
                     y_sim[i][count - 1] = bbox.fmax - bbox.f_mean(z)
 
     return y_cum, y_sim, x_sel
@@ -391,7 +394,7 @@ def std_rand(support, support_type):
             rands.append(rand)
         elif support_type[i] == 'cont' or 'continuous':
             a, b = support[i]
-            rand = a + (b-a)*random.random()
+            rand = a + (b-a)*np.random.random()
             rands.append(rand)
         else:
             raise ValueError('Unsupported variable type.')
@@ -424,6 +427,36 @@ def std_split(support, support_type, nsplits):
     for i in range(nsplits):
         supports[i] = [support[j] for j in range(len(support))]
         supports[i][max_index] = split[i]
+        supports_type[i] = support_type
+
+    return supports, supports_type
+
+
+def std_split_rand(support, support_type, nsplits):
+    """Split a box randomly.
+
+    :param support:
+    :param support_type:
+    :param nsplits:
+    :return:
+    """
+    # lens = np.array([support[i][1] - support[i][0] for i in range(len(support))])
+    rand_index = np.random.choice(len(support))
+    rand_length = support[rand_index][1] - support[rand_index][0]
+    a, b = support[rand_index]
+    step = rand_length / float(nsplits)
+    if support_type[rand_index] == 'int' or 'integer':
+        split = [(a + int(step * i), a + int(step * (i + 1))) for i in range(nsplits)]
+    elif support_type[rand_index] == 'cont' or 'continuous':
+        split = [(a + step * i, a + step * (i + 1)) for i in range(nsplits)]
+    else:
+        raise ValueError("Unsupported variable type.")
+
+    supports = [None for _ in range(nsplits)]
+    supports_type = [None for _ in range(nsplits)]
+    for i in range(nsplits):
+        supports[i] = [support[j] for j in range(len(support))]
+        supports[i][rand_index] = split[i]
         supports_type[i] = support_type
 
     return supports, supports_type
