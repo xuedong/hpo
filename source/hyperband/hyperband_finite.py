@@ -8,7 +8,7 @@ import utils
 
 
 def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
-              rng=np.random.RandomState(1234), track=np.array([1.]), verbose=False):
+              rng=np.random.RandomState(12345), track=np.array([1.]), verbose=False):
     """Successive halving.
 
     :param model: model to be trained
