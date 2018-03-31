@@ -14,6 +14,7 @@ import os
 # import matplotlib.pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 from six.moves import cPickle
+from hyperopt import STATUS_OK
 
 import source.utils as utils
 import source.classifiers.logistic as logistic
@@ -203,4 +204,32 @@ class TheanoLogistic:
 
     def set_status(self, flag):
         self.change_status = flag
-        print(self.change_status)
+        # print(self.change_status)
+
+
+# Hyperopt functions
+
+class HyperLogistic(object):
+    def __init__(self, model, epochs, director, data):
+        self.model = model
+        self.epochs = epochs
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        learning_rate, batch_size = hps
+        arm = {'dir': self.director,
+               'learning_rate': learning_rate, 'batch_size': int(batch_size),
+               'results': []}
+        train_loss, best_valid_loss, test_score, track = \
+            self.model.run_solver(self.epochs, arm, self.data, verbose=False)
+        return {
+            'loss': test_score,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'train_loss': train_loss,
+            'valid_loss': best_valid_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track': cPickle.dumps(track)}
+        }

@@ -275,56 +275,23 @@ def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem)
     plt.close(fig)
 
 
-def plot_all(paths, s_max, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
+def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
     os.chdir(paths[0])
     fig = plt.figure()
-
-    # Hyperband brackets
-    longest = 0
-    for s in [0, s_max]:
-        tracks = np.array([None for _ in range(runs)])
-        shortest = sys.maxsize
-        # compute the length of the shortest test error vector
-        for i in range(runs):
-            [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-                                              + '/results_' + str(s) + '.pkl', 'rb'))
-            if len(track) < shortest:
-                shortest = len(track)
-        for i in range(runs):
-            [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-                                              + '/results_' + str(s) + '.pkl', 'rb'))
-            # truncate each test error vector by the length of the shortest one
-            tracks[i] = track[0:shortest]
-
-        # compute the longest truncated test error vector among all s values
-        length = len(tracks[0])
-        if length > longest:
-            longest = length
-        x = range(length)
-        y = np.mean(tracks, axis=0)
-        if s == 0:
-            if devs:
-                err = np.std(tracks, axis=0)
-                lower = y - err
-                higher = y + err
-                plt.fill_between(x, lower, higher, alpha=0.5)
-            plt.plot(x, y, label=r"Random Search")
-        else:
-            if devs:
-                err = np.std(tracks, axis=0)
-                lower = y - err
-                higher = y + err
-                plt.fill_between(x, lower, higher, alpha=0.5)
-            plt.plot(x, y, label=r"Hyperband, $\mathtt{s=}$" + str(s))
+    shortest = sys.maxsize
 
     # Hyperband
     tracks = np.array([None for _ in range(runs)])
     for i in range(runs):
         [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        tracks[i] = track[0:longest]
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])
-    x = range(longest)
+    x = range(shortest)
     y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
@@ -358,8 +325,9 @@ def plot_all(paths, s_max, runs, classifier_name, optimizer_name, dataset_name, 
         plt.fill_between(x, lower, higher, alpha=0.5)
     plt.plot(x, y, label=r"TPE")
 
-    # HO family
+    # HOO
     os.chdir(paths[2])
+    shortest = sys.maxsize
 
     losses = np.array([None for _ in range(runs)])
     for i in range(runs):
@@ -379,6 +347,54 @@ def plot_all(paths, s_max, runs, classifier_name, optimizer_name, dataset_name, 
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     plt.plot(x, y, label=r"HOO")
+
+    # HCT
+    os.chdir(paths[3])
+    shortest = sys.maxsize
+
+    losses = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(loss) < shortest:
+            shortest = len(loss)
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        losses[i] = loss[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    y = np.mean(losses, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    plt.plot(x, y, label=r"HCT")
+
+    # Random Search
+    os.chdir(paths[4])
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                          + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                          + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    length = len(tracks[0])
+    x = range(length)
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    plt.plot(x, y, label=r"Random Search")
 
     plt.grid()
     plt.ylim((0, 0.2))
