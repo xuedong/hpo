@@ -24,7 +24,7 @@ class HCTree:
         self.sigma = sigma
         self.box = box
         self.children = []
-        self.change_status = False
+        self.change_status = True
 
     def add_children(self, c, dvalue):
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
@@ -38,6 +38,7 @@ class HCTree:
 
     def explore(self, c, dvalue):
         if self.tvalue < self.tau:
+            self.change_status = False
             return self
         elif not self.children:
             self.add_children(c, dvalue)
@@ -81,6 +82,7 @@ class HCTree:
 
     def sample(self, c, dvalue):
         leaf = self.explore(c, dvalue)
+        self.change_status = leaf.change_status
         existed = False
 
         if leaf.noisy is None:
