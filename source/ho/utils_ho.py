@@ -166,8 +166,6 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon):
         if i+1 == tplus:
             hctree.update(c, dvalue)
         x, current, _, _ = hctree.sample(c, dvalue)
-        # The following if-statement is only valid for HCT
-        # TODO: generalization
         if hctree.get_change_status():
             bbox.target.reset()
         # current = bbox.f_mean(x)

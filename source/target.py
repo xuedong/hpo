@@ -5,7 +5,8 @@
 
 import numpy as np
 import math
-import theano.tensor as ts
+import os
+# import theano.tensor as ts
 # import random
 # import operator as op
 # import pylab as pl
@@ -182,7 +183,6 @@ class SklearnMLP:
 
 class TheanoLogistic:
     def __init__(self, epochs, data, director):
-        self.classifier = None
         self.epochs = epochs
         self.data = data
         self.track = None
@@ -190,10 +190,14 @@ class TheanoLogistic:
 
     def f(self, hps):
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
-        train_loss, best_valid_loss, test_score, track = \
-            logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
-                                                   classifier=self.classifier, verbose=True)
-        self.classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
+        if not os.path.exists(self.director + '/best_model.pkl'):
+            train_loss, best_valid_loss, test_score, track = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
+        else:
+            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
+            train_loss, best_valid_loss, test_score, track = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
+                                                       classifier=classifier, verbose=True)
         self.track = track
         return -test_score
 
