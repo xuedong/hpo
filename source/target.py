@@ -186,7 +186,6 @@ class TheanoLogistic:
     def __init__(self, epochs, data, director):
         self.epochs = epochs
         self.data = data
-        self.track = None
         self.director = director
         self.change_status = False
 
@@ -194,12 +193,16 @@ class TheanoLogistic:
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
         if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
             train_loss, best_valid_loss, test_score, track = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=False)
         else:
             classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
             train_loss, best_valid_loss, test_score, track = \
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
-                                                       classifier=classifier, verbose=True)
+                                                       classifier=classifier, verbose=False)
+
+        # with open(self.director + '_/tracks.pkl', 'wb') as file:
+        #     cPickle.dump(track, file)
+
         return -test_score
 
     def set_status(self, flag):

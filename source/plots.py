@@ -397,6 +397,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     plt.plot(x, y, label=r"Random Search")
 
     plt.grid()
+    plt.xlim((0, 1000))
     plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')

@@ -1,6 +1,7 @@
 import numpy as np
 import timeit
 import os
+import progressbar
 
 from six.moves import cPickle
 
@@ -28,7 +29,9 @@ def random_search(model, n, director, params, num_pulls, data,
     current_track = np.copy(track)
 
     print('%d\t%d' % (n, num_pulls))
-    for a in range(len(list_arms)):
+    bar = progressbar.ProgressBar()
+
+    for a in bar(range(len(list_arms))):
         start_time = timeit.default_timer()
         arm_key = list_arms[a][0]
 

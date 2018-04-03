@@ -37,4 +37,4 @@ if __name__ == "__main__":
     path5 = "../random_logistic_0"
     paths = [path1, path2, path3, path4, path5]
     # # plots.plot_ho(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 1, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
+    plots.plot_all(paths, 3, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
