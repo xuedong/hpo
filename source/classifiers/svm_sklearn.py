@@ -120,10 +120,8 @@ class SVM(Model):
     @staticmethod
     def get_search_space():
         params = {
-            'learning_rate': Param('C', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform',
-                                   scale='log'),
-            'batch_size': Param('gamma', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform',
-                                scale='log')
+            'C': Param('C', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log'),
+            'gamma': Param('gamma', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log')
         }
 
         return params
