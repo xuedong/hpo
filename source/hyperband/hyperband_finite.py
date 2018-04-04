@@ -26,8 +26,12 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
     arms = model.generate_arms(n, director, params)
-    remaining_arms = [list(a) for a in
-                      zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
+    remaining_arms = []
+    if resource_type == 'epochs':
+        remaining_arms = [list(a) for a in
+                          zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
+    elif resource_type == 'iterations':
+        remaining_arms = [list(a) for a in zip(arms.key(), [0] * len(arms.keys()))]
     current_track = np.copy(track)
 
     for l in range(i+1):
@@ -41,24 +45,33 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
             if verbose:
                 print(arms[arm_key])
 
-            if not os.path.exists(arms[arm_key]['dir'] + '/best_model.pkl'):
-                train_loss, val_err, test_err, current_track = \
-                    model.run_solver(num_pulls, arms[arm_key], data,
-                                     rng=rng, track=current_track, verbose=verbose)
-            else:
-                classifier = cPickle.load(open(arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
-                train_loss, val_err, test_err, current_track = \
-                    model.run_solver(num_pulls, arms[arm_key], data,
-                                     rng=rng, classifier=classifier, track=current_track, verbose=verbose)
+            if resource_type == 'epochs':
+                if not os.path.exists(arms[arm_key]['dir'] + '/best_model.pkl'):
+                    train_loss, val_err, test_err, current_track = \
+                        model.run_solver(num_pulls, arms[arm_key], data,
+                                         rng=rng, track=current_track, verbose=verbose)
+                else:
+                    classifier = cPickle.load(open(arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
+                    train_loss, val_err, test_err, current_track = \
+                        model.run_solver(num_pulls, arms[arm_key], data,
+                                         rng=rng, classifier=classifier, track=current_track, verbose=verbose)
 
-            if verbose:
-                print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
+                if verbose:
+                    print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
 
-            arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
-            remaining_arms[a][1] = train_loss
-            remaining_arms[a][2] = val_err
-            remaining_arms[a][3] = test_err
-        remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
+                arms[arm_key]['results'].append([num_pulls, train_loss, val_err, test_err])
+                remaining_arms[a][1] = train_loss
+                remaining_arms[a][2] = val_err
+                remaining_arms[a][3] = test_err
+            elif resource_type == 'iterations':
+                val_err, current_track = \
+                    model.run_solver(num_pulls, arms[arm_key], data, rng=rng, track=current_track, verbose=verbose)
+
+        if resource_type == 'epochs':
+            remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
+        elif resource_type == 'iterations':
+            remaining_arms = sorted(remaining_arms, key=lambda a: a[1])
+
         n_k1 = int(n * eta ** (-l-1))
         if i-l-1 >= 0:
             # for k in range(n_k1, len(remaining_arms)):
@@ -67,7 +80,13 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
             remaining_arms = remaining_arms[0:n_k1]
     best_arm = arms[remaining_arms[0][0]]
 
-    return arms, [best_arm, remaining_arms[0][1], remaining_arms[0][2], remaining_arms[0][3]], current_track
+    result = []
+    if resource_type == 'epochs':
+        result = [best_arm, remaining_arms[0][1], remaining_arms[0][2], remaining_arms[0][3]]
+    elif resource_type == 'iterations':
+        result = [best_arm, remaining_arms[0][1]]
+
+    return arms, result, current_track
 
 
 def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
@@ -136,18 +155,28 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                         sh_finite(model, resource_type, params, n, i, eta, big_r, director,
                                   rng=rng, data=data, track=track, verbose=verbose)
                     results[(k, s)] = arms
-                    if verbose:
-                        print("k = " + str(k) + ", lscale = " + str(s) + ", validation error = " + str(
-                            result[2]) + ", test error = " + str(
-                            result[3]) + " best arm dir: " + result[0]['dir'])
+
+                    if resource_type == 'epochs':
+                        if verbose:
+                            print("k = " + str(k) + ", lscale = " + str(s) + ", validation error = " + str(
+                                result[2]) + ", test error = " + str(
+                                result[3]) + ", best arm dir: " + result[0]['dir'])
+
+                        if result[2] < best_val:
+                            best_val = result[2]
+                            # best_n = n
+                            # best_i = i
+                            # best_arm = result[0]
+                    elif resource_type == 'iterations':
+                        if verbose:
+                            print("k = " + str(k) + ", lscale = " + str(s) + ", validation error = " + str(
+                                result[1]) + ", best arm dir: " + result[0]['dir'])
+
+                        if result[1] < best_val:
+                            best_val = result[1]
+
                     durations.append([utils.s_to_m(start_time, timeit.default_timer()), result])
                     print("time elapsed: " + str(utils.s_to_m(start_time, timeit.default_timer())))
-
-                    if result[2] < best_val:
-                        best_val = result[2]
-                        # best_n = n
-                        # best_i = i
-                        # best_arm = result[0]
 
                 if s_run is None:
                     cPickle.dump([durations, results, track], open(director + '/results.pkl', 'wb'))
