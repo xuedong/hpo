@@ -9,11 +9,11 @@ import source.target as target
 import source.ho.utils_ho as utils_ho
 import source.utils as utils
 import source.classifiers.logistic as logistic
-from source.classifiers.clfs_sklearn import *
+from source.classifiers.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 250
+    horizon = 10
     c = 2 * math.sqrt(1. / (1 - 0.66))
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     # f_target = target.Rosenbrock(1, 100)
@@ -28,38 +28,38 @@ if __name__ == '__main__':
     # plt.plot(x, regrets/10.)
     # plt.show()
 
-    data_dir = 'mnist.pkl.gz'
-    data = utils.load_data(data_dir)
-
-    start = timeit.default_timer()
-
-    # x = ts.matrix('x')
-    # test_model = logistic.LogisticRegression(x, 28*28, 10)
-    params = logistic.LogisticRegression.get_search_space()
-
-    f_target = target.TheanoLogistic(1, data, ".")
-    bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                            [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-                             (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                            [params['learning_rate'].get_type(), params['batch_size'].get_type()])
-
-    current = [0. for _ in range(horizon)]
-    alpha = math.log(10) * (0.1 ** 2)
-    losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, sigma=0.1, horizon=horizon)
-    # losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=10, update=False)
-    print(losses)
-
-    # model = MLP()
-    # params = d_mlp
-    # path = os.path.join(os.getcwd(), '../data/uci')
-    # dataset = 'wine.csv'
-    # problem = 'cont'
-    # target_index = 0
-    # x, y = utils.build(os.path.join(path, dataset), target_index)
+    # data_dir = 'mnist.pkl.gz'
+    # data = utils.load_data(data_dir)
     #
-    # f_target = target.SklearnMLP(model, x, y, '5fold', problem)
+    # start = timeit.default_timer()
+    #
+    # # x = ts.matrix('x')
+    # # test_model = logistic.LogisticRegression(x, 28*28, 10)
+    # params = logistic.LogisticRegression.get_search_space()
+    #
+    # f_target = target.TheanoLogistic(1, data, ".")
     # bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-    #                         [params['hidden_layer_size'][1], params['alpha'][1]],
-    #                         [params['hidden_layer_size'][0], params['alpha'][0]])
-    # losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, horizon=horizon)
+    #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+    #                          (params['batch_size'].get_min(), params['batch_size'].get_max())],
+    #                         [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+    #
+    # current = [0. for _ in range(horizon)]
+    # alpha = math.log(10) * (0.1 ** 2)
+    # losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, delta=0.05, sigma=0.1, horizon=horizon)
+    # # losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=10, update=False)
     # print(losses)
+
+    model = MLP()
+    params = d_mlp
+    path = os.path.join(os.getcwd(), '../data/uci')
+    dataset = 'wine.csv'
+    problem = 'cont'
+    target_index = 0
+    x, y = utils.build(os.path.join(path, dataset), target_index)
+
+    f_target = target.SklearnMLP(model, x, y, '5fold', problem)
+    bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                            [params['hidden_layer_size'][1], params['alpha'][1]],
+                            [params['hidden_layer_size'][0], params['alpha'][0]])
+    losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, sigma=0.1, delta=0.05, horizon=horizon)
+    print(losses)

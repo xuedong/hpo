@@ -114,7 +114,7 @@ class Loss:
     def evaluate_loss(self, **param):
         if self.method == 'holdout':
             x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, random_state=93)
-            clf = self.model.__class__(**param, problem=self.problem).eval()
+            clf = self.model.__class__(problem=self.problem, **param).eval()
             clf.fit(x_train, y_train)
             if self.problem == 'binary':
                 y_hat = clf.predict_proba(x_test)[:, 1]
@@ -124,12 +124,12 @@ class Loss:
                 y_hat = clf.predict_proba(x_test)
             return - self.loss(y_test, y_hat)
         elif self.method == '5fold':
-            kf = KFold(n_splits=5, shuffle=False)
+            kf = KFold(n_splits=5, shuffle=True)
             losses = []
             for train_index, test_index in kf.split(self.x):
                 x_train, x_test = self.x[train_index], self.x[test_index]
                 y_train, y_test = self.y[train_index], self.y[test_index]
-                clf = self.model.__class__(**param, problem=self.problem).eval()
+                clf = self.model.__class__(problem=self.problem, **param).eval()
                 clf.fit(x_train, y_train)
                 if self.problem == 'binary':
                     y_hat = clf.predict_proba(x_test)[:, 1]

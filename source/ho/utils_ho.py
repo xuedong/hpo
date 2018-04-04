@@ -152,7 +152,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
     return y_cum, y_sim, x_sel
 
 
-def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon):
+def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, keep=False):
     losses = [0. for _ in range(horizon)]
     hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
     best = -np.float('inf')
@@ -166,11 +166,12 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon):
         if i+1 == tplus:
             hctree.update(c, dvalue)
         x, current, _, _ = hctree.sample(c, dvalue)
-        if hctree.get_change_status():
-            bbox.target.set_status(True)
-        else:
-            bbox.target.set_status(False)
-        hctree.reset_change_status()
+        if keep:
+            if hctree.get_change_status():
+                bbox.target.set_status(True)
+            else:
+                bbox.target.set_status(False)
+            hctree.reset_change_status()
         # current = bbox.f_mean(x)
         if current > best:
             best = current
