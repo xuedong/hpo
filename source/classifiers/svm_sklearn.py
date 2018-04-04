@@ -16,16 +16,16 @@ d_svm['gamma'] = ('cont', (-4, 5))
 class SVM(Model):
     def __init__(self, problem='binary', c=0, gamma=0, kernel='rbf'):
         self.problem = problem
-        self.C = 10 ** c
-        self.gamma = 10 ** gamma
+        self.c = c
+        self.gamma = gamma
         self.kernel = kernel
         self.name = 'SVM'
 
     def eval(self):
         if self.problem == 'binary':
-            mod = SVC(kernel=self.kernel, C=self.C, gamma=self.gamma, probability=True, random_state=20)
+            mod = SVC(kernel=self.kernel, C=self.c, gamma=self.gamma, probability=True, random_state=20)
         else:
-            mod = SVR(kernel=self.kernel, C=self.C, gamma=self.gamma)
+            mod = SVR(kernel=self.kernel, C=self.c, gamma=self.gamma)
         return mod
 
     @staticmethod
@@ -44,7 +44,7 @@ class SVM(Model):
             dirname = "default_arm"
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
-            arm = {'dir': path + "/" + dirname, 'C': 0., 'gamma': 1., 'results': []}
+            arm = {'dir': path + "/" + dirname, 'c': 0., 'gamma': 1., 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
@@ -57,7 +57,7 @@ class SVM(Model):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname}
-            hps = ['C', 'gamma']
+            hps = ['c', 'gamma']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
                 arm[hp] = val[0]
@@ -96,7 +96,8 @@ class SVM(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = loss.evaluate_loss(C=arm['C'], gamma=arm['gamma'])
+            print(arm['c'])
+            current_loss = loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
 
             if verbose:
                 print(
@@ -120,7 +121,7 @@ class SVM(Model):
     @staticmethod
     def get_search_space():
         params = {
-            'C': Param('C', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log'),
+            'c': Param('c', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log'),
             'gamma': Param('gamma', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log')
         }
 
