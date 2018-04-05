@@ -11,13 +11,15 @@ from source.classifiers.ada_sklearn import *
 from source.classifiers.gbm_sklearn import *
 from source.classifiers.knn_sklearn import *
 from source.classifiers.mlp_sklearn import *
+from source.classifiers.rf_sklearn import *
+from source.classifiers.tree_sklearn import *
 
 
 if __name__ == '__main__':
-    model = MLP
+    model = RF
     output_dir = ''
     # rng = np.random.RandomState(12345)
-    model_name = 'sk_mlp_'
+    model_name = 'rf_'
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
