@@ -10,6 +10,7 @@ import source.ho.utils_ho as utils_ho
 import source.utils as utils
 import source.classifiers.logistic as logistic
 from source.classifiers.mlp_sklearn import *
+from source.classifiers.svm_sklearn import *
 
 
 if __name__ == '__main__':
@@ -49,17 +50,17 @@ if __name__ == '__main__':
     # # losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=10, update=False)
     # print(losses)
 
-    model = MLP()
-    params = d_mlp
+    model = SVM()
+    params = d_svm
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
     problem = 'cont'
     target_index = 0
     x, y = utils.build(os.path.join(path, dataset), target_index)
 
-    f_target = target.SklearnMLP(model, x, y, '5fold', problem)
+    f_target = target.SklearnSVM(model, x, y, '5fold', problem)
     bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                            [params['hidden_layer_size'][1], params['alpha'][1]],
-                            [params['hidden_layer_size'][0], params['alpha'][0]])
+                            [params['c'][1], params['gamma'][1]],
+                            [params['c'][0], params['gamma'][0]])
     losses = utils_ho.loss_hct(bbox=bbox, rho=0.66, nu=1., c=c, c1=c1, sigma=0.1, delta=0.05, horizon=horizon)
     print(losses)

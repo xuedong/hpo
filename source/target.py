@@ -153,7 +153,7 @@ class SklearnSVM:
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(C=x[0], gamma=x[1])
+        return self.loss.evaluate_loss(c=10**x[0], gamma=10**x[1])
 
 
 class SklearnGBM:

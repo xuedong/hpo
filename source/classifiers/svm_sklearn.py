@@ -9,7 +9,7 @@ from models import Model
 from params import Param
 
 d_svm = OrderedDict()
-d_svm['C'] = ('cont', (-4, 5))
+d_svm['c'] = ('cont', (-4, 5))
 d_svm['gamma'] = ('cont', (-4, 5))
 
 
@@ -96,7 +96,6 @@ class SVM(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            print(arm['c'])
             current_loss = -loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
 
             if verbose:
