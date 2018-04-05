@@ -39,5 +39,5 @@ if __name__ == "__main__":
     # # plots.plot_ho(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
     # plots.plot_all(paths, 3, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
 
-    path = "../result/hyperband_sk_mlp_0"
-    plots.plot_hyperband_only(path, 1, 'sk_mlp_', '', 'wine', 0)
+    path = "../result/hyperband_tree_0"
+    plots.plot_hyperband_only(path, 1, 'tree_', '', 'wine', 0)
