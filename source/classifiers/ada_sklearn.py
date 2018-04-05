@@ -1,12 +1,19 @@
+import os
+import numpy as np
+
 from sklearn.ensemble import AdaBoostClassifier, AdaBoostRegressor
 from collections import OrderedDict
+
+import utils
+from models import Model
+from params import Param
 
 d_ada = OrderedDict()
 d_ada['n_estimators'] = ('int', (5, 200))
 d_ada['learning_rate'] = ('cont', (1e-5, 1))
 
 
-class Ada(object):
+class Ada(Model):
     def __init__(self, problem='binary', n_estimators=50, learning_rate=1):
         self.problem = problem
         self.n_estimators = int(n_estimators)
@@ -38,7 +45,7 @@ class Ada(object):
             dirname = "default_arm"
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
-            arm = {'dir': path + "/" + dirname, 'n_estimators': 5, 'learning_rate': 0.01, 'results': []}
+            arm = {'dir': path + "/" + dirname, 'n_estimators': 50, 'learning_rate': 1., 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
@@ -51,7 +58,7 @@ class Ada(object):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname}
-            hps = ['c', 'gamma']
+            hps = ['n_estimators', 'learning_rate']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
                 arm[hp] = val[0]
@@ -78,7 +85,7 @@ class Ada(object):
         :return:
         """
         x, y = data
-        loss = utils.Loss(SVM(), x, y, method=method, problem=problem)
+        loss = utils.Loss(Ada(), x, y, method=method, problem=problem)
 
         best_loss = 1.
 
@@ -90,8 +97,7 @@ class Ada(object):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            print(arm['c'])
-            current_loss = -loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
+            current_loss = -loss.evaluate_loss(n_estimators=arm['n_estimators'], learning_rate=arm['learning_rate'])
 
             if verbose:
                 print(
@@ -115,8 +121,8 @@ class Ada(object):
     @staticmethod
     def get_search_space():
         params = {
-            'c': Param('c', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log'),
-            'gamma': Param('gamma', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** 5), dist='uniform', scale='log')
+            'n_estimators': Param('n_estimators', 5, 200, dist='uniform', scale='linear', interval=1),
+            'learning_rate': Param('learning_rate', 1 * 10 ** (-5), 1, dist='uniform', scale='linear')
         }
 
         return params

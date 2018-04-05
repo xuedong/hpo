@@ -7,25 +7,26 @@ import log.logger as logger
 import source.utils as utils
 import source.hyperband.hyperband_finite as hyperband_finite
 from source.classifiers.svm_sklearn import *
+from source.classifiers.ada_sklearn import *
 
 
 if __name__ == '__main__':
+    model = Ada
     output_dir = ''
     # rng = np.random.RandomState(12345)
-    model_name = 'svm_'
+    model_name = 'ada_'
 
-    model = SVM()
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
     problem = 'cont'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
-    test_model = SVM()
-    params = SVM.get_search_space()
+    test_model = model()
+    params = model.get_search_space()
 
     for seed_id in range(1):
         print('<-- Running Hyperband -->')
-        exp_name = 'hyperband_svm_0/'
+        exp_name = 'hyperband_' + model_name + '0/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
