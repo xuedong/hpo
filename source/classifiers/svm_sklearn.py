@@ -97,7 +97,7 @@ class SVM(Model):
 
         for iteration in range(iterations):
             print(arm['c'])
-            current_loss = loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
+            current_loss = -loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
 
             if verbose:
                 print(

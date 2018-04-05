@@ -30,11 +30,14 @@ if __name__ == "__main__":
     # paths = [path1, path2]
     # plots.plot_all(paths, 3, 10, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
 
-    path1 = "../result/hyperband_logistic_0"
-    path2 = "../tpe_logistic_0"
-    path3 = "../hoo_logistic_0"
-    path4 = "../hct_logistic_0"
-    path5 = "../random_logistic_0"
-    paths = [path1, path2, path3, path4, path5]
+    # path1 = "../result/hyperband_logistic_0"
+    # path2 = "../tpe_logistic_0"
+    # path3 = "../hoo_logistic_0"
+    # path4 = "../hct_logistic_0"
+    # path5 = "../random_logistic_0"
+    # paths = [path1, path2, path3, path4, path5]
     # # plots.plot_ho(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 3, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
+    # plots.plot_all(paths, 3, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
+
+    path = "../result/hyperband_svm_0"
+    plots.plot_hyperband_only(path, 1, 'svm_', '', 'wine', 0)
