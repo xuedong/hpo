@@ -10,13 +10,14 @@ from source.classifiers.svm_sklearn import *
 from source.classifiers.ada_sklearn import *
 from source.classifiers.gbm_sklearn import *
 from source.classifiers.knn_sklearn import *
+from source.classifiers.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    model = KNN
+    model = MLP
     output_dir = ''
     # rng = np.random.RandomState(12345)
-    model_name = 'knn_'
+    model_name = 'sk_mlp_'
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
