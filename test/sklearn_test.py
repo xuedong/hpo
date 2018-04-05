@@ -9,13 +9,14 @@ import source.hyperband.hyperband_finite as hyperband_finite
 from source.classifiers.svm_sklearn import *
 from source.classifiers.ada_sklearn import *
 from source.classifiers.gbm_sklearn import *
+from source.classifiers.knn_sklearn import *
 
 
 if __name__ == '__main__':
-    model = GBM
+    model = KNN
     output_dir = ''
     # rng = np.random.RandomState(12345)
-    model_name = 'gbm_'
+    model_name = 'knn_'
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
