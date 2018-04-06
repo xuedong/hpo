@@ -180,6 +180,30 @@ class SklearnMLP:
         return self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
 
 
+class SklearnRF:
+    def __init__(self, model, x, y, method, problem):
+        self.loss = utils.Loss(model, x, y, method, problem)
+
+    def f(self, x):
+        return self.loss.evaluate_loss(n_estimators=x[0], min_samples_split=x[1], max_features=x[2])
+
+
+class SklearnTree:
+    def __init__(self, model, x, y, method, problem):
+        self.loss = utils.Loss(model, x, y, method, problem)
+
+    def f(self, x):
+        return self.loss.evaluate_loss(max_features=x[0], max_depth=x[1], min_samples_split=x[2])
+
+
+class SklearnAda:
+    def __init__(self, model, x, y, method, problem):
+        self.loss = utils.Loss(model, x, y, method, problem)
+
+    def f(self, x):
+        return self.loss.evaluate_loss(n_estimators=x[0], learning_rate=x[1])
+
+
 # Theano functions
 
 class TheanoLogistic:
