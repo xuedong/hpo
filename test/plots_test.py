@@ -44,5 +44,7 @@ if __name__ == "__main__":
     #     path = "../result/hyperband_" + name + "0"
     #     plots.plot_hyperband_only(path, 10, name, '', 'wine', 0)
 
+    # path = "../result/hct_svm_0"
+    # plots.plot_hct(path, 10, 'svm_', '', 'wine', 0)
     path = "../result/hoo_svm_0"
-    plots.plot_ho(path, 10, 'svm_', '', 'wine', 0)
+    plots.plot_hoo(path, 10, 'svm_', '', 'wine', 0)

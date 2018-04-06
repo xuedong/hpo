@@ -290,7 +290,7 @@ def plot_hct(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     #     lower = y - err
     #     higher = y + err
     #     plt.fill_between(x, lower, higher, facecolor='lightblue')
-    plt.plot(x, y, label=r"HOO")
+    plt.plot(x, y, label=r"HCT")
 
     plt.grid()
     plt.ylim((0, 0.2))
