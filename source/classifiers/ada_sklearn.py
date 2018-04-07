@@ -10,7 +10,7 @@ from params import Param
 
 d_ada = OrderedDict()
 d_ada['n_estimators'] = ('int', (5, 200))
-d_ada['learning_rate'] = ('cont', (1e-5, 1))
+d_ada['learning_rate'] = ('cont', (-5, -1))
 
 
 class Ada(Model):

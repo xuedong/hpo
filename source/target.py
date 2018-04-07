@@ -161,7 +161,8 @@ class SklearnGBM:
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(learning_rate=x[0], n_estimators=x[1], max_depth=x[2], min_samples_split=x[3])
+        return self.loss.evaluate_loss(learning_rate=10**x[0], n_estimators=x[1],
+                                       max_depth=x[2], min_samples_split=x[3])
 
 
 class SklearnKNN:
@@ -201,7 +202,7 @@ class SklearnAda:
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(n_estimators=x[0], learning_rate=x[1])
+        return self.loss.evaluate_loss(n_estimators=x[0], learning_rate=10**x[1])
 
 
 # Theano functions

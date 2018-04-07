@@ -1,17 +1,13 @@
 import math
-import os
 import sys
-import numpy as np
+# import numpy as np
 import timeit
-import theano.tensor as ts
-import matplotlib.pyplot as plt
 from six.moves import cPickle
 
 import source.target as target
 import source.ho.utils_ho as utils_ho
-import source.utils as utils
 import log.logger as logger
-import source.classifiers.logistic as logistic
+# import source.classifiers.logistic as logistic
 from source.classifiers.mlp_sklearn import *
 from source.classifiers.svm_sklearn import *
 from source.classifiers.tree_sklearn import *
@@ -64,10 +60,10 @@ if __name__ == '__main__':
     # # losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=10, update=False)
     # print(losses)
 
-    models = [Ada, KNN, MLP, GBM, Tree, RF, SVM]
-    model_names = ['ada_', 'knn_', 'sk_mlp_', 'gbm_', 'tree_', 'rf_', 'svm_']
-    f_targets = [target.SklearnGBM]
-    params = d_svm
+    models = [Ada(), KNN(), MLP(), GBM(), SVM()]
+    model_names = ['ada_', 'knn_', 'sk_mlp_', 'gbm_', 'svm_']
+    targets = [target.SklearnAda, target.SklearnKNN, target.SklearnMLP, target.SklearnGBM, target.SklearnSVM]
+    params = [d_ada, d_knn, d_mlp, d_gbm, d_svm]
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
     problem = 'cont'
@@ -79,11 +75,13 @@ if __name__ == '__main__':
     for i in range(len(models)):
         model = models[i]
         model_name = model_names[i]
+        target_class = targets[i]
+        param = params[i]
 
-        f_target = target.SklearnSVM(model, x, y, '5fold', problem)
+        f_target = target_class(model, x, y, '5fold', problem)
         bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                                [params['c'][1], params['gamma'][1]],
-                                [params['c'][0], params['gamma'][0]])
+                                [param[key][1] for key in param.keys()],
+                                [param[key][0] for key in param.keys()])
 
         print('<-- Running HOO -->')
         exp_name = 'hoo_' + model_name + '0/'

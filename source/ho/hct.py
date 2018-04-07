@@ -34,7 +34,7 @@ class HCTree:
         self.children = [HCTree(supports[i], supports_type[i],
                                 self, self.depth + 1, self.rho, self.nu, 0, tau, self.sigma, self.box)
                          for i in range(len(supports))]
-        print(self.depth)
+        # print(self.depth)
 
     def explore(self, c, dvalue):
         if self.tvalue < self.tau:

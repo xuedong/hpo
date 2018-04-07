@@ -9,13 +9,13 @@ from models import Model
 from params import Param
 
 d_tree = OrderedDict()
-d_tree['max_features'] = ('cont', (0.1, 0.99))
+d_tree['max_features'] = ('cont', (0.01, 0.99))
 d_tree['max_depth'] = ('int', (4, 30))
-d_tree['min_samples_split'] = ('cont', (0.1, 0.99))
+d_tree['min_samples_split'] = ('cont', (0.01, 0.99))
 
 
 class Tree(Model):
-    def __init__(self, problem='binary', max_features=0.5, max_depth=1, min_samples_split=2):
+    def __init__(self, problem='binary', max_features=0.5, max_depth=1, min_samples_split=0.5):
         self.problem = problem
         self.max_features = max_features
         self.max_depth = int(max_depth)
@@ -48,7 +48,7 @@ class Tree(Model):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname, 'max_features': 0.5,
-                   'max_depth': 1, 'min_samples_split': 2, 'results': []}
+                   'max_depth': 1, 'min_samples_split': 0.5, 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
