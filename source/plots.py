@@ -255,6 +255,9 @@ def plot_hoo(path, runs, classifier_name, optimizer_name, dataset_name, idx):
         os.makedirs(save_path)
     plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hoo_' + classifier_name +
                                                                                str(idx), dataset_name)))
+
+    os.chdir('..')
+
     plt.close(fig)
 
 
@@ -302,6 +305,9 @@ def plot_hct(path, runs, classifier_name, optimizer_name, dataset_name, idx):
         os.makedirs(save_path)
     plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('hct_' + classifier_name +
                                                                                str(idx), dataset_name)))
+
+    os.chdir('..')
+
     plt.close(fig)
 
 
