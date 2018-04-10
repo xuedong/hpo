@@ -88,9 +88,10 @@ class Ada(Model):
         loss = utils.Loss(Ada(), x, y, method=method, problem=problem)
 
         best_loss = 1.
+        test_score = 1.
 
         if track.size == 0:
-            current_best = 1.
+            current_best = test_score
             current_track = np.array([1.])
         else:
             current_best = np.amin(track)
@@ -112,8 +113,8 @@ class Ada(Model):
                 best_loss = current_loss
                 # best_iter = iteration
 
-            if best_loss < current_best:
-                current_track = np.append(current_track, best_loss)
+            if test_score < current_best:
+                current_track = np.append(current_track, test_score)
             else:
                 current_track = np.append(current_track, current_best)
         return best_loss, current_track

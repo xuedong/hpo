@@ -16,10 +16,10 @@ from source.classifiers.tree_sklearn import *
 
 
 if __name__ == '__main__':
-    models = [SVM]
-    model_names = ['svm_']
-    # models = [SVM, Ada, GBM, KNN, MLP, RF, Tree]
-    # model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_', 'rf_', 'tree_']
+    # models = [SVM]
+    # model_names = ['svm_']
+    models = [SVM, Ada, GBM, KNN, MLP, RF, Tree]
+    model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_', 'rf_', 'tree_']
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
