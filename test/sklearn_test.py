@@ -35,7 +35,7 @@ if __name__ == '__main__':
         params = model.get_search_space()
         for seed_id in range(1):
             print('<-- Running Hyperband -->')
-            exp_name = 'hyperband_' + model_names[i] + '1/'
+            exp_name = 'hyperband_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)

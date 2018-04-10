@@ -276,7 +276,7 @@ class MLP(Model):
                     done = True
                     break
 
-            if best_valid_loss < current_best:
+            if test_score < current_best:
                 current_track = np.append(current_track, test_score)
             else:
                 current_track = np.append(current_track, current_best)

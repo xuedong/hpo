@@ -87,6 +87,7 @@ class SVM(Model):
         loss = utils.Loss(SVM(), x, y, method=method, problem=problem)
 
         best_loss = 1.
+        test_score = 1.
 
         if track.size == 0:
             current_best = 1.
@@ -96,7 +97,9 @@ class SVM(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
+            current_loss, test_error = loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(
@@ -112,7 +115,7 @@ class SVM(Model):
                 # best_iter = iteration
 
             if best_loss < current_best:
-                current_track = np.append(current_track, best_loss)
+                current_track = np.append(current_track, test_score)
             else:
                 current_track = np.append(current_track, current_best)
         return best_loss, current_track

@@ -113,8 +113,10 @@ class Loss:
 
     def evaluate_loss(self, **param):
         if self.method == 'holdout':
-            x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=0.2, random_state=93)
-            x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.2, random_state=93)
+            x_train_valid, x_test, y_train_valid, y_test = train_test_split(self.x, self.y,
+                                                                            test_size=0.2, random_state=93)
+            x_train, x_valid, y_train, y_valid = train_test_split(x_train_valid, y_train_valid,
+                                                                  test_size=0.2, random_state=93)
             clf = self.model.__class__(problem=self.problem, **param).eval()
             clf.fit(x_train, y_train)
             if self.problem == 'binary':
@@ -133,10 +135,11 @@ class Loss:
             kf = KFold(n_splits=5, shuffle=True)
             losses = []
             test_errors = []
-            x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=0.2, random_state=93)
-            for train_index, valid_index in kf.split(x_train):
-                x_train, x_valid = x_train[train_index], x_train[valid_index]
-                y_train, y_valid = y_train[train_index], y_train[valid_index]
+            x_train_valid, x_test, y_train_valid, y_test = train_test_split(self.x, self.y,
+                                                                            test_size=0.2, random_state=93)
+            for train_index, valid_index in kf.split(x_train_valid):
+                x_train, x_valid = x_train_valid[train_index], x_train_valid[valid_index]
+                y_train, y_valid = y_train_valid[train_index], y_train_valid[valid_index]
                 clf = self.model.__class__(problem=self.problem, **param).eval()
                 clf.fit(x_train, y_train)
                 if self.problem == 'binary':
