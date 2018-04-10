@@ -39,13 +39,13 @@ if __name__ == "__main__":
     # # plots.plot_ho(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
     # plots.plot_all(paths, 3, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
 
-    # names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
-    # for name in names:
-    #     path = "../result/hyperband_" + name + "1"
-    #     plots.plot_hyperband_only(path, 10, name, '', 'breast_cancer', 1)
+    names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
+    for name in names:
+        path = "../result/hyperband_" + name + "2"
+        plots.plot_hyperband_only(path, 10, name, '', 'wine', 1)
 
-    path = "../result/hyperband_svm_2"
-    plots.plot_hyperband_only(path, 10, 'svm_', '', 'wine', 2)
+    # path = "../result/hyperband_svm_2"
+    # plots.plot_hyperband_only(path, 10, 'svm_', '', 'wine', 2)
 
     # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
     # for name in names:
