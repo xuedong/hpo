@@ -183,6 +183,8 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                str(seed_id) +
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
+        # TODO: write an experiment report
+
 
 if __name__ == "__main__":
     main('logistic', 5, 0.66, 1., 0.1, 0.05, 25, 1000)

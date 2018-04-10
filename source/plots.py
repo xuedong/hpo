@@ -11,7 +11,6 @@ def plot_random(path, trials, classifier_name, optimizer_name, dataset_name, idx
     """Plot test error evaluation of random search.
 
     :param path:
-    :param s:
     :param trials:
     :param classifier_name:
     :param optimizer_name:
@@ -246,7 +245,7 @@ def plot_hoo(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     plt.plot(x, y, label=r"HOO")
 
     plt.grid()
-    plt.ylim((0, 0.2))
+    plt.ylim((0, 1))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Evaluations')
@@ -296,7 +295,7 @@ def plot_hct(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     plt.plot(x, y, label=r"HCT")
 
     plt.grid()
-    plt.ylim((0, 0.2))
+    plt.ylim((0, 1))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Evaluations')
@@ -356,33 +355,37 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         plt.fill_between(x, lower, higher, alpha=0.5)
     plt.plot(x, y, label=r"Hyperband")
 
+    os.chdir('..')
+
     # TPE
-    os.chdir(paths[1])
-    shortest = sys.maxsize
+    # os.chdir(paths[1])
+    # shortest = sys.maxsize
+    #
+    # tracks = np.array([None for _ in range(runs)])
+    # for i in range(runs):
+    #     [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    #     track = combine_tracks(trials)
+    #     if len(track) < shortest:
+    #         shortest = len(track)
+    # for i in range(runs):
+    #     [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    #     track = combine_tracks(trials)
+    #     tracks[i] = track[0:shortest]
+    #
+    # # length = len(tracks[0])
+    # x = range(shortest)
+    # y = np.mean(tracks, axis=0)
+    # if devs:
+    #     err = np.std(tracks, axis=0)
+    #     lower = y - err
+    #     higher = y + err
+    #     plt.fill_between(x, lower, higher, alpha=0.5)
+    # plt.plot(x, y, label=r"TPE")
 
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        track = combine_tracks(trials)
-        if len(track) < shortest:
-            shortest = len(track)
-    for i in range(runs):
-        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        track = combine_tracks(trials)
-        tracks[i] = track[0:shortest]
-
-    # length = len(tracks[0])
-    x = range(shortest)
-    y = np.mean(tracks, axis=0)
-    if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, alpha=0.5)
-    plt.plot(x, y, label=r"TPE")
+    # os.chdir('..')
 
     # HOO
-    os.chdir(paths[2])
+    os.chdir(paths[1])
     shortest = sys.maxsize
 
     losses = np.array([None for _ in range(runs)])
@@ -404,8 +407,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     plt.plot(x, y, label=r"HOO")
 
+    os.chdir('..')
+
     # HCT
-    os.chdir(paths[3])
+    os.chdir(paths[2])
     shortest = sys.maxsize
 
     losses = np.array([None for _ in range(runs)])
@@ -427,40 +432,44 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     plt.plot(x, y, label=r"HCT")
 
+    os.chdir('..')
+
     # Random Search
-    os.chdir(paths[4])
-    shortest = sys.maxsize
+    # os.chdir(paths[4])
+    # shortest = sys.maxsize
+    #
+    # tracks = np.array([None for _ in range(runs)])
+    # for i in range(runs):
+    #     [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+    #                                       + '/results.pkl', 'rb'))
+    #     if len(track) < shortest:
+    #         shortest = len(track)
+    # for i in range(runs):
+    #     [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+    #                                       + '/results.pkl', 'rb'))
+    #     tracks[i] = track[0:shortest]
+    #
+    # length = len(tracks[0])
+    # x = range(length)
+    # y = np.mean(tracks, axis=0)
+    # if devs:
+    #     err = np.std(tracks, axis=0)
+    #     lower = y - err
+    #     higher = y + err
+    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
+    # plt.plot(x, y, label=r"Random Search")
 
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-                                          + '/results.pkl', 'rb'))
-        if len(track) < shortest:
-            shortest = len(track)
-    for i in range(runs):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-                                          + '/results.pkl', 'rb'))
-        tracks[i] = track[0:shortest]
-
-    length = len(tracks[0])
-    x = range(length)
-    y = np.mean(tracks, axis=0)
-    if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, facecolor='lightblue')
-    plt.plot(x, y, label=r"Random Search")
+    # os.chdir('..')
 
     plt.grid()
-    plt.xlim((0, 1000))
-    plt.ylim((0, 0.2))
+    # plt.xlim((0, 1000))
+    plt.ylim((0, 1))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
-    plt.xlabel('Number of Epochs')
-    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format(classifier_name + str(idx)))
+    plt.xlabel('Number of Iterations')
+    save_path = os.path.join(os.path.abspath('../'), 'img/{}'.format(classifier_name + str(idx)))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format(classifier_name +
+    plt.savefig(os.path.join(os.path.abspath('../'), 'img/{}/{}.pdf'.format(classifier_name +
                                                                                str(idx), dataset_name)))
     plt.close(fig)
