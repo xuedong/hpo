@@ -98,7 +98,10 @@ class Ada(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(n_estimators=arm['n_estimators'], learning_rate=arm['learning_rate'])
+            current_loss, test_error = loss.evaluate_loss(n_estimators=arm['n_estimators'],
+                                                          learning_rate=arm['learning_rate'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(

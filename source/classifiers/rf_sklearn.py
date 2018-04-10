@@ -111,9 +111,11 @@ class RF(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(n_estimators=arm['n_estimators'],
-                                               min_samples_split=arm['min_samples_split'],
-                                               max_features=arm['max_features'])
+            current_loss, test_error = loss.evaluate_loss(n_estimators=arm['n_estimators'],
+                                                          min_samples_split=arm['min_samples_split'],
+                                                          max_features=arm['max_features'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(

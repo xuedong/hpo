@@ -104,8 +104,10 @@ class MLP(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(hidden_layer_size=arm['hidden_layer_size'],
-                                               alpha=arm['alpha'])
+            current_loss, test_error = loss.evaluate_loss(hidden_layer_size=arm['hidden_layer_size'],
+                                                          alpha=arm['alpha'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(

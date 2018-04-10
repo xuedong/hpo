@@ -97,7 +97,9 @@ class KNN(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(n_neighbors=arm['n_neighbors'])
+            current_loss, test_error = loss.evaluate_loss(n_neighbors=arm['n_neighbors'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(

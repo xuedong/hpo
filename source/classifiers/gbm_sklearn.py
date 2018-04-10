@@ -118,8 +118,12 @@ class GBM(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(learning_rate=arm['learning_rate'], n_estimators=arm['n_estimators'],
-                                               max_depth=arm['max_depth'], min_samples_split=arm['min_samples_split'])
+            current_loss, test_error = loss.evaluate_loss(learning_rate=arm['learning_rate'],
+                                                          n_estimators=arm['n_estimators'],
+                                                          max_depth=arm['max_depth'],
+                                                          min_samples_split=arm['min_samples_split'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(

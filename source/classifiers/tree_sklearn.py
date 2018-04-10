@@ -101,9 +101,11 @@ class Tree(Model):
             current_track = np.copy(track)
 
         for iteration in range(iterations):
-            current_loss = -loss.evaluate_loss(max_features=arm['max_features'],
-                                               max_depth=arm['max_depth'],
-                                               min_samples_split=arm['min_samples_split'])
+            current_loss, test_error = loss.evaluate_loss(max_features=arm['max_features'],
+                                                          max_depth=arm['max_depth'],
+                                                          min_samples_split=arm['min_samples_split'])
+            current_loss = -current_loss
+            test_score = -test_error
 
             if verbose:
                 print(
