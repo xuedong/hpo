@@ -33,7 +33,7 @@ if __name__ == '__main__':
         model = models[i]
         test_model = model()
         params = model.get_search_space()
-        for seed_id in range(1):
+        for seed_id in range(10):
             print('<-- Running Hyperband -->')
             exp_name = 'hyperband_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
