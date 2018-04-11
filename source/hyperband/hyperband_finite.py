@@ -31,7 +31,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
         remaining_arms = [list(a) for a in
                           zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
     elif resource_type == 'iterations':
-        remaining_arms = [list(a) for a in zip(arms.keys(), [0] * len(arms.keys()))]
+        remaining_arms = [list(a) for a in zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()))]
     current_track = np.copy(track)
 
     for l in range(i+1):
@@ -64,19 +64,20 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                 remaining_arms[a][2] = val_err
                 remaining_arms[a][3] = test_err
             elif resource_type == 'iterations':
-                val_err, current_track = \
+                val_err, avg_loss, current_track = \
                     model.run_solver(num_pulls, arms[arm_key], data, rng=rng, track=current_track, verbose=verbose)
 
                 if verbose:
                     print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))
 
-                arms[arm_key]['results'].append([num_pulls, val_err])
+                arms[arm_key]['results'].append([num_pulls, val_err, avg_loss])
                 remaining_arms[a][1] = val_err
+                remaining_arms[a][2] = avg_loss
 
         if resource_type == 'epochs':
             remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
         elif resource_type == 'iterations':
-            remaining_arms = sorted(remaining_arms, key=lambda a: a[1])
+            remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
 
         n_k1 = int(n * eta ** (-l-1))
         if i-l-1 >= 0:
