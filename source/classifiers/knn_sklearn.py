@@ -87,6 +87,7 @@ class KNN(Model):
         loss = utils.Loss(KNN(), x, y, method=method, problem=problem)
 
         best_loss = 1.
+        avg_loss = 0.
         test_score = 1.
 
         if track.size == 0:
@@ -99,6 +100,7 @@ class KNN(Model):
         for iteration in range(iterations):
             current_loss, test_error = loss.evaluate_loss(n_neighbors=arm['n_neighbors'])
             current_loss = -current_loss
+            avg_loss += current_loss
             test_score = -test_error
 
             if verbose:
@@ -118,7 +120,10 @@ class KNN(Model):
                 current_track = np.append(current_track, test_score)
             else:
                 current_track = np.append(current_track, current_best)
-        return best_loss, current_track
+
+        avg_loss = avg_loss / iterations
+
+        return best_loss, avg_loss, current_track
 
     @staticmethod
     def get_search_space():
