@@ -42,7 +42,7 @@ if __name__ == "__main__":
     names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
     for name in names:
         path = "../result/hyperband_" + name + "2"
-        plots.plot_hyperband_only(path, 10, name, '', 'wine', 2)
+        plots.plot_hyperband_only(path, 10, name, '', 'breast_cancer', 2)
 
     # path = "../result/hyperband_svm_2"
     # plots.plot_hyperband_only(path, 10, 'svm_', '', 'wine', 2)

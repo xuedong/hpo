@@ -470,6 +470,5 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     save_path = os.path.join(os.path.abspath('../'), 'img/{}'.format(classifier_name + str(idx)))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    plt.savefig(os.path.join(os.path.abspath('../'), 'img/{}/{}.pdf'.format(classifier_name +
-                                                                               str(idx), dataset_name)))
+    plt.savefig(os.path.join(os.path.abspath('../'), 'img/{}/{}.pdf'.format(classifier_name + str(idx), dataset_name)))
     plt.close(fig)
