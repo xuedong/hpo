@@ -116,8 +116,8 @@ class LogisticRegression(Model):
         return arms
 
     @staticmethod
-    def run_solver(epochs, arm, data, rng=None, classifier=None, track=np.array([1.]),
-                   current_best=np.inf, verbose=False):
+    def run_solver(epochs, arm, data, rng=None, classifier=None,
+                   track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """
 
         :param epochs: number of epochs
@@ -125,8 +125,8 @@ class LogisticRegression(Model):
         :param data: dataset to use
         :param rng: not used here
         :param classifier: initial model, set as None by default
-        :param track: vector where we store the test errors
-        :param current_best: previous best validation loss
+        :param track_valid: vector where we store the best validation errors
+        :param track_test: vector where we store the test errors
         :param verbose: verbose option
         :return:
         """
@@ -204,12 +204,16 @@ class LogisticRegression(Model):
         test_score = 1.
         train_loss = 0.
 
-        if track.size == 0:
-            # current_best = 1.
-            current_track = np.array([1.])
+        if track_valid.size == 0:
+            current_best_valid = 1.
+            current_test = 1.
+            current_track_valid = np.array([1.])
+            current_track_test = np.array([1.])
         else:
-            # current_best = current_best
-            current_track = np.copy(track)
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            current_track_valid = np.copy(track_valid)
+            current_track_test = np.copy(track_test)
 
         start_time = timeit.default_timer()
         done = False
@@ -272,7 +276,12 @@ class LogisticRegression(Model):
                 #    done = True
                 #    break
 
-            current_track = np.append(current_track, test_score)
+            if best_valid_loss < current_best_valid:
+                current_track_valid = np.append(current_track_valid, best_valid_loss)
+                current_track_test = np.append(current_track_test, test_score)
+            else:
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track = np.append(current_track_test, current_test)
 
         end_time = timeit.default_timer()
 
@@ -290,7 +299,7 @@ class LogisticRegression(Model):
                    os.path.split(__file__)[1] +
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-        return train_loss, best_valid_loss, test_score, current_track
+        return train_loss, best_valid_loss, test_score, current_track_valid, current_track_test
 
     @staticmethod
     def get_search_space():

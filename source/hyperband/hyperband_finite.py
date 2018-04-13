@@ -8,7 +8,7 @@ import utils
 
 
 def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
-              rng=np.random.RandomState(12345), track=np.array([1.]), verbose=False):
+              rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
     """Successive halving.
 
     :param model: model to be trained
@@ -21,7 +21,8 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     :param director: where we store the results
     :param data: dataset
     :param rng: random state
-    :param track: initial track vector
+    :param track_valid: initial track vector
+    :param track_test: initial track vector
     :param verbose: verbose option
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
@@ -32,7 +33,8 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                           zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
     elif resource_type == 'iterations':
         remaining_arms = [list(a) for a in zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()))]
-    current_track = np.copy(track)
+    current_track_valid = np.copy(track_valid)
+    current_track_test = np.copy(track_test)
 
     for l in range(i+1):
         num_pulls = int(big_r * eta ** (l - i))
@@ -47,14 +49,17 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
 
             if resource_type == 'epochs':
                 if not os.path.exists(arms[arm_key]['dir'] + '/best_model.pkl'):
-                    train_loss, val_err, test_err, current_track = \
+                    train_loss, val_err, test_err, current_track_valid, current_track_test = \
                         model.run_solver(num_pulls, arms[arm_key], data,
-                                         rng=rng, track=current_track, verbose=verbose)
+                                         rng=rng, track_valid=current_track_valid, track_test=current_track_test,
+                                         verbose=verbose)
                 else:
                     classifier = cPickle.load(open(arms[arm_key]['dir'] + '/best_model.pkl', 'rb'))
-                    train_loss, val_err, test_err, current_track = \
+                    train_loss, val_err, test_err, current_track_valid, current_track_test = \
                         model.run_solver(num_pulls, arms[arm_key], data,
-                                         rng=rng, classifier=classifier, track=current_track, verbose=verbose)
+                                         rng=rng, classifier=classifier,
+                                         track_valid=current_track_valid, track_test=current_track_test,
+                                         verbose=verbose)
 
                 if verbose:
                     print(arm_key, train_loss, val_err, test_err, utils.s_to_m(start_time, timeit.default_timer()))
@@ -65,7 +70,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                 remaining_arms[a][3] = test_err
             elif resource_type == 'iterations':
                 val_err, avg_loss, current_track = \
-                    model.run_solver(num_pulls, arms[arm_key], data, rng=rng, track=current_track, verbose=verbose)
+                    model.run_solver(num_pulls, arms[arm_key], data, rng=rng, track_test=current_track_test, verbose=verbose)
 
                 if verbose:
                     print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))
@@ -93,7 +98,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     elif resource_type == 'iterations':
         result = [best_arm, remaining_arms[0][1]]
 
-    return arms, result, current_track
+    return arms, result, current_track_valid, current_track_test
 
 
 def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
@@ -143,7 +148,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
         s_max = int(min(budget / big_r - 1, int(np.floor(utils.log_eta(big_r / r, eta)))))
         s = s_max
         best_val = 1.
-        track = np.array([1.])
+        track_valid = np.array([1.])
+        track_test = np.array([1.])
         print('s_max = %i' % s_max)
 
         # inner loop
@@ -158,9 +164,9 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
 
                 if s_run is None or i == s_run:
                     print('s = %d, n = %d' % (i, n))
-                    arms, result, track = \
+                    arms, result, track_valid, track_test = \
                         sh_finite(model, resource_type, params, n, i, eta, big_r, director,
-                                  rng=rng, data=data, track=track, verbose=verbose)
+                                  rng=rng, data=data, track_valid=track_valid, track_test=track_test, verbose=verbose)
                     results[(k, s)] = arms
 
                     if resource_type == 'epochs':
@@ -186,8 +192,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                     print("time elapsed: " + str(utils.s_to_m(start_time, timeit.default_timer())))
 
                 if s_run is None:
-                    cPickle.dump([durations, results, track], open(director + '/results.pkl', 'wb'))
+                    cPickle.dump([durations, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
                 else:
-                    cPickle.dump([durations, results, track],
+                    cPickle.dump([durations, results, track_valid, track_test],
                                  open(director + '/results_' + str(s_run) + '.pkl', 'wb'))
                 s -= 1

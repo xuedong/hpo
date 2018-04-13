@@ -12,8 +12,8 @@ if __name__ == "__main__":
     # path = "../result/random_logistic_0"
     # plots.plot_random(path, 1, 'logistic_', 'sgd_', 'mnist', 0)
 
-    # path = "../result/hyperband_logistic_2"
-    # plots.plot_hyperband_only(path, 5, 'logistic_', 'sgd_', 'mnist', 2)
+    path = "../result/hyperband_logistic_0"
+    plots.plot_hyperband_only(path, 1, 'logistic_', 'sgd_', 'mnist', 0)
 
     # path = "../result/tpe_logistic_0/"
     # plots.plot_tpe(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
@@ -39,10 +39,10 @@ if __name__ == "__main__":
     # # plots.plot_ho(path, 10, 'logistic_', 'sgd_', 'mnist', 0)
     # plots.plot_all(paths, 3, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
 
-    names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
-    for name in names:
-        path = "../result/hyperband_" + name + "2"
-        plots.plot_hyperband_only(path, 10, name, '', 'breast_cancer', 2)
+    # names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
+    # for name in names:
+    #     path = "../result/hyperband_" + name + "2"
+    #     plots.plot_hyperband_only(path, 10, name, '', 'breast_cancer', 2)
 
     # path = "../result/hyperband_svm_2"
     # plots.plot_hyperband_only(path, 10, 'svm_', '', 'wine', 2)

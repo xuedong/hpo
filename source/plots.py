@@ -25,12 +25,12 @@ def plot_random(path, trials, classifier_name, optimizer_name, dataset_name, idx
     shortest = sys.maxsize
     for i in range(trials):
         [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-                                          + '/results.pkl', 'rb'))
+                                             + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
     for i in range(trials):
         [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-                                          + '/results.pkl', 'rb'))
+                                             + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
     length = len(tracks[0])
@@ -68,11 +68,11 @@ def plot_hyperband_only(path, trials, classifier_name, optimizer_name, dataset_n
 
     tracks = np.array([None for _ in range(trials)])
     for i in range(trials):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
     for i in range(trials):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])

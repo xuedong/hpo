@@ -124,8 +124,7 @@ class MLP(Model):
 
     @staticmethod
     def run_solver(epochs, arm, data,
-                   rng=np.random.RandomState(1234), classifier=None, track=np.array([1.]),
-                   current_best = np.inf, verbose=False):
+                   rng=np.random.RandomState(1234), classifier=None, track=np.array([1.]), verbose=False):
         """
 
         :param epochs:
@@ -134,7 +133,6 @@ class MLP(Model):
         :param rng:
         :param classifier:
         :param track:
-        :param current_best
         :param verbose:
         :return:
         """
@@ -205,16 +203,16 @@ class MLP(Model):
         threshold = 0.995
         valid_freq = min(n_batches_train, patience // 2)
 
-        best_valid_loss = np.inf
+        best_valid_loss = 1.
         best_iter = 0
-        test_score = 0.
+        test_score = 1.
         train_loss = 0.
 
         if track.size == 0:
-            # current_best = 1.
+            current_best = 1.
             current_track = np.array([1.])
         else:
-            # current_best = np.amin(track)
+            current_best = np.amin(track)
             current_track = np.copy(track)
 
         start_time = timeit.default_timer()
@@ -277,8 +275,10 @@ class MLP(Model):
                 # if patience <= iteration:
                 #     done = True
                 #     break
-
-            current_track = np.append(current_track, test_score)
+            if best_valid_loss < current_best:
+                current_track = np.append(current_track, test_score)
+            else:
+                current_track = np.append(current_track, current_best)
 
         end_time = timeit.default_timer()
 
