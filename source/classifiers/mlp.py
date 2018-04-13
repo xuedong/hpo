@@ -124,7 +124,8 @@ class MLP(Model):
 
     @staticmethod
     def run_solver(epochs, arm, data,
-                   rng=np.random.RandomState(1234), classifier=None, track=np.array([1.]), verbose=False):
+                   rng=np.random.RandomState(1234), classifier=None,
+                   track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """
 
         :param epochs:
@@ -132,7 +133,8 @@ class MLP(Model):
         :param data:
         :param rng:
         :param classifier:
-        :param track:
+        :param track_valid:
+        :param track_test:
         :param verbose:
         :return:
         """
@@ -208,12 +210,16 @@ class MLP(Model):
         test_score = 1.
         train_loss = 0.
 
-        if track.size == 0:
-            current_best = 1.
-            current_track = np.array([1.])
+        if track_valid.size == 0:
+            current_best_valid = 1.
+            current_test = 1.
+            current_track_valid = np.array([1.])
+            current_track_test = np.array([1.])
         else:
-            current_best = np.amin(track)
-            current_track = np.copy(track)
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            current_track_valid = np.copy(track_valid)
+            current_track_test = np.copy(track_test)
 
         start_time = timeit.default_timer()
         done = False
@@ -275,10 +281,13 @@ class MLP(Model):
                 # if patience <= iteration:
                 #     done = True
                 #     break
-            if best_valid_loss < current_best:
-                current_track = np.append(current_track, test_score)
+
+            if best_valid_loss < current_best_valid:
+                current_track_valid = np.append(current_track_valid, best_valid_loss)
+                current_track_test = np.append(current_track_test, test_score)
             else:
-                current_track = np.append(current_track, current_best)
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
 
         end_time = timeit.default_timer()
 

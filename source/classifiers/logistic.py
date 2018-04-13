@@ -281,7 +281,7 @@ class LogisticRegression(Model):
                 current_track_test = np.append(current_track_test, test_score)
             else:
                 current_track_valid = np.append(current_track_valid, current_best_valid)
-                current_track = np.append(current_track_test, current_test)
+                current_track_test = np.append(current_track_test, current_test)
 
         end_time = timeit.default_timer()
 
