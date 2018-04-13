@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import source.utils as utils
 
 import source.classifiers.logistic as logistic
-# import source.classifiers.mlp as mlp
+import source.classifiers.mlp as mlp
 # import source.baseline.random_search as random_search
 
 
@@ -16,23 +16,28 @@ if __name__ == '__main__':
 
     output_dir = ''
     # rng = np.random.RandomState(12345)
-    model_name = 'logistic_sgd_'
+    model_name = 'mlp_sgd_'
 
-    test_model = logistic.LogisticRegression
-    params = logistic.LogisticRegression.get_search_space()
+    # test_model = logistic.LogisticRegression
+    # params = logistic.LogisticRegression.get_search_space()
+    test_model = mlp.MLP
+    params = mlp.MLP.get_search_space()
 
-    tracks = np.array([None for _ in range(10)])
-    for seed_id in range(10):
+    tracks = np.array([None for _ in range(1)])
+    for seed_id in range(1):
         start_time = timeit.default_timer()
 
         arm = {'dir': '.'}
-        hps = ['learning_rate', 'batch_size']
+        # hps = ['learning_rate', 'batch_size']
+        hps = ['learning_rate', 'batch_size', 'l2_reg']
         for hp in hps:
             val = params[hp].get_param_range(1, stochastic=True)
             arm[hp] = val[0]
+        arm['l1_reg'] = 0.
+        arm['n_hidden'] = 500
         arm['results'] = []
         train_loss, val_err, test_err, track = \
-            test_model.run_solver(500, arm, data, verbose=True)
+            test_model.run_solver(10, arm, data, verbose=True)
         tracks[seed_id] = track
 
         end_time = timeit.default_timer()

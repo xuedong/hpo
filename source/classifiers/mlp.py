@@ -124,7 +124,8 @@ class MLP(Model):
 
     @staticmethod
     def run_solver(epochs, arm, data,
-                   rng=np.random.RandomState(1234), classifier=None, track=np.array([1.]), verbose=False):
+                   rng=np.random.RandomState(1234), classifier=None, track=np.array([1.]),
+                   current_best = np.inf, verbose=False):
         """
 
         :param epochs:
@@ -133,6 +134,7 @@ class MLP(Model):
         :param rng:
         :param classifier:
         :param track:
+        :param current_best
         :param verbose:
         :return:
         """
@@ -209,10 +211,10 @@ class MLP(Model):
         train_loss = 0.
 
         if track.size == 0:
-            current_best = 1.
+            # current_best = 1.
             current_track = np.array([1.])
         else:
-            current_best = np.amin(track)
+            # current_best = np.amin(track)
             current_track = np.copy(track)
 
         start_time = timeit.default_timer()
@@ -272,14 +274,11 @@ class MLP(Model):
                         with open(arm['dir'] + '/best_model.pkl', 'wb') as file:
                             cPickle.dump(classifier, file)
 
-                if patience <= iteration:
-                    done = True
-                    break
+                # if patience <= iteration:
+                #     done = True
+                #     break
 
-            if test_score < current_best:
-                current_track = np.append(current_track, test_score)
-            else:
-                current_track = np.append(current_track, current_best)
+            current_track = np.append(current_track, test_score)
 
         end_time = timeit.default_timer()
 

@@ -116,7 +116,8 @@ class LogisticRegression(Model):
         return arms
 
     @staticmethod
-    def run_solver(epochs, arm, data, rng=None, classifier=None, track=np.array([1.]), verbose=False):
+    def run_solver(epochs, arm, data, rng=None, classifier=None, track=np.array([1.]),
+                   current_best=np.inf, verbose=False):
         """
 
         :param epochs: number of epochs
@@ -125,6 +126,7 @@ class LogisticRegression(Model):
         :param rng: not used here
         :param classifier: initial model, set as None by default
         :param track: vector where we store the test errors
+        :param current_best: previous best validation loss
         :param verbose: verbose option
         :return:
         """
@@ -203,10 +205,10 @@ class LogisticRegression(Model):
         train_loss = 0.
 
         if track.size == 0:
-            current_best = 1.
+            # current_best = 1.
             current_track = np.array([1.])
         else:
-            current_best = np.amin(track)
+            # current_best = current_best
             current_track = np.copy(track)
 
         start_time = timeit.default_timer()
@@ -270,10 +272,7 @@ class LogisticRegression(Model):
                 #    done = True
                 #    break
 
-            if test_score < current_best:
-                current_track = np.append(current_track, test_score)
-            else:
-                current_track = np.append(current_track, current_best)
+            current_track = np.append(current_track, test_score)
 
         end_time = timeit.default_timer()
 
