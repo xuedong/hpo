@@ -32,7 +32,7 @@ if __name__ == '__main__':
             arm[hp] = val[0]
         arm['results'] = []
         train_loss, val_err, test_err, track = \
-            test_model.run_solver(100, arm, data, verbose=True)
+            test_model.run_solver(500, arm, data, verbose=True)
         tracks[seed_id] = track
 
         end_time = timeit.default_timer()
