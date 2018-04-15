@@ -111,7 +111,7 @@ class LogisticRegression(Model):
             arm['results'] = []
             arms[i] = arm
 
-        os.chdir('../../../source')
+        # os.chdir('../../../source')
 
         return arms
 

@@ -1,54 +1,188 @@
 import numpy as np
-import sys
+import os
 import timeit
+import theano
+import theano.tensor as ts
 import matplotlib.pyplot as plt
 
-import source.utils as utils
+# from six.moves import cPickle
+
+import sys
 
 import source.classifiers.logistic as logistic
-import source.classifiers.mlp as mlp
-# import source.baseline.random_search as random_search
+import source.utils as utils
+
+# Dataset
+DATASET = 'mnist.pkl.gz'
+
+
+def sgd(dataset, learning_rate, epochs, batch_size, classifier=None):
+    """Applying stochastic gradient descent on a logistic regression model.
+
+    :param dataset: path to the dataset
+    :param learning_rate: learning rate used
+    :param epochs: number of times to run the optimizer
+    :param batch_size: size of the minibatch
+    :param classifier: initial model
+    :return: None
+    """
+    data = utils.load_data(dataset)
+    train_input, train_target = data[0]
+    valid_input, valid_target = data[1]
+    test_input, test_target = data[2]
+
+    n_batches_train = train_input.get_value(borrow=True).shape[0] // batch_size
+    n_batches_valid = valid_input.get_value(borrow=True).shape[0] // batch_size
+    n_batches_test = test_input.get_value(borrow=True).shape[0] // batch_size
+
+    print('Building model...')
+
+    # symbolic variables
+    index = ts.lscalar()
+    # x = ts.matrix('x')
+    y = ts.ivector('y')
+
+    # construct the classifier
+    if not classifier:
+        x = ts.matrix('x')
+        classifier = logistic.LogisticRegression(input_data=x, n=28*28, m=10)
+    else:
+        x = classifier.input_data
+    cost = classifier.neg_log_likelihood(y)
+
+    # construct a Theano function that computes the errors made
+    # by the model on a minibatch
+    test_model = theano.function(
+        inputs=[index],
+        outputs=classifier.zero_one(y),
+        givens={
+            x: test_input[index * batch_size: (index + 1) * batch_size],
+            y: test_target[index * batch_size: (index + 1) * batch_size]
+        }
+    )
+    valid_model = theano.function(
+        inputs=[index],
+        outputs=classifier.zero_one(y),
+        givens={
+            x: valid_input[index * batch_size: (index + 1) * batch_size],
+            y: valid_target[index * batch_size: (index + 1) * batch_size]
+        }
+    )
+
+    # construct a Theano function that updates the parameters of
+    # the training model using stochastic gradient descent
+    g_w = ts.grad(cost=cost, wrt=classifier.w)
+    g_b = ts.grad(cost=cost, wrt=classifier.b)
+    updates = [(classifier.w, classifier.w - learning_rate * g_w),
+               (classifier.b, classifier.b - learning_rate * g_b)]
+
+    train_model = theano.function(
+        inputs=[index],
+        outputs=cost,
+        updates=updates,
+        givens={
+            x: train_input[index * batch_size: (index + 1) * batch_size],
+            y: train_target[index * batch_size: (index + 1) * batch_size]
+        }
+    )
+
+    print('Training model...')
+
+    # early-stopping parameters
+    patience = 5000
+    patience_increase = 2
+    threshold = 0.995
+    valid_freq = min(n_batches_train, patience // 2)
+
+    best_valid_loss = np.inf
+    best_iter = 0
+    test_score = 0.
+    track_test = np.array([])
+    start_time = timeit.default_timer()
+
+    done = False
+    epoch = 0
+    while (epoch < epochs) and not done:
+        epoch += 1
+        for batch_index in range(n_batches_train):
+            batch_cost = train_model(batch_index)
+            iteration = (epoch - 1) * n_batches_train + batch_index
+
+            if (iteration + 1) % valid_freq == 0:
+                valid_losses = [valid_model(i) for i in range(n_batches_valid)]
+                current_valid_loss = float(np.mean(valid_losses))
+
+                print(
+                    'epoch %i, batch %i/%i, batch average cost %f, validation error %f %%' %
+                    (
+                        epoch,
+                        batch_index + 1,
+                        n_batches_train,
+                        batch_cost,
+                        current_valid_loss * 100.
+                    )
+                )
+
+                if current_valid_loss < best_valid_loss:
+                    if current_valid_loss < best_valid_loss * threshold:
+                        patience = max(patience, iteration * patience_increase)
+
+                    best_valid_loss = current_valid_loss
+                    best_iter = iteration
+
+                test_losses = [test_model(i) for i in range(n_batches_test)]
+                test_score = np.mean(test_losses)
+
+                print(
+                    (
+                        '     epoch %i, batch %i/%i, test error of'
+                        ' best model %f %%'
+                    ) %
+                    (
+                        epoch,
+                        batch_index + 1,
+                        n_batches_train,
+                        test_score * 100.
+                    )
+                )
+
+                # save the best model
+                # with open('best_model_logistic_sgd.pkl', 'wb') as file:
+                #     cPickle.dump(classifier, file)
+
+            # if patience <= iteration:
+            #    done = True
+            #    break
+
+        track_test = np.append(track_test, test_score)
+
+    end_time = timeit.default_timer()
+    print(
+        (
+            'Optimization completed with best validation score of %f %%, '
+            'obtained at iteration %i, with test performance %f %%'
+        )
+        % (best_valid_loss * 100., best_iter + 1, test_score * 100.)
+    )
+    print('The code run for %d epochs, with %f epochs/sec' % (
+        epoch, 1. * epoch / (end_time - start_time)))
+    print(('The code for file ' +
+           os.path.split(__file__)[1] +
+           ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+    return track_test
 
 
 if __name__ == '__main__':
-    data_dir = 'mnist.pkl.gz'
-    data = utils.load_data(data_dir)
-
-    output_dir = ''
-    # rng = np.random.RandomState(12345)
-    model_name = 'mlp_sgd_'
-
-    test_model = logistic.LogisticRegression
     params = logistic.LogisticRegression.get_search_space()
-    # test_model = mlp.MLP
-    # params = mlp.MLP.get_search_space()
-
-    tracks = np.array([None for _ in range(1)])
-    for seed_id in range(1):
-        start_time = timeit.default_timer()
-
-        arm = {'dir': '.'}
-        hps = ['learning_rate', 'batch_size']
-        # hps = ['learning_rate', 'batch_size', 'l2_reg']
-        for hp in hps:
-            val = params[hp].get_param_range(1, stochastic=True)
-            arm[hp] = val[0]
-        # arm['l1_reg'] = 0.
-        # arm['n_hidden'] = 500
-        arm['results'] = []
-        train_loss, val_err, test_err, track = \
-            test_model.run_solver(20, arm, data, verbose=True)
-        tracks[seed_id] = track
-
-        end_time = timeit.default_timer()
-
-        print(('The code for the trial number ' +
-               str(seed_id) +
-               ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
-
-    x = range(len(tracks[0]))
-    y = np.mean(tracks, axis=0)
-    plt.plot(x, y)
+    arms = logistic.LogisticRegression.generate_arms(10, './.cache', params)
+    tracks = np.zeros(1000)
+    for arm in arms:
+        track = sgd(DATASET, arms[arm]['learning_rate'], 1000, arms[arm]['batch_size'])
+        tracks = tracks + track
+    n_epochs = range(len(tracks))
+    test_errors = tracks / 1000.
+    plt.plot(n_epochs, test_errors)
 
     plt.grid()
     # plt.ylim((0, 0.2))
