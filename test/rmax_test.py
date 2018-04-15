@@ -175,18 +175,21 @@ def sgd(dataset, learning_rate, epochs, batch_size, classifier=None):
 
 if __name__ == '__main__':
     params = logistic.LogisticRegression.get_search_space()
-    arms = logistic.LogisticRegression.generate_arms(10, './.cache', params)
-    tracks = np.zeros(1000)
-    for arm in arms:
-        track = sgd(DATASET, arms[arm]['learning_rate'], 1000, arms[arm]['batch_size'])
-        tracks = tracks + track
-    n_epochs = range(len(tracks))
-    test_errors = tracks / 1000.
-    plt.plot(n_epochs, test_errors)
+    for i in range(10):
+        arms = logistic.LogisticRegression.generate_arms(1, './.cache', params)
+        tracks = np.zeros(1000)
+        for arm in arms:
+            track = sgd(DATASET, arms[arm]['learning_rate'], 1000, arms[arm]['batch_size'])
+            tracks = tracks + track
+        n_epochs = range(len(tracks))
+        test_errors = tracks / 1.
+        os.chdir('..')
+        plt.plot(n_epochs, test_errors)
 
-    plt.grid()
-    # plt.ylim((0, 0.2))
-    plt.legend(loc=0)
-    plt.ylabel('Test Error')
-    plt.xlabel('Number of Epochs')
-    plt.show()
+        plt.grid()
+        # plt.ylim((0, 0.2))
+        plt.legend(loc=0)
+        plt.ylabel('Test Error')
+        plt.xlabel('Number of Epochs')
+        plt.savefig(os.path.join(os.path.abspath('../'), 'img/rmax/rmax_logistic_run_' + str(i+3) + '.pdf'))
+        plt.close()

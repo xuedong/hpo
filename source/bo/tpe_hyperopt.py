@@ -48,17 +48,23 @@ def combine_tracks(trials):
     :return: the track vector of test errors
     """
     length = len(trials.trials)
-    msg = trials.trial_attachments(trials.trials[0])['track']
-    track = cPickle.loads(msg)
-    for i in range(1, length):
-        msg = trials.trial_attachments(trials.trials[i])['track']
-        current_track = cPickle.loads(msg)
-        current_best = np.amin(track)
-        for j in range(1, len(current_track)):
-            if current_track[j] < current_best:
-                current_best = current_track[j]
-                track = np.append(track, current_best)
+    track_valid = np.array([1.])
+    track_test = np.array([1.])
+    for i in range(length):
+        msg1 = trials.trial_attachments(trials.trials[i])['track_valid']
+        msg2 = trials.trial_attachments(trials.trials[i])['track_test']
+        current_track_valid = cPickle.loads(msg1)
+        current_track_test = cPickle.loads(msg2)
+        current_best_valid = track_valid[-1]
+        current_test = track_test[-1]
+        for j in range(1, len(current_track_valid)):
+            if current_track_valid[j] < current_best_valid:
+                current_best_valid = current_track_valid[j]
+                current_test = current_track_test[j]
+                track_valid = np.append(track_valid, current_best_valid)
+                track_test = np.append(track_test, current_test)
             else:
-                track = np.append(track, current_best)
+                track_valid = np.append(track_valid, current_best_valid)
+                track_test = np.append(track_test, current_test)
 
-    return track
+    return track_test

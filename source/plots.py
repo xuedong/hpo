@@ -24,12 +24,12 @@ def plot_random(path, trials, classifier_name, optimizer_name, dataset_name, idx
     tracks = np.array([None for _ in range(trials)])
     shortest = sys.maxsize
     for i in range(trials):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
                                              + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
     for i in range(trials):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
                                              + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
@@ -338,11 +338,11 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     # Hyperband
     tracks = np.array([None for _ in range(runs)])
     for i in range(runs):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
     for i in range(runs):
-        [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])
@@ -358,58 +358,33 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     os.chdir('..')
 
     # TPE
-    # os.chdir(paths[1])
-    # shortest = sys.maxsize
-    #
-    # tracks = np.array([None for _ in range(runs)])
-    # for i in range(runs):
-    #     [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-    #     track = combine_tracks(trials)
-    #     if len(track) < shortest:
-    #         shortest = len(track)
-    # for i in range(runs):
-    #     [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-    #     track = combine_tracks(trials)
-    #     tracks[i] = track[0:shortest]
-    #
-    # # length = len(tracks[0])
-    # x = range(shortest)
-    # y = np.mean(tracks, axis=0)
-    # if devs:
-    #     err = np.std(tracks, axis=0)
-    #     lower = y - err
-    #     higher = y + err
-    #     plt.fill_between(x, lower, higher, alpha=0.5)
-    # plt.plot(x, y, label=r"TPE")
-
-    # os.chdir('..')
-
-    # HOO
     os.chdir(paths[1])
     shortest = sys.maxsize
 
-    losses = np.array([None for _ in range(runs)])
+    tracks = np.array([None for _ in range(runs)])
     for i in range(runs):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        if len(loss) < shortest:
-            shortest = len(loss)
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        track = combine_tracks(trials)
+        if len(track) < shortest:
+            shortest = len(track)
     for i in range(runs):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        losses[i] = loss[0:shortest]
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        track = combine_tracks(trials)
+        tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])
     x = range(shortest)
-    y = np.mean(losses, axis=0)
+    y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err
         higher = y + err
-        plt.fill_between(x, lower, higher, facecolor='lightblue')
-    plt.plot(x, y, label=r"HOO")
+        plt.fill_between(x, lower, higher, alpha=0.5)
+    plt.plot(x, y, label=r"TPE")
 
     os.chdir('..')
 
-    # HCT
+    # HOO
     os.chdir(paths[2])
     shortest = sys.maxsize
 
@@ -423,8 +398,35 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         losses[i] = loss[0:shortest]
 
     # length = len(tracks[0])
-    x = range(shortest)
+    x = range(shortest+1)
     y = np.mean(losses, axis=0)
+    y = np.append([1.], y)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    plt.plot(x, y, label=r"HOO")
+
+    os.chdir('..')
+
+    # HCT
+    os.chdir(paths[3])
+    shortest = sys.maxsize
+
+    losses = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(loss) < shortest:
+            shortest = len(loss)
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        losses[i] = loss[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest+1)
+    y = np.mean(losses, axis=0)
+    y = np.append([1.], y)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err
@@ -435,31 +437,31 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     os.chdir('..')
 
     # Random Search
-    # os.chdir(paths[4])
-    # shortest = sys.maxsize
-    #
-    # tracks = np.array([None for _ in range(runs)])
-    # for i in range(runs):
-    #     [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-    #                                       + '/results.pkl', 'rb'))
-    #     if len(track) < shortest:
-    #         shortest = len(track)
-    # for i in range(runs):
-    #     [_, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-    #                                       + '/results.pkl', 'rb'))
-    #     tracks[i] = track[0:shortest]
-    #
-    # length = len(tracks[0])
-    # x = range(length)
-    # y = np.mean(tracks, axis=0)
-    # if devs:
-    #     err = np.std(tracks, axis=0)
-    #     lower = y - err
-    #     higher = y + err
-    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
-    # plt.plot(x, y, label=r"Random Search")
+    os.chdir(paths[4])
+    shortest = sys.maxsize
 
-    # os.chdir('..')
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                             + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                             + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    length = len(tracks[0])
+    x = range(length)
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    plt.plot(x, y, label=r"Random Search")
+
+    os.chdir('..')
 
     plt.grid()
     # plt.xlim((0, 1000))

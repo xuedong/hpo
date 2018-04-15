@@ -108,7 +108,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        f_target = target.TheanoLogistic(1, data, director)
+        f_target = target.TheanoLogistic(epochs, data, director)
         bbox = utils_ho.std_box(f_target, None, 2, 0.1,
                                 [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
                                  (params['batch_size'].get_min(), params['batch_size'].get_max())],
@@ -116,7 +116,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         alpha = math.log(horizon) * (sigma ** 2)
         losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
-                                   horizon=epochs*horizon, update=False)
+                                   horizon=horizon, update=False)
         losses = np.array(losses)
 
         with open(director + '/results.pkl', 'wb') as file:
@@ -173,9 +173,10 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        best, results, track = random_search.random_search(test_model, horizon,
-                                                           director, params, epochs, data, rng, verbose=False)
-        cPickle.dump([best, results, track], open(director + '/results.pkl', 'wb'))
+        best, results, track_valid, track_test = random_search.random_search(test_model, horizon,
+                                                                             director, params,
+                                                                             epochs, data, rng, verbose=False)
+        cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
         end_time = timeit.default_timer()
 
@@ -187,5 +188,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('logistic', 1, 0.66, 1., 0.1, 0.05, 25, 1000)
+    main('logistic', 1, 0.66, 1., 0.1, 0.05, 4, 10)
     # main('mlp')

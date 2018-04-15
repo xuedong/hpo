@@ -217,11 +217,11 @@ class TheanoLogistic:
     def f(self, hps):
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
         if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
-            train_loss, best_valid_loss, test_score, track = \
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=False)
         else:
             classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
-            train_loss, best_valid_loss, test_score, track = \
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
                                                        classifier=classifier, verbose=False)
 
@@ -249,7 +249,7 @@ class HyperLogistic(object):
         arm = {'dir': self.director,
                'learning_rate': learning_rate, 'batch_size': int(batch_size),
                'results': []}
-        train_loss, best_valid_loss, test_score, track = \
+        train_loss, best_valid_loss, test_score, track_valid, track_test = \
             self.model.run_solver(self.epochs, arm, self.data, verbose=False)
         return {
             'loss': test_score,
@@ -259,5 +259,6 @@ class HyperLogistic(object):
             'valid_loss': best_valid_loss,
             # -- attachments are handled differently
             'attachments':
-                {'track': cPickle.dumps(track)}
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
         }
