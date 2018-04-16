@@ -283,8 +283,10 @@ class MLP(Model):
                 #     break
 
             if best_valid_loss < current_best_valid:
-                current_track_valid = np.append(current_track_valid, best_valid_loss)
-                current_track_test = np.append(current_track_test, test_score)
+                current_best_valid = best_valid_loss
+                current_test = test_score
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
             else:
                 current_track_valid = np.append(current_track_valid, current_best_valid)
                 current_track_test = np.append(current_track_test, current_test)
@@ -305,7 +307,7 @@ class MLP(Model):
                    os.path.split(__file__)[1] +
                    ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)
 
-        return train_loss, best_valid_loss, test_score, current_track
+        return train_loss, best_valid_loss, test_score, current_track_valid, current_track_test
 
     @staticmethod
     def get_search_space():
