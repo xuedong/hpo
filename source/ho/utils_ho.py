@@ -15,10 +15,10 @@ import ho.poo as poo
 import ho.hct as hct
 
 
-def std_box(target, fmax, nsplits, sigma, support, support_type):
+def std_box(target, fmax, nsplits, sigma, support, support_type, keep=False):
     box = Box(target, fmax, nsplits, sigma, support, support_type)
     box.std_partition()
-    box.std_noise(sigma)
+    box.std_noise(sigma, keep)
 
     return box
 
@@ -44,10 +44,13 @@ class Box:
         self.rand = std_rand
         self.split = std_split_rand
 
-    def std_noise(self, sigma):
+    def std_noise(self, sigma, keep=False):
         """Stochastic target with Gaussian or uniform noise.
         """
-        self.f_noised = lambda x: self.f_mean(x) + sigma * np.random.normal(0, sigma)
+        if keep:
+            self.f_noised = lambda x: self.f_mean(x)[0] + sigma * np.random.normal(0, sigma)
+        else:
+            self.f_noised = lambda x: self.f_mean(x) + sigma * np.random.normal(0, sigma)
         # self.f_noised = lambda x: self.f_mean(x) + sigma*random.random()
 
     """
@@ -106,25 +109,45 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     return y_cum, y_sim, x_sel
 
 
-def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
+def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update, keep=False):
     losses = [0. for _ in range(horizon)]
     htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, bbox)
     best = -np.float('inf')
 
     bar = progressbar.ProgressBar()
 
+    track_valid = np.array([1.])
+    track_test = np.array([1.])
     for i in bar(range(horizon)):
         # print(str(i+1) + '/' + str(horizon))
         if update and alpha < math.log(i + 1) * (sigma ** 2):
             alpha += 1
             htree.update(alpha)
         x, _, _ = htree.sample(alpha)
-        current = bbox.f_mean(x)
-        if current > best:
-            best = current
-            losses[i] = best
+        if not keep:
+            current = bbox.f_mean(x)
+            if current > best:
+                best = current
+                losses[i] = best
+            else:
+                losses[i] = best
         else:
-            losses[i] = best
+            _, current_track_valid, current_track_test = bbox.f_mean(x)
+            # print(current_track_test)
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            for j in range(1, len(current_track_valid)):
+                if current_track_valid[j] < current_best_valid:
+                    current_best_valid = current_track_valid[j]
+                    current_test = current_track_test[j]
+                    track_valid = np.append(track_valid, current_best_valid)
+                    track_test = np.append(track_test, current_test)
+                else:
+                    track_valid = np.append(track_valid, current_best_valid)
+                    track_test = np.append(track_test, current_test)
+
+    if keep:
+        losses = track_test[1:]
 
     return losses
 

@@ -464,8 +464,8 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     os.chdir('..')
 
     plt.grid()
-    # plt.xlim((0, 1000))
-    plt.ylim((0, 1))
+    plt.xlim((0, 400))
+    plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Iterations')

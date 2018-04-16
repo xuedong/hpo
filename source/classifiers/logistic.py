@@ -220,6 +220,7 @@ class LogisticRegression(Model):
         epoch = 0
         while (epoch < epochs) and not done:
             epoch += 1
+            # print(current_best_valid)
 
             for batch_index in range(n_batches_train):
                 batch_cost = train_model(batch_index)
@@ -277,8 +278,10 @@ class LogisticRegression(Model):
                 #    break
 
             if best_valid_loss < current_best_valid:
-                current_track_valid = np.append(current_track_valid, best_valid_loss)
-                current_track_test = np.append(current_track_test, test_score)
+                current_best_valid = best_valid_loss
+                current_test = test_score
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
             else:
                 current_track_valid = np.append(current_track_valid, current_best_valid)
                 current_track_test = np.append(current_track_test, current_test)

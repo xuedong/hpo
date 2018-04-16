@@ -207,7 +207,7 @@ class SklearnAda:
 
 # Theano functions
 
-class TheanoLogistic:
+class TheanoHCTLogistic:
     def __init__(self, epochs, data, director):
         self.epochs = epochs
         self.data = data
@@ -233,6 +233,32 @@ class TheanoLogistic:
     def set_status(self, flag):
         self.change_status = flag
         # print(self.change_status)
+
+
+class TheanoHOOLogistic:
+    def __init__(self, epochs, data, director):
+        self.epochs = epochs
+        self.data = data
+        self.director = director
+        self.change_status = False
+
+    def f(self, hps):
+        arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
+        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=False)
+        else:
+            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
+                                                       classifier=classifier, verbose=False)
+
+        # with open(self.director + '_/tracks.pkl', 'wb') as file:
+        #     cPickle.dump(track, file)
+        # print(track_valid)
+        # print(track_test)
+
+        return -test_score, track_valid, track_test
 
 
 # Hyperopt functions

@@ -33,9 +33,11 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
     test_model = logistic.LogisticRegression
     params = logistic.LogisticRegression.get_search_space()
 
+    exp_id = 1
+
     for seed_id in range(mcmc):
         print('<-- Running Hyperband -->')
-        exp_name = 'hyperband_' + model + '_0/'
+        exp_name = 'hyperband_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -46,8 +48,8 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 10, 360, director, data, eta=4,
-                                          verbose=True)
+        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 100, 360, director, data, eta=4,
+                                          verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
@@ -65,7 +67,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
         print('<-- Running TPE -->')
-        exp_name = 'tpe_' + model + '_0/'
+        exp_name = 'tpe_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -97,7 +99,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
         print('<-- Running HOO -->')
-        exp_name = 'hoo_' + model + '_0/'
+        exp_name = 'hoo_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -108,19 +110,20 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        f_target = target.TheanoLogistic(epochs, data, director)
+        f_target = target.TheanoHOOLogistic(epochs, data, director)
         bbox = utils_ho.std_box(f_target, None, 2, 0.1,
                                 [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
                                  (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                                [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+                                [params['learning_rate'].get_type(), params['batch_size'].get_type()],
+                                keep=True)
 
         alpha = math.log(horizon) * (sigma ** 2)
         losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
-                                   horizon=horizon, update=False)
+                                   horizon=horizon, update=False, keep=True)
         losses = np.array(losses)
 
         with open(director + '/results.pkl', 'wb') as file:
-            cPickle.dump(-losses, file)
+            cPickle.dump(losses, file)
 
         end_time = timeit.default_timer()
 
@@ -129,7 +132,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
         print('<-- Running HCT -->')
-        exp_name = 'hct_' + model + '_0/'
+        exp_name = 'hct_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -140,7 +143,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        f_target = target.TheanoLogistic(1, data, director)
+        f_target = target.TheanoHCTLogistic(1, data, director)
         bbox = utils_ho.std_box(f_target, None, 2, 0.1,
                                 [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
                                  (params['batch_size'].get_min(), params['batch_size'].get_max())],
@@ -162,7 +165,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
         print('<-- Running Random Search -->', )
-        exp_name = 'random_' + model + '_0/'
+        exp_name = 'random_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
         if not os.path.exists(director):
             os.makedirs(director)
@@ -188,5 +191,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('logistic', 1, 0.66, 1., 0.1, 0.05, 4, 10)
+    main('logistic', 10, 0.66, 1., 0.1, 0.05, 16, 100)
     # main('mlp')
