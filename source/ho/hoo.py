@@ -9,7 +9,7 @@ import math
 
 
 class HTree:
-    def __init__(self, support, support_type, father, depth, rho, nu, box):
+    def __init__(self, support, support_type, father, depth, rho, nu, sigma, box):
         self.bvalue = float('inf')
         self.uvalue = float('inf')
         self.tvalue = 0
@@ -22,6 +22,7 @@ class HTree:
         self.depth = depth
         self.rho = rho
         self.nu = nu
+        self.sigma = sigma
         self.box = box
         self.children = []
 
@@ -81,7 +82,8 @@ class HTree:
         if leaf.noisy is None:
             x = self.box.rand(leaf.support, leaf.support_type)
             leaf.evaluated = x
-            leaf.noisy = self.box.f_noised(x)
+            leaf.mean_reward = self.box.f_mean(x)
+            leaf.noisy = leaf.mean_reward + self.sigma * np.random.normal(0, self.sigma)
             existed = True
         leaf.update_path(leaf.noisy, alpha)
 
