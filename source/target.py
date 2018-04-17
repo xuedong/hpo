@@ -288,3 +288,31 @@ class HyperLogistic(object):
                 {'track_valid': cPickle.dumps(track_valid),
                  'track_test': cPickle.dumps(track_test)}
         }
+
+
+class HyperMLP(object):
+    def __init__(self, model, epochs, director, data):
+        self.model = model
+        self.epochs = epochs
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        learning_rate, batch_size, l2_reg = hps
+        arm = {'dir': self.director,
+               'learning_rate': learning_rate, 'batch_size': int(batch_size),
+               'n_hidden': 500, 'l1_reg': 0., 'l2_reg': l2_reg,
+               'results': []}
+        train_loss, best_valid_loss, test_score, track_valid, track_test = \
+            self.model.run_solver(self.epochs, arm, self.data, verbose=True)
+        return {
+            'loss': test_score,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'train_loss': train_loss,
+            'valid_loss': best_valid_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
