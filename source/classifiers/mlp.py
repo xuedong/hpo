@@ -151,12 +151,15 @@ class MLP(Model):
 
         # symbolic variables
         index = ts.lscalar()
-        x = ts.matrix('x')
+        # x = ts.matrix('x')
         y = ts.ivector('y')
 
         # construct the classifier
         if not classifier:
+            x = ts.matrix('x')
             classifier = MLP(input_data=x, n_in=28*28, n_hidden=arm['n_hidden'], n_out=10, rng=rng)
+        else:
+            x = classifier.input_data
         cost = classifier.neg_log_likelihood(y) + arm['l1_reg'] * classifier.l1 + arm['l2_reg'] * classifier.l2
 
         # construct a Theano function that computes the errors made

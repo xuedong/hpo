@@ -14,8 +14,8 @@ from hyperopt import fmin
 from hyperopt import Trials
 
 import target
-import classifiers.logistic as logistic
-# import classifiers.mlp as mlp
+# import classifiers.logistic as logistic
+import classifiers.mlp as mlp
 import hyperband.hyperband_finite as hyperband_finite
 import bo.tpe_hyperopt as tpe_hyperopt
 import baseline.random_search as random_search
@@ -30,10 +30,12 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
     rng = np.random.RandomState(12345)
     model_name = model + '_sgd_'
 
-    test_model = logistic.LogisticRegression
-    params = logistic.LogisticRegression.get_search_space()
+    test_model = mlp.MLP
+    params = mlp.MLP.get_search_space()
+    # test_model = logistic.LogisticRegression
+    # params = logistic.LogisticRegression.get_search_space()
 
-    exp_id = 1
+    exp_id = 0
 
     for seed_id in range(mcmc):
         print('<-- Running Hyperband -->')
@@ -48,8 +50,8 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 100, 360, director, data, eta=4,
-                                          verbose=False)
+        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 10, 360, director, data, eta=4,
+                                          verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
@@ -191,5 +193,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('logistic', 10, 0.66, 1., 0.1, 0.05, 16, 100)
+    main('mlp', 1, 0.66, 1., 0.1, 0.05, 16, 100)
     # main('mlp')
