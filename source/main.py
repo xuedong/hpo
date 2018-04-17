@@ -68,103 +68,120 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
         #        str(seed_id) +
         #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-        print('<-- Running TPE -->')
-        exp_name = 'tpe_' + model + '_' + str(exp_id) + '/'
-        director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
-        if not os.path.exists(director):
-            os.makedirs(director)
-        log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-        sys.stdout = logger.Logger(log_dir, 'tpe')
+        # print('<-- Running TPE -->')
+        # exp_name = 'tpe_' + model + '_' + str(exp_id) + '/'
+        # director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
+        # if not os.path.exists(director):
+        #     os.makedirs(director)
+        # log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
+        # if not os.path.exists(log_dir):
+        #     os.makedirs(log_dir)
+        # sys.stdout = logger.Logger(log_dir, 'tpe')
+        #
+        # start_time = timeit.default_timer()
+        #
+        # trials = Trials()
+        #
+        # # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
+        # f_target_tpe = target.HyperMLP(test_model, epochs, director, data)
+        # objective = f_target_tpe.objective
+        #
+        # best = fmin(objective,
+        #             space=tpe_hyperopt.convert_params(params),
+        #             algo=tpe.suggest,
+        #             max_evals=horizon,
+        #             trials=trials)
+        #
+        # with open(director + '/results.pkl', 'wb') as file:
+        #     cPickle.dump([trials, best], file)
+        #
+        # end_time = timeit.default_timer()
+        #
+        # print(('The code for the trial number ' +
+        #        str(seed_id) +
+        #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-        start_time = timeit.default_timer()
-
-        trials = Trials()
-
-        f_target = target.HyperMLP(test_model, epochs, director, data)
-        objective = f_target.objective
-
-        best = fmin(objective,
-                    space=tpe_hyperopt.convert_params(params),
-                    algo=tpe.suggest,
-                    max_evals=horizon,
-                    trials=trials)
-
-        with open(director + '/results.pkl', 'wb') as file:
-            cPickle.dump([trials, best], file)
-
-        end_time = timeit.default_timer()
-
-        print(('The code for the trial number ' +
-               str(seed_id) +
-               ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
-
-        print('<-- Running HOO -->')
-        exp_name = 'hoo_' + model + '_' + str(exp_id) + '/'
-        director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
-        if not os.path.exists(director):
-            os.makedirs(director)
-        log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-        sys.stdout = logger.Logger(log_dir, 'hoo')
-
-        start_time = timeit.default_timer()
-
-        f_target = target.TheanoHOOLogistic(epochs, data, director)
-        bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-                                 (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                                [params['learning_rate'].get_type(), params['batch_size'].get_type()],
-                                keep=True)
-
-        alpha = math.log(horizon) * (sigma ** 2)
-        losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
-                                   horizon=horizon, update=False, keep=True)
-        losses = np.array(losses)
-
-        with open(director + '/results.pkl', 'wb') as file:
-            cPickle.dump(losses, file)
-
-        end_time = timeit.default_timer()
-
-        print(('The code for the trial number ' +
-               str(seed_id) +
-               ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
-
-        print('<-- Running HCT -->')
-        exp_name = 'hct_' + model + '_' + str(exp_id) + '/'
-        director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
-        if not os.path.exists(director):
-            os.makedirs(director)
-        log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-        sys.stdout = logger.Logger(log_dir, 'hct')
-
-        start_time = timeit.default_timer()
-
-        f_target = target.TheanoHCTLogistic(1, data, director)
-        bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-                                 (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                                [params['learning_rate'].get_type(), params['batch_size'].get_type()])
-
-        c = 2 * math.sqrt(1. / (1 - rho))
-        c1 = (rho / (3 * nu)) ** (1. / 8)
-        losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
-                                   horizon=epochs*horizon, keep=True)
-        losses = np.array(losses)
-
-        with open(director + '/results.pkl', 'wb') as file:
-            cPickle.dump(-losses, file)
-
-        end_time = timeit.default_timer()
-
-        print(('The code for the trial number ' +
-               str(seed_id) +
-               ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+        # print('<-- Running HOO -->')
+        # exp_name = 'hoo_' + model + '_' + str(exp_id) + '/'
+        # director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
+        # if not os.path.exists(director):
+        #     os.makedirs(director)
+        # log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
+        # if not os.path.exists(log_dir):
+        #     os.makedirs(log_dir)
+        # sys.stdout = logger.Logger(log_dir, 'hoo')
+        #
+        # start_time = timeit.default_timer()
+        #
+        # # f_target_hoo = target.TheanoHOOLogistic(epochs, data, director)
+        # f_target_hoo = target.TheanoHOOMLP(epochs, data, director)
+        # # bbox = utils_ho.std_box(f_target_hoo, None, 2, 0.1,
+        # #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+        # #                          (params['batch_size'].get_min(), params['batch_size'].get_max())],
+        # #                         [params['learning_rate'].get_type(), params['batch_size'].get_type()],
+        # #                         keep=True)
+        # bbox = utils_ho.std_box(f_target_hoo, None, 2, 0.1,
+        #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+        #                          (params['batch_size'].get_min(), params['batch_size'].get_max()),
+        #                          (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
+        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type(),
+        #                          params['l2_reg'].get_type()],
+        #                         keep=True)
+        #
+        # alpha = math.log(horizon) * (sigma ** 2)
+        # losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
+        #                            horizon=horizon, update=False, keep=True)
+        # losses = np.array(losses)
+        #
+        # with open(director + '/results.pkl', 'wb') as file:
+        #     cPickle.dump(losses, file)
+        #
+        # end_time = timeit.default_timer()
+        #
+        # print(('The code for the trial number ' +
+        #        str(seed_id) +
+        #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+        #
+        # print('<-- Running HCT -->')
+        # exp_name = 'hct_' + model + '_' + str(exp_id) + '/'
+        # director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
+        # if not os.path.exists(director):
+        #     os.makedirs(director)
+        # log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
+        # if not os.path.exists(log_dir):
+        #     os.makedirs(log_dir)
+        # sys.stdout = logger.Logger(log_dir, 'hct')
+        #
+        # start_time = timeit.default_timer()
+        #
+        # # f_target_hct = target.TheanoHCTLogistic(1, data, director)
+        # f_target_hct = target.TheanoHCTMLP(1, data, director)
+        # # bbox = utils_ho.std_box(f_target_hct, None, 2, 0.1,
+        # #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+        # #                          (params['batch_size'].get_min(), params['batch_size'].get_max())],
+        # #                         [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+        # bbox = utils_ho.std_box(f_target_hct, None, 2, 0.1,
+        #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+        #                          (params['batch_size'].get_min(), params['batch_size'].get_max()),
+        #                          (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
+        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type(),
+        #                          params['l2_reg'].get_type()],
+        #                         keep=True)
+        #
+        # c = 2 * math.sqrt(1. / (1 - rho))
+        # c1 = (rho / (3 * nu)) ** (1. / 8)
+        # losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
+        #                            horizon=epochs*horizon, keep=True)
+        # losses = np.array(losses)
+        #
+        # with open(director + '/results.pkl', 'wb') as file:
+        #     cPickle.dump(-losses, file)
+        #
+        # end_time = timeit.default_timer()
+        #
+        # print(('The code for the trial number ' +
+        #        str(seed_id) +
+        #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
         print('<-- Running Random Search -->', )
         exp_name = 'random_' + model + '_' + str(exp_id) + '/'
@@ -180,7 +197,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         best, results, track_valid, track_test = random_search.random_search(test_model, horizon,
                                                                              director, params,
-                                                                             epochs, data, rng, verbose=False)
+                                                                             epochs, data, rng, verbose=True)
         cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
         end_time = timeit.default_timer()
@@ -193,5 +210,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('mlp', 1, 0.66, 1., 0.1, 0.05, 4, 10)
+    main('mlp', 1, 0.66, 1., 0.1, 0.05, 4, 1)
     # main('mlp')

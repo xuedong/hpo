@@ -261,6 +261,64 @@ class TheanoHOOLogistic:
         return -test_score, track_valid, track_test
 
 
+class TheanoHCTMLP:
+    def __init__(self, epochs, data, director):
+        self.epochs = epochs
+        self.data = data
+        self.director = director
+        self.change_status = False
+
+    def f(self, hps):
+        arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]),
+               'batch_size': int(hps[1]), 'n_hidden': 500, 'l1_reg': 0., 'l2_reg': np.exp(hps[2]),
+               'results': []}
+        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
+        else:
+            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
+                                                       classifier=classifier, verbose=True)
+
+        # with open(self.director + '_/tracks.pkl', 'wb') as file:
+        #     cPickle.dump(track, file)
+
+        return -test_score
+
+    def set_status(self, flag):
+        self.change_status = flag
+        # print(self.change_status)
+
+
+class TheanoHOOMLP:
+    def __init__(self, epochs, data, director):
+        self.epochs = epochs
+        self.data = data
+        self.director = director
+        self.change_status = False
+
+    def f(self, hps):
+        arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]),
+               'batch_size': int(hps[1]), 'n_hidden': 500, 'l1_reg': 0., 'l2_reg': np.exp(hps[2]),
+               'results': []}
+        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
+        else:
+            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
+                                                       classifier=classifier, verbose=True)
+
+        # with open(self.director + '_/tracks.pkl', 'wb') as file:
+        #     cPickle.dump(track, file)
+        # print(track_valid)
+        # print(track_test)
+
+        return -test_score, track_valid, track_test
+
+
 # Hyperopt functions
 
 class HyperLogistic(object):
