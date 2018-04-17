@@ -18,6 +18,7 @@ from hyperopt import STATUS_OK
 
 import source.utils as utils
 import source.classifiers.logistic as logistic
+import source.classifiers.mlp as mlp
 
 # from sklearn.metrics import log_loss, mean_squared_error
 # from sklearn.model_selection import train_test_split, KFold
@@ -274,12 +275,11 @@ class TheanoHCTMLP:
                'results': []}
         if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
+                mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
         else:
             classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
-                                                       classifier=classifier, verbose=True)
+                mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
 
         # with open(self.director + '_/tracks.pkl', 'wb') as file:
         #     cPickle.dump(track, file)
@@ -304,12 +304,11 @@ class TheanoHOOMLP:
                'results': []}
         if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
+                mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
         else:
             classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
-                                                       classifier=classifier, verbose=True)
+                mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
 
         # with open(self.director + '_/tracks.pkl', 'wb') as file:
         #     cPickle.dump(track, file)
