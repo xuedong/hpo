@@ -226,10 +226,10 @@ class TheanoHCTLogistic:
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
                                                        classifier=classifier, verbose=False)
 
-        # with open(self.director + '_/tracks.pkl', 'wb') as file:
-        #     cPickle.dump(track, file)
+        with open(self.director + '_/tracks.pkl', 'wb') as file:
+            cPickle.dump([best_valid_loss, test_score], file)
 
-        return -best_valid_loss
+        return best_valid_loss
 
     def set_status(self, flag):
         self.change_status = flag
@@ -247,9 +247,9 @@ class TheanoHOOLogistic:
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
 
         train_loss, best_valid_loss, test_score, track_valid, track_test = \
-            mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
+            logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=True)
 
-        with open(self.director + '_/tracks.pkl', 'wb') as file:
+        with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([track_valid, track_test], file)
         # print(track_valid)
         # print(track_test)
@@ -276,10 +276,10 @@ class TheanoHCTMLP:
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
                 mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
 
-        # with open(self.director + '_/tracks.pkl', 'wb') as file:
-        #     cPickle.dump(track, file)
+        with open(self.director + '_/tracks.pkl', 'wb') as file:
+            cPickle.dump([best_valid_loss, test_score], file)
 
-        return -best_valid_loss
+        return best_valid_loss
 
     def set_status(self, flag):
         self.change_status = flag
@@ -326,7 +326,7 @@ class HyperLogistic(object):
         train_loss, best_valid_loss, test_score, track_valid, track_test = \
             self.model.run_solver(self.epochs, arm, self.data, verbose=False)
         return {
-            'loss': test_score,
+            'loss': best_valid_loss,
             'status': STATUS_OK,
             # -- store other results like this
             'train_loss': train_loss,
@@ -354,7 +354,7 @@ class HyperMLP(object):
         train_loss, best_valid_loss, test_score, track_valid, track_test = \
             self.model.run_solver(self.epochs, arm, self.data, verbose=True)
         return {
-            'loss': test_score,
+            'loss': best_valid_loss,
             'status': STATUS_OK,
             # -- store other results like this
             'train_loss': train_loss,

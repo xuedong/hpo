@@ -175,7 +175,8 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
 def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, keep=False):
     losses = [0. for _ in range(horizon)]
     hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
-    best = -np.float('inf')
+    best = 1.
+    test = 1.
 
     bar = progressbar.ProgressBar()
 
@@ -192,12 +193,20 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, keep=False):
             else:
                 bbox.target.set_status(False)
             hctree.reset_change_status()
+            [best_valid_loss, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            if best_valid_loss < best:
+                best = best_valid_loss
+                test = test_score
+                losses[i] = test
+            else:
+                losses[i] = test
         # current = bbox.f_mean(x)
-        if current > best:
-            best = current
-            losses[i] = best
         else:
-            losses[i] = best
+            if current > best:
+                best = current
+                losses[i] = best
+            else:
+                losses[i] = best
 
     return losses
 
