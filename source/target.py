@@ -229,7 +229,7 @@ class TheanoHCTLogistic:
         # with open(self.director + '_/tracks.pkl', 'wb') as file:
         #     cPickle.dump(track, file)
 
-        return -test_score
+        return -best_valid_loss
 
     def set_status(self, flag):
         self.change_status = flag
@@ -259,7 +259,7 @@ class TheanoHOOLogistic:
         # print(track_valid)
         # print(track_test)
 
-        return -test_score, track_valid, track_test
+        return -best_valid_loss, track_valid, track_test
 
 
 class TheanoHCTMLP:
@@ -284,7 +284,7 @@ class TheanoHCTMLP:
         # with open(self.director + '_/tracks.pkl', 'wb') as file:
         #     cPickle.dump(track, file)
 
-        return -test_score
+        return -best_valid_loss
 
     def set_status(self, flag):
         self.change_status = flag
@@ -310,12 +310,12 @@ class TheanoHOOMLP:
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
                 mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
 
-        # with open(self.director + '_/tracks.pkl', 'wb') as file:
-        #     cPickle.dump(track, file)
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([track_valid, track_test], file)
         # print(track_valid)
         # print(track_test)
 
-        return -test_score, track_valid, track_test
+        return best_valid_loss
 
 
 # Hyperopt functions

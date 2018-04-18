@@ -125,12 +125,11 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                                  (params['batch_size'].get_min(), params['batch_size'].get_max()),
                                  (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
                                 [params['learning_rate'].get_type(), params['batch_size'].get_type(),
-                                 params['l2_reg'].get_type()],
-                                keep=True)
+                                 params['l2_reg'].get_type()])
 
         alpha = math.log(horizon) * (sigma ** 2)
         losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
-                                   horizon=horizon, update=False, keep=True)
+                                   horizon=horizon, update=False, director=director, keep=True)
         losses = np.array(losses)
 
         with open(director + '/results.pkl', 'wb') as file:
@@ -165,8 +164,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
                                  (params['batch_size'].get_min(), params['batch_size'].get_max()),
                                  (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
                                 [params['learning_rate'].get_type(), params['batch_size'].get_type(),
-                                 params['l2_reg'].get_type()],
-                                keep=True)
+                                 params['l2_reg'].get_type()])
 
         c = 2 * math.sqrt(1. / (1 - rho))
         c1 = (rho / (3 * nu)) ** (1. / 8)
@@ -210,5 +208,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('mlp', 1, 0.66, 1., 0.1, 0.05, 4, 10)
+    main('mlp', 1, 0.66, 1., 0.1, 0.05, 4, 1)
     # main('mlp')

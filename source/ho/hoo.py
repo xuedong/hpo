@@ -30,7 +30,8 @@ class HTree:
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
         # print(supports)
 
-        self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1, self.rho, self.nu, self.box)
+        self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1,
+                               self.rho, self.nu, self.sigma, self.box)
                          for i in range(len(supports))]
         # print(self.depth)
 
@@ -87,4 +88,4 @@ class HTree:
             existed = True
         leaf.update_path(leaf.noisy, alpha)
 
-        return leaf.evaluated, leaf.noisy, existed
+        return leaf.evaluated, leaf.mean_reward, leaf.noisy, existed
