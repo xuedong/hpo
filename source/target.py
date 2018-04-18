@@ -226,7 +226,7 @@ class TheanoHCTLogistic:
                 logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
                                                        classifier=classifier, verbose=False)
 
-        with open(self.director + '_/tracks.pkl', 'wb') as file:
+        with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([best_valid_loss, test_score], file)
 
         return best_valid_loss
