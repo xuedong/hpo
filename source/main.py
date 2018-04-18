@@ -168,7 +168,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
         c = 2 * math.sqrt(1. / (1 - rho))
         c1 = (rho / (3 * nu)) ** (1. / 8)
         losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
-                                   horizon=epochs*horizon, keep=True)
+                                   horizon=epochs*horizon, director=director, keep=True)
         losses = np.array(losses)
 
         with open(director + '/results.pkl', 'wb') as file:

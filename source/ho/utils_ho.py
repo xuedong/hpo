@@ -172,7 +172,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
     return y_cum, y_sim, x_sel
 
 
-def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, keep=False):
+def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, director, keep=False):
     losses = [0. for _ in range(horizon)]
     hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
     best = 1.
@@ -296,7 +296,8 @@ def loss_poo(bbox, rhos, nu, alpha, horizon, epoch):
 #     means = [[sum([data[k][j][i] for k in range(epoch)]) / float(epoch)
 #               for i in range(horizon)] for j in range(length_hoo)]
 #     devs = [
-#         [math.sqrt(sum([(data[k][j][i] - means[j][i]) ** 2 for k in range(epoch)]) / (float(epoch) * float(epoch - 1)))
+#         [math.sqrt(sum([(data[k][j][i] - means[j][i]) ** 2
+#                         for k in range(epoch)]) / (float(epoch) * float(epoch - 1)))
 #          for i in range(horizon)] for j in range(length_hoo)]
 #
 #     means_poo = [sum([data_poo[u][v] / float(epoch) for u in range(epoch)]) for v in range(horizon)]
