@@ -245,21 +245,16 @@ class TheanoHOOLogistic:
 
     def f(self, hps):
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]), 'batch_size': int(hps[1]), 'results': []}
-        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
-            train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data, verbose=False)
-        else:
-            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
-            train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                logistic.LogisticRegression.run_solver(self.epochs, arm, self.data,
-                                                       classifier=classifier, verbose=False)
 
-        # with open(self.director + '_/tracks.pkl', 'wb') as file:
-        #     cPickle.dump(track, file)
+        train_loss, best_valid_loss, test_score, track_valid, track_test = \
+            mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
+
+        with open(self.director + '_/tracks.pkl', 'wb') as file:
+            cPickle.dump([track_valid, track_test], file)
         # print(track_valid)
         # print(track_test)
 
-        return -best_valid_loss, track_valid, track_test
+        return best_valid_loss
 
 
 class TheanoHCTMLP:
@@ -302,13 +297,9 @@ class TheanoHOOMLP:
         arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]),
                'batch_size': int(hps[1]), 'n_hidden': 500, 'l1_reg': 0., 'l2_reg': np.exp(hps[2]),
                'results': []}
-        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
-            train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
-        else:
-            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
-            train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
+
+        train_loss, best_valid_loss, test_score, track_valid, track_test = \
+            mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
 
         with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([track_valid, track_test], file)
