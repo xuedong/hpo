@@ -30,14 +30,14 @@ if __name__ == "__main__":
     # paths = [path1, path2]
     # plots.plot_all(paths, 3, 10, 'logistic_', 'sgd_', 'mnist', 0, devs=False)
 
-    path1 = "../result/hyperband_logistic_0"
-    path2 = "../result/tpe_logistic_0"
-    path3 = "../result/hoo_logistic_0"
-    path4 = "../result/hct_logistic_0"
-    path5 = "../result/random_logistic_0"
+    path1 = "../result/hyperband_logistic_1"
+    path2 = "../result/tpe_logistic_1"
+    path3 = "../result/hoo_logistic_1"
+    path4 = "../result/hct_logistic_1"
+    path5 = "../result/random_logistic_1"
     paths = [path1, path2, path3, path4, path5]
     # plots.plot_hoo(path3, 1, 'logistic_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 1, 'logistic_', 'sgd_', 'mnist_log', 0, devs=False)
+    plots.plot_all(paths, 10, 'logistic_', 'sgd_', 'mnist', 1, devs=False)
 
     # path1 = "../result/hyperband_mlp_0"
     # path2 = "../result/tpe_mlp_0"

@@ -35,7 +35,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
     test_model = logistic.LogisticRegression
     params = logistic.LogisticRegression.get_search_space()
 
-    exp_id = 0
+    exp_id = 1
 
     for seed_id in range(mcmc):
         print('<-- Running Hyperband -->')
@@ -50,7 +50,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 10, 360, director, data, eta=4,
+        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 100, 360, director, data, eta=4,
                                           verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)
@@ -172,7 +172,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
         losses = np.array(losses)
 
         with open(director + '/results.pkl', 'wb') as file:
-            cPickle.dump(-losses, file)
+            cPickle.dump(losses, file)
 
         end_time = timeit.default_timer()
 
@@ -207,5 +207,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('logistic', 1, 0.66, 1., 0.1, 0.05, 4, 10)
+    main('logistic', 10, 0.66, 1., 0.1, 0.05, 16, 100)
     # main('mlp')
