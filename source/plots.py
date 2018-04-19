@@ -331,7 +331,21 @@ def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem)
     plt.close(fig)
 
 
-def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, devs=False):
+def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, resource_type,
+             type_plot='linear', devs=False):
+    """
+
+    :param paths:
+    :param runs:
+    :param classifier_name:
+    :param optimizer_name:
+    :param dataset_name:
+    :param idx:
+    :param resource_type:
+    :param type_plot:
+    :param devs:
+    :return:
+    """
     os.chdir(paths[0])
     fig = plt.figure()
     shortest = sys.maxsize
@@ -354,7 +368,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         lower = y - err
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
-    plt.plot(x, y, label=r"Hyperband")
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"Hyperband")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"Hyperband")
 
     os.chdir('..')
 
@@ -381,7 +398,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         lower = y - err
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
-    plt.plot(x, y, label=r"TPE")
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"TPE")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"TPE")
 
     os.chdir('..')
 
@@ -407,7 +427,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         lower = y - err
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
-    plt.plot(x, y, label=r"HOO")
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"HOO")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"HOO")
 
     os.chdir('..')
 
@@ -433,7 +456,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         lower = y - err
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
-    plt.plot(x, y, label=r"HCT")
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"HCT")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"HCT")
 
     os.chdir('..')
 
@@ -460,7 +486,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
         lower = y - err
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
-    plt.plot(x, y, label=r"Random Search")
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"Random Search")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"Random Search")
 
     os.chdir('..')
 
@@ -469,7 +498,10 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, de
     # plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
-    plt.xlabel('Number of Iterations')
+    if resource_type == 'epochs':
+        plt.xlabel('Number of Epochs')
+    elif resource_type == 'iterations':
+        plt.xlabel('Number of Iterations')
     save_path = os.path.join(os.path.abspath('../'), 'img/{}'.format(classifier_name + str(idx)))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
