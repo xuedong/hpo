@@ -276,7 +276,7 @@ class TheanoHCTMLP:
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
                 mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
 
-        with open(self.director + '_/tracks.pkl', 'wb') as file:
+        with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([best_valid_loss, test_score], file)
 
         return best_valid_loss

@@ -30,14 +30,14 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
     rng = np.random.RandomState(12345)
     model_name = model + '_sgd_'
 
-    # test_model = mlp.MLP
-    # params = mlp.MLP.get_search_space()
-    test_model = logistic.LogisticRegression
-    params = logistic.LogisticRegression.get_search_space()
+    test_model = mlp.MLP
+    params = mlp.MLP.get_search_space()
+    # test_model = logistic.LogisticRegression
+    # params = logistic.LogisticRegression.get_search_space()
 
-    exp_id = 1
+    exp_id = 0
 
-    for seed_id in range(mcmc):
+    for seed_id in range(4, mcmc):
         print('<-- Running Hyperband -->')
         exp_name = 'hyperband_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
@@ -82,8 +82,8 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         trials = Trials()
 
-        f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
-        # f_target_tpe = target.HyperMLP(test_model, epochs, director, data)
+        # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
+        f_target_tpe = target.HyperMLP(test_model, epochs, director, data)
         objective = f_target_tpe.objective
 
         best = fmin(objective,
@@ -113,18 +113,18 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        f_target_hoo = target.TheanoHOOLogistic(epochs, data, director)
-        # f_target_hoo = target.TheanoHOOMLP(epochs, data, director)
-        bbox = utils_ho.std_box(f_target_hoo, None, 2, 0.1,
-                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-                                 (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                                [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+        # f_target_hoo = target.TheanoHOOLogistic(epochs, data, director)
+        f_target_hoo = target.TheanoHOOMLP(epochs, data, director)
         # bbox = utils_ho.std_box(f_target_hoo, None, 2, 0.1,
         #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-        #                          (params['batch_size'].get_min(), params['batch_size'].get_max()),
-        #                          (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
-        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type(),
-        #                          params['l2_reg'].get_type()])
+        #                          (params['batch_size'].get_min(), params['batch_size'].get_max())],
+        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+        bbox = utils_ho.std_box(f_target_hoo, None, 2, 0.1,
+                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+                                 (params['batch_size'].get_min(), params['batch_size'].get_max()),
+                                 (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
+                                [params['learning_rate'].get_type(), params['batch_size'].get_type(),
+                                 params['l2_reg'].get_type()])
 
         alpha = math.log(horizon) * (sigma ** 2)
         losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
@@ -152,18 +152,18 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        f_target_hct = target.TheanoHCTLogistic(1, data, director)
-        # f_target_hct = target.TheanoHCTMLP(1, data, director)
-        bbox = utils_ho.std_box(f_target_hct, None, 2, 0.1,
-                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-                                 (params['batch_size'].get_min(), params['batch_size'].get_max())],
-                                [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+        # f_target_hct = target.TheanoHCTLogistic(1, data, director)
+        f_target_hct = target.TheanoHCTMLP(1, data, director)
         # bbox = utils_ho.std_box(f_target_hct, None, 2, 0.1,
         #                         [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
-        #                          (params['batch_size'].get_min(), params['batch_size'].get_max()),
-        #                          (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
-        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type(),
-        #                          params['l2_reg'].get_type()])
+        #                          (params['batch_size'].get_min(), params['batch_size'].get_max())],
+        #                         [params['learning_rate'].get_type(), params['batch_size'].get_type()])
+        bbox = utils_ho.std_box(f_target_hct, None, 2, 0.1,
+                                [(params['learning_rate'].get_min(), params['learning_rate'].get_max()),
+                                 (params['batch_size'].get_min(), params['batch_size'].get_max()),
+                                 (params['l2_reg'].get_min(), params['l2_reg'].get_max())],
+                                [params['learning_rate'].get_type(), params['batch_size'].get_type(),
+                                 params['l2_reg'].get_type()])
 
         c = 2 * math.sqrt(1. / (1 - rho))
         c1 = (rho / (3 * nu)) ** (1. / 8)
@@ -207,5 +207,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('logistic', 10, 0.66, 1., 0.1, 0.05, 16, 100)
+    main('mlp', 5, 0.66, 1., 0.1, 0.05, 16, 100)
     # main('mlp')
