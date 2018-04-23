@@ -39,22 +39,22 @@ if __name__ == "__main__":
     # # plots.plot_hoo(path3, 1, 'logistic_', 'sgd_', 'mnist', 0)
     # plots.plot_all(paths, 10, 'logistic_', 'sgd_', 'mnist', 1, 'epochs', type_plot='linear', devs=False)
 
-    path1 = "../result/hyperband_mlp_0"
-    path2 = "../result/tpe_mlp_0"
-    path3 = "../result/hoo_mlp_0"
-    path4 = "../result/hct_mlp_0"
-    path5 = "../result/random_mlp_0"
-    paths = [path1, path2, path3, path4, path5]
-    # plots.plot_hoo(path3, 1, 'mlp_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 3, 'mlp_', 'sgd_', 'mnist_bis_2', 0, 'epochs', type_plot='linear', devs=False)
+    # path1 = "../result/hyperband_mlp_0"
+    # path2 = "../result/tpe_mlp_0"
+    # path3 = "../result/hoo_mlp_0"
+    # path4 = "../result/hct_mlp_0"
+    # path5 = "../result/random_mlp_0"
+    # paths = [path1, path2, path3, path4, path5]
+    # # plots.plot_hoo(path3, 1, 'mlp_', 'sgd_', 'mnist', 0)
+    # plots.plot_all(paths, 3, 'mlp_', 'sgd_', 'mnist_bis_2', 0, 'epochs', type_plot='linear', devs=False)
 
     # names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
     # for name in names:
     #     path = "../result/hyperband_" + name + "2"
     #     plots.plot_hyperband_only(path, 10, name, '', 'breast_cancer', 2)
 
-    # path = "../result/hyperband_svm_2"
-    # plots.plot_hyperband_only(path, 10, 'svm_', '', 'wine', 2)
+    path = "../result/hyperband_svm_0"
+    plots.plot_hyperband_only(path, 1, 'svm_', '', 'wine', 0)
 
     # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
     # for name in names:

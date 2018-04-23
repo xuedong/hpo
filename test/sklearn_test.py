@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # rng = np.random.RandomState(12345)
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'breast_cancer.csv'
+    dataset = 'wine.csv'
     problem = 'binary'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)

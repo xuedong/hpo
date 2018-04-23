@@ -69,9 +69,10 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                 remaining_arms[a][2] = val_err
                 remaining_arms[a][3] = test_err
             elif resource_type == 'iterations':
-                val_err, avg_loss, current_track = \
+                val_err, avg_loss, current_track_valid, current_track_test = \
                     model.run_solver(num_pulls, arms[arm_key], data,
-                                     rng=rng, track_test=current_track_test, verbose=verbose)
+                                     rng=rng, track_valid=current_track_valid,
+                                     track_test=current_track_test, verbose=verbose)
 
                 if verbose:
                     print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))
@@ -97,7 +98,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     if resource_type == 'epochs':
         result = [best_arm, remaining_arms[0][1], remaining_arms[0][2], remaining_arms[0][3]]
     elif resource_type == 'iterations':
-        result = [best_arm, remaining_arms[0][1]]
+        result = [best_arm, remaining_arms[0][1], remaining_arms[0][2]]
 
     return arms, result, current_track_valid, current_track_test
 

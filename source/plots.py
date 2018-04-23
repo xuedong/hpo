@@ -81,7 +81,7 @@ def plot_hyperband_only(path, trials, classifier_name, optimizer_name, dataset_n
     plt.plot(x, y, label=r"Hyperband")
 
     plt.grid()
-    plt.ylim((0, 0.2))
+    # plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     plt.xlabel('Number of Evaluations')
