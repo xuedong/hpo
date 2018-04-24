@@ -199,11 +199,14 @@ class SklearnTree:
 
 
 class SklearnAda:
-    def __init__(self, model, x, y, method, problem):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(n_estimators=x[0], learning_rate=10**x[1])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
         return valid_error
 
 

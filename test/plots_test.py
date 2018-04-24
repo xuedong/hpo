@@ -50,16 +50,16 @@ if __name__ == "__main__":
 
     # names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
     # for name in names:
-    #     path = "../result/hyperband_" + name + "2"
-    #     plots.plot_hyperband_only(path, 10, name, '', 'breast_cancer', 2)
+    #     path = "../result/hyperband_" + name + "0"
+    #     plots.plot_hyperband_only(path, 1, name, '', 'wine', 0)
 
-    path = "../result/hyperband_svm_0"
-    plots.plot_hyperband_only(path, 1, 'svm_', '', 'wine', 0)
+    path = "../result/hoo_ada_1"
+    plots.plot_hoo(path, 1, 'ada_', '', 'wine', 0)
 
     # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
     # for name in names:
-    #     path0 = "../result/hyperband_" + name + "1"
+    #     path0 = "../result/hyperband_" + name + "0"
     #     path1 = "../result/hoo_" + name + "1"
     #     path2 = "../result/hct_" + name + "1"
     #     paths = [path0, path1, path2]
-    #     plots.plot_all(paths, 10, name, '', 'breast_cancer', 1)
+    #     plots.plot_all(paths, 1, name, '', 'breast_cancer', 1, 'iterations', type_plot='linear', devs=False)

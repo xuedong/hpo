@@ -10,8 +10,8 @@ import log.logger as logger
 # import source.classifiers.logistic as logistic
 from source.classifiers.mlp_sklearn import *
 from source.classifiers.svm_sklearn import *
-from source.classifiers.tree_sklearn import *
-from source.classifiers.rf_sklearn import *
+# from source.classifiers.tree_sklearn import *
+# from source.classifiers.rf_sklearn import *
 from source.classifiers.knn_sklearn import *
 from source.classifiers.gbm_sklearn import *
 from source.classifiers.ada_sklearn import *
@@ -80,11 +80,6 @@ if __name__ == '__main__':
         target_class = targets[i]
         param = params[i]
 
-        f_target = target_class(model, x, y, '5fold', problem)
-        bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                                [param[key][1] for key in param.keys()],
-                                [param[key][0] for key in param.keys()])
-
         print('<-- Running HOO -->')
         exp_name = 'hoo_' + model_name + '1/'
         for seed_id in range(mcmc):
@@ -98,6 +93,10 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
+            f_target = target_class(model, x, y, '5fold', problem, director)
+            bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                                    [param[key][1] for key in param.keys()],
+                                    [param[key][0] for key in param.keys()])
             losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
                                        horizon=horizon, director=director, update=False)
             losses = np.array(losses)
@@ -124,6 +123,10 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
+            f_target = target_class(model, x, y, '5fold', problem, director)
+            bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                                    [param[key][1] for key in param.keys()],
+                                    [param[key][0] for key in param.keys()])
             losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
                                        horizon=horizon, director=director)
             losses = np.array(losses)

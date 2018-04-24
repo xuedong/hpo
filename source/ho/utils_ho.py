@@ -110,7 +110,8 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
 def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update, director, keep=False):
     losses = [0. for _ in range(horizon)]
     htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, sigma, bbox)
-    best = -np.float('inf')
+    best = 1.
+    test = 1.
 
     bar = progressbar.ProgressBar()
 
@@ -123,11 +124,13 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update, director, keep=False)
             htree.update(alpha)
         x, current, _, _ = htree.sample(alpha)
         if not keep:
-            if current > best:
+            [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            if current < best:
                 best = current
-                losses[i] = best
+                test = test_score
+                losses[i] = test
             else:
-                losses[i] = best
+                losses[i] = test
         else:
             [current_track_valid, current_track_test] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
             # print(current_track_test)
