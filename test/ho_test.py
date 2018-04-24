@@ -60,8 +60,10 @@ if __name__ == '__main__':
     # # losses = utils_ho.loss_hoo(bbox=bbox, rho=0.66, nu=1., alpha=alpha, sigma=0.1, horizon=10, update=False)
     # print(losses)
 
-    models = [Ada(), KNN(), MLP(), GBM(), SVM()]
-    model_names = ['ada_', 'knn_', 'sk_mlp_', 'gbm_', 'svm_']
+    models = [Ada()]
+    model_names = ['ada_']
+    # models = [Ada(), KNN(), MLP(), GBM(), SVM()]
+    # model_names = ['ada_', 'knn_', 'sk_mlp_', 'gbm_', 'svm_']
     targets = [target.SklearnAda, target.SklearnKNN, target.SklearnMLP, target.SklearnGBM, target.SklearnSVM]
     params = [d_ada, d_knn, d_mlp, d_gbm, d_svm]
     path = os.path.join(os.getcwd(), '../data/uci')

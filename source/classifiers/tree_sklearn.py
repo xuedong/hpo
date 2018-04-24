@@ -74,7 +74,8 @@ class Tree(Model):
 
     @staticmethod
     def run_solver(iterations, arm, data,
-                   rng=None, problem='cont', method='5fold', track=np.array([1.]), verbose=False):
+                   rng=None, problem='cont', method='5fold',
+                   track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """
 
         :param iterations:
@@ -83,7 +84,8 @@ class Tree(Model):
         :param rng:
         :param problem:
         :param method:
-        :param track:
+        :param track_valid:
+        :param track_test:
         :param verbose:
         :return:
         """
