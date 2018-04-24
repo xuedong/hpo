@@ -150,55 +150,79 @@ class Gramacy1:
 # Scikit-learn functions
 
 class SklearnSVM:
-    def __init__(self, model, x, y, method, problem):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(c=10**x[0], gamma=10**x[1])
+        valid_error, test_error = self.loss.evaluate_loss(c=10**x[0], gamma=10**x[1])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
+        return valid_error
 
 
 class SklearnGBM:
-    def __init__(self, model, x, y, method, problem):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(learning_rate=10**x[0], n_estimators=x[1],
-                                       max_depth=x[2], min_samples_split=x[3])
+        valid_error, test_error = self.loss.evaluate_loss(learning_rate=10**x[0], n_estimators=x[1],
+                                                          max_depth=x[2], min_samples_split=x[3])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
+        return valid_error
 
 
 class SklearnKNN:
-    def __init__(self, model, x, y, method, problem):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(n_neighbors=x[0])
+        valid_error, test_error = self.loss.evaluate_loss(n_neighbors=x[0])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
+        return valid_error
 
 
 class SklearnMLP:
-    def __init__(self, model, x, y, method, problem):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
+        valid_error, test_error = self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
+        return valid_error
 
 
 class SklearnRF:
-    def __init__(self, model, x, y, method, problem):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(n_estimators=x[0], min_samples_split=x[1], max_features=x[2])
+        valid_error, test_error = self.loss.evaluate_loss(n_estimators=x[0], min_samples_split=x[1], max_features=x[2])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
+        return valid_error
 
 
-class SklearnTree:
-    def __init__(self, model, x, y, method, problem):
+class SklearnTree(object):
+    def __init__(self, model, x, y, method, problem, director):
+        self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(max_features=x[0], max_depth=x[1], min_samples_split=x[2])
+        valid_error, test_error = self.loss.evaluate_loss(max_features=x[0], max_depth=x[1], min_samples_split=x[2])
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([valid_error, test_error], file)
+        return valid_error
 
 
-class SklearnAda:
+class SklearnAda(object):
     def __init__(self, model, x, y, method, problem, director):
         self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
@@ -212,7 +236,7 @@ class SklearnAda:
 
 # Theano functions
 
-class TheanoHCTLogistic:
+class TheanoHCTLogistic(object):
     def __init__(self, epochs, data, director):
         self.epochs = epochs
         self.data = data
@@ -240,7 +264,7 @@ class TheanoHCTLogistic:
         # print(self.change_status)
 
 
-class TheanoHOOLogistic:
+class TheanoHOOLogistic(object):
     def __init__(self, epochs, data, director):
         self.epochs = epochs
         self.data = data
@@ -261,7 +285,7 @@ class TheanoHOOLogistic:
         return best_valid_loss
 
 
-class TheanoHCTMLP:
+class TheanoHCTMLP(object):
     def __init__(self, epochs, data, director):
         self.epochs = epochs
         self.data = data
@@ -290,7 +314,7 @@ class TheanoHCTMLP:
         # print(self.change_status)
 
 
-class TheanoHOOMLP:
+class TheanoHOOMLP(object):
     def __init__(self, epochs, data, director):
         self.epochs = epochs
         self.data = data
