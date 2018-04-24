@@ -18,8 +18,8 @@ from source.classifiers.ada_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 1024
-    mcmc = 10
+    horizon = 10
+    mcmc = 1
     rho = 0.66
     nu = 1.
     sigma = 0.1
@@ -97,7 +97,7 @@ if __name__ == '__main__':
             start_time = timeit.default_timer()
 
             losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
-                                       horizon=horizon, update=False)
+                                       horizon=horizon, director=director, update=False)
             losses = np.array(losses)
 
             with open(director + '/results.pkl', 'wb') as file:
@@ -123,7 +123,7 @@ if __name__ == '__main__':
             start_time = timeit.default_timer()
 
             losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
-                                       horizon=horizon)
+                                       horizon=horizon, director=director)
             losses = np.array(losses)
 
             with open(director + '/results.pkl', 'wb') as file:

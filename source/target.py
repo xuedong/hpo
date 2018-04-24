@@ -203,7 +203,8 @@ class SklearnAda:
         self.loss = utils.Loss(model, x, y, method, problem)
 
     def f(self, x):
-        return self.loss.evaluate_loss(n_estimators=x[0], learning_rate=10**x[1])
+        valid_error, test_error = self.loss.evaluate_loss(n_estimators=x[0], learning_rate=10**x[1])
+        return valid_error
 
 
 # Theano functions
