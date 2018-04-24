@@ -84,7 +84,8 @@ class RF(Model):
 
     @staticmethod
     def run_solver(iterations, arm, data,
-                   rng=None, problem='cont', method='5fold', track=np.array([1.]), verbose=False):
+                   rng=None, problem='cont', method='5fold',
+                   track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """
 
         :param iterations:
@@ -93,7 +94,8 @@ class RF(Model):
         :param rng:
         :param problem:
         :param method:
-        :param track:
+        :param track_valid:
+        :param track_test:
         :param verbose:
         :return:
         """
@@ -104,12 +106,16 @@ class RF(Model):
         avg_loss = 0.
         test_score = 1.
 
-        if track.size == 0:
-            current_best = test_score
-            current_track = np.array([1.])
+        if track_valid.size == 0:
+            current_best_valid = 1.
+            current_test = 1.
+            current_track_valid = np.array([1.])
+            current_track_test = np.array([1.])
         else:
-            current_best = np.amin(track)
-            current_track = np.copy(track)
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            current_track_valid = np.copy(track_valid)
+            current_track_test = np.copy(track_test)
 
         for iteration in range(iterations):
             current_loss, test_error = loss.evaluate_loss(n_estimators=arm['n_estimators'],
@@ -117,7 +123,6 @@ class RF(Model):
                                                           max_features=arm['max_features'])
             current_loss = -current_loss
             avg_loss += current_loss
-            test_score = -test_error
 
             if verbose:
                 print(
@@ -130,16 +135,21 @@ class RF(Model):
 
             if current_loss < best_loss:
                 best_loss = current_loss
+                test_score = -test_error
                 # best_iter = iteration
 
-            if test_score < current_best:
-                current_track = np.append(current_track, test_score)
+            if best_loss < current_best_valid:
+                current_best_valid = best_loss
+                current_test = test_score
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
             else:
-                current_track = np.append(current_track, current_best)
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
 
         avg_loss = avg_loss / iterations
 
-        return best_loss, avg_loss, current_track
+        return best_loss, avg_loss, current_track_valid, current_track_test
 
     @staticmethod
     def get_search_space():
