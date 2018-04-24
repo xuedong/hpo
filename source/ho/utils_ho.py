@@ -205,11 +205,13 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, director, keep=Fa
                 losses[i] = test
         # current = bbox.f_mean(x)
         else:
-            if current > best:
+            [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            if current < best:
                 best = current
-                losses[i] = best
+                test = test_score
+                losses[i] = test
             else:
-                losses[i] = best
+                losses[i] = test
 
     return losses
 

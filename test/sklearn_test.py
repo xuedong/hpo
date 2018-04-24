@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'wine.csv'
-    problem = 'binary'
+    problem = 'cont'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
 

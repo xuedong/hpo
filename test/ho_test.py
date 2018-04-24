@@ -67,8 +67,8 @@ if __name__ == '__main__':
     targets = [target.SklearnAda, target.SklearnKNN, target.SklearnMLP, target.SklearnGBM, target.SklearnSVM]
     params = [d_ada, d_knn, d_mlp, d_gbm, d_svm]
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'breast_cancer.csv'
-    problem = 'binary'
+    dataset = 'wine.csv'
+    problem = 'cont'
     target_index = 0
     x, y = utils.build(os.path.join(path, dataset), target_index)
     output_dir = ''
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         param = params[i]
 
         print('<-- Running HOO -->')
-        exp_name = 'hoo_' + model_name + '1/'
+        exp_name = 'hoo_' + model_name + '0/'
         for seed_id in range(mcmc):
             director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
             if not os.path.exists(director):
@@ -111,7 +111,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
         print('<-- Running HCT -->')
-        exp_name = 'hct_' + model_name + '1/'
+        exp_name = 'hct_' + model_name + '0/'
         for seed_id in range(mcmc):
             director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
             if not os.path.exists(director):

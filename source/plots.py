@@ -286,8 +286,9 @@ def plot_hct(path, runs, classifier_name, optimizer_name, dataset_name, idx):
         losses[i] = loss[0:shortest]
 
     # length = len(tracks[0])
-    x = range(shortest)
+    x = range(shortest + 1)
     y = np.mean(losses, axis=0)
+    y = np.append([1.], y)
     # if devs:
     #     err = np.std(tracks, axis=0)
     #     lower = y - err
