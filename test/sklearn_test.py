@@ -15,13 +15,14 @@ import source.target as target
 import source.hyperband.hyperband_finite as hyperband_finite
 import bo.tpe_hyperopt as tpe_hyperopt
 import baseline.random_search as random_search
+import ho.utils_ho as utils_ho
 from source.classifiers.svm_sklearn import *
 from source.classifiers.ada_sklearn import *
 from source.classifiers.gbm_sklearn import *
 from source.classifiers.knn_sklearn import *
 from source.classifiers.mlp_sklearn import *
-from source.classifiers.rf_sklearn import *
-from source.classifiers.tree_sklearn import *
+# from source.classifiers.rf_sklearn import *
+# from source.classifiers.tree_sklearn import *
 
 
 if __name__ == '__main__':
@@ -36,12 +37,16 @@ if __name__ == '__main__':
     c = 2 * math.sqrt(1. / (1 - 0.66))
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
 
-    # models = [Ada]
-    # model_names = ['ada_']
-    models = [SVM, Ada, GBM, KNN, MLP, RF, Tree]
-    model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_', 'rf_', 'tree_']
-    targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN, target.HyperSKMLP,
-                   target.HyperRF, target.HyperTree]
+    models = [Ada]
+    model_names = ['ada_']
+    targets = [target.SklearnAda]
+    targets_tpe = [target.HyperAda]
+    params_ho = [d_ada]
+    # models = [SVM, Ada, GBM, KNN, MLP]
+    # model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_']
+    # targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN, target.SklearnMLP]
+    # targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN, target.HyperSKMLP]
+    # params_ho = [d_svm, d_ada, d_gbm, d_knn, d_mlp]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
@@ -50,6 +55,7 @@ if __name__ == '__main__':
     problem = 'cont'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
+    x, y = data
 
     for i in range(len(models)):
         model = models[i]
@@ -120,60 +126,58 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HOO -->')
-            exp_name = 'hoo_' + model_name + '0/'
-            for seed_id in range(mcmc):
-                director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
-                if not os.path.exists(director):
-                    os.makedirs(director)
-                log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
-                if not os.path.exists(log_dir):
-                    os.makedirs(log_dir)
-                sys.stdout = logger.Logger(log_dir, 'hoo')
+            exp_name = 'hoo_' + model_names[i] + '0/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'hoo')
 
-                start_time = timeit.default_timer()
+            start_time = timeit.default_timer()
 
-                f_target = target_class(model, x, y, '5fold', problem, director)
-                bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                                        [param[key][1] for key in param.keys()],
-                                        [param[key][0] for key in param.keys()])
-                losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
-                                           horizon=horizon, director=director, update=False)
-                losses = np.array(losses)
+            f_target = targets[i](test_model, x, y, '5fold', problem, director)
+            bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                                    [params_ho[i][key][1] for key in params_ho[i].keys()],
+                                    [params_ho[i][key][0] for key in params_ho[i].keys()])
+            losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
+                                       horizon=horizon, director=director, update=False)
+            losses = np.array(losses)
 
-                with open(director + '/results.pkl', 'wb') as file:
-                    cPickle.dump(-losses, file)
+            with open(director + '/results.pkl', 'wb') as file:
+                cPickle.dump(-losses, file)
 
-                end_time = timeit.default_timer()
+            end_time = timeit.default_timer()
 
-                print(('The code for the trial number ' +
-                       str(seed_id) +
-                       ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+            print(('The code for the trial number ' +
+                   str(seed_id) +
+                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HCT -->')
-            exp_name = 'hct_' + model_name + '0/'
-            for seed_id in range(mcmc):
-                director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
-                if not os.path.exists(director):
-                    os.makedirs(director)
-                log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
-                if not os.path.exists(log_dir):
-                    os.makedirs(log_dir)
-                sys.stdout = logger.Logger(log_dir, 'hct')
+            exp_name = 'hct_' + model_names[i] + '0/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'hct')
 
-                start_time = timeit.default_timer()
+            start_time = timeit.default_timer()
 
-                f_target = target_class(model, x, y, '5fold', problem, director)
-                bbox = utils_ho.std_box(f_target, None, 2, 0.1,
-                                        [param[key][1] for key in param.keys()],
-                                        [param[key][0] for key in param.keys()])
-                losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
-                                           horizon=horizon, director=director)
-                losses = np.array(losses)
+            f_target = targets[i](test_model, x, y, '5fold', problem, director)
+            bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                                    [params_ho[i][key][1] for key in params_ho[i].keys()],
+                                    [params_ho[i][key][0] for key in params_ho[i].keys()])
+            losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
+                                       horizon=horizon, director=director)
+            losses = np.array(losses)
 
-                with open(director + '/results.pkl', 'wb') as file:
-                    cPickle.dump(-losses, file)
+            with open(director + '/results.pkl', 'wb') as file:
+                cPickle.dump(-losses, file)
 
-                end_time = timeit.default_timer()
+            end_time = timeit.default_timer()
 
             print('<-- Running Random Search -->', )
             exp_name = 'random_' + model_names[i] + '0/'
