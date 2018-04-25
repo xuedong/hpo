@@ -377,37 +377,37 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir('..')
 
     # TPE
-    # os.chdir(paths[1])
-    # shortest = sys.maxsize
-    #
-    # tracks = np.array([None for _ in range(runs)])
-    # for i in range(runs):
-    #     [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-    #     track = combine_tracks(trials)
-    #     if len(track) < shortest:
-    #         shortest = len(track)
-    # for i in range(runs):
-    #     [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-    #     track = combine_tracks(trials)
-    #     tracks[i] = track[0:shortest]
-    #
-    # # length = len(tracks[0])
-    # x = range(shortest)
-    # y = np.mean(tracks, axis=0)
-    # if devs:
-    #     err = np.std(tracks, axis=0)
-    #     lower = y - err
-    #     higher = y + err
-    #     plt.fill_between(x, lower, higher, alpha=0.5)
-    # if type_plot == 'linear':
-    #     plt.plot(x, y, label=r"TPE")
-    # elif type_plot == 'log':
-    #     plt.loglog(x, y, label=r"TPE")
-    #
-    # os.chdir('..')
+    os.chdir(paths[1])
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        track = combine_tracks(trials)
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        track = combine_tracks(trials)
+        tracks[i] = track[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, alpha=0.5)
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"TPE")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"TPE")
+
+    os.chdir('..')
 
     # HOO
-    os.chdir(paths[1])
+    os.chdir(paths[2])
     shortest = sys.maxsize
 
     losses = np.array([None for _ in range(runs)])
@@ -436,7 +436,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir('..')
 
     # HCT
-    os.chdir(paths[2])
+    os.chdir(paths[3])
     shortest = sys.maxsize
 
     losses = np.array([None for _ in range(runs)])

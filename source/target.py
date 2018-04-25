@@ -418,3 +418,161 @@ class HyperAda(object):
                 {'track_valid': cPickle.dumps(track_valid),
                  'track_test': cPickle.dumps(track_test)}
         }
+
+
+class HyperGBM(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        learning_rate, n_estimators, max_depth, min_samples_split = hps
+        arm = {'dir': self.director,
+               'learning_rate': learning_rate, 'n_estimators': n_estimators,
+               'max_depth': max_depth, 'min_samples_split': min_samples_split,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
+
+
+class HyperKNN(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        n_neighbors = hps[0]
+        arm = {'dir': self.director,
+               'n_neighbors': n_neighbors,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
+
+
+class HyperSKMLP(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        hidden_layer_size, alpha = hps
+        arm = {'dir': self.director,
+               'hidden_layer_size': hidden_layer_size, 'alpha': alpha,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
+
+
+class HyperRF(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        n_estimators, min_samples_split, max_features = hps
+        arm = {'dir': self.director,
+               'n_estimators': n_estimators, 'min_samples_split': min_samples_split,
+               'max_features': max_features,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
+
+
+class HyperSVM(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        c, gamma = hps
+        arm = {'dir': self.director,
+               'c': c, 'gamma': gamma,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
+
+
+class HyperTree(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        max_features, max_depth, min_samples_split = hps
+        arm = {'dir': self.director,
+               'max_features': max_features, 'max_depth': max_depth, 'min_samples_split': min_samples_split,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
