@@ -465,34 +465,34 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir('..')
 
     # Random Search
-    # os.chdir(paths[4])
-    # shortest = sys.maxsize
-    #
-    # tracks = np.array([None for _ in range(runs)])
-    # for i in range(runs):
-    #     [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-    #                                          + '/results.pkl', 'rb'))
-    #     if len(track) < shortest:
-    #         shortest = len(track)
-    # for i in range(runs):
-    #     [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
-    #                                          + '/results.pkl', 'rb'))
-    #     tracks[i] = track[0:shortest]
-    #
-    # length = len(tracks[0])
-    # x = range(length)
-    # y = np.mean(tracks, axis=0)
-    # if devs:
-    #     err = np.std(tracks, axis=0)
-    #     lower = y - err
-    #     higher = y + err
-    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
-    # if type_plot == 'linear':
-    #     plt.plot(x, y, label=r"Random Search")
-    # elif type_plot == 'log':
-    #     plt.loglog(x, y, label=r"Random Search")
-    #
-    # os.chdir('..')
+    os.chdir(paths[4])
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                             + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+                                             + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    length = len(tracks[0])
+    x = range(length)
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"Random Search")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"Random Search")
+
+    os.chdir('..')
 
     plt.grid()
     # plt.xlim((0, 400))

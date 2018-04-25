@@ -34,7 +34,8 @@ if __name__ == '__main__':
 
         start_time = timeit.default_timer()
 
-        best, results, track = random_search.random_search(test_model, 5, director, params, 5, data, rng, verbose=True)
+        best, results, track = random_search.random_search(test_model, 'epochs', 5, director, params, 5, data, rng,
+                                                           verbose=True)
         cPickle.dump([best, results, track], open(director + '/results.pkl', 'wb'))
 
         end_time = timeit.default_timer()

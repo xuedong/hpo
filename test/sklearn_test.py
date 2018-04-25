@@ -1,6 +1,7 @@
-import numpy as np
+# import numpy as np
 import sys
-import os
+# import os
+import math
 import timeit
 from six.moves import cPickle
 
@@ -10,9 +11,10 @@ from hyperopt import Trials
 
 import log.logger as logger
 import source.target as target
-import source.utils as utils
+# import source.utils as utils
 import source.hyperband.hyperband_finite as hyperband_finite
 import bo.tpe_hyperopt as tpe_hyperopt
+import baseline.random_search as random_search
 from source.classifiers.svm_sklearn import *
 from source.classifiers.ada_sklearn import *
 from source.classifiers.gbm_sklearn import *
@@ -25,6 +27,14 @@ from source.classifiers.tree_sklearn import *
 if __name__ == '__main__':
     horizon = 10
     iterations = 1
+    mcmc = 1
+    rho = 0.66
+    nu = 1.
+    sigma = 0.1
+    delta = 0.05
+    alpha = math.log(horizon) * (sigma ** 2)
+    c = 2 * math.sqrt(1. / (1 - 0.66))
+    c1 = (0.66 / (3 * 1.)) ** (1. / 8)
 
     # models = [Ada]
     # model_names = ['ada_']
@@ -45,7 +55,7 @@ if __name__ == '__main__':
         model = models[i]
         test_model = model()
         params = model.get_search_space()
-        for seed_id in range(1):
+        for seed_id in range(mcmc):
             print('<-- Running Hyperband -->')
             exp_name = 'hyperband_' + model_names[i] + '0/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
@@ -104,3 +114,86 @@ if __name__ == '__main__':
                 cPickle.dump([trials, best], file)
 
             end_time = timeit.default_timer()
+
+            print(('The code for the trial number ' +
+                   str(seed_id) +
+                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+            print('<-- Running HOO -->')
+            exp_name = 'hoo_' + model_name + '0/'
+            for seed_id in range(mcmc):
+                director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
+                if not os.path.exists(director):
+                    os.makedirs(director)
+                log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
+                if not os.path.exists(log_dir):
+                    os.makedirs(log_dir)
+                sys.stdout = logger.Logger(log_dir, 'hoo')
+
+                start_time = timeit.default_timer()
+
+                f_target = target_class(model, x, y, '5fold', problem, director)
+                bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                                        [param[key][1] for key in param.keys()],
+                                        [param[key][0] for key in param.keys()])
+                losses = utils_ho.loss_hoo(bbox=bbox, rho=rho, nu=nu, alpha=alpha, sigma=sigma,
+                                           horizon=horizon, director=director, update=False)
+                losses = np.array(losses)
+
+                with open(director + '/results.pkl', 'wb') as file:
+                    cPickle.dump(-losses, file)
+
+                end_time = timeit.default_timer()
+
+                print(('The code for the trial number ' +
+                       str(seed_id) +
+                       ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+            print('<-- Running HCT -->')
+            exp_name = 'hct_' + model_name + '0/'
+            for seed_id in range(mcmc):
+                director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
+                if not os.path.exists(director):
+                    os.makedirs(director)
+                log_dir = output_dir + '../log/' + exp_name + model_name + str(seed_id)
+                if not os.path.exists(log_dir):
+                    os.makedirs(log_dir)
+                sys.stdout = logger.Logger(log_dir, 'hct')
+
+                start_time = timeit.default_timer()
+
+                f_target = target_class(model, x, y, '5fold', problem, director)
+                bbox = utils_ho.std_box(f_target, None, 2, 0.1,
+                                        [param[key][1] for key in param.keys()],
+                                        [param[key][0] for key in param.keys()])
+                losses = utils_ho.loss_hct(bbox=bbox, rho=rho, nu=nu, c=c, c1=c1, delta=delta, sigma=sigma,
+                                           horizon=horizon, director=director)
+                losses = np.array(losses)
+
+                with open(director + '/results.pkl', 'wb') as file:
+                    cPickle.dump(-losses, file)
+
+                end_time = timeit.default_timer()
+
+            print('<-- Running Random Search -->', )
+            exp_name = 'random_' + model_names[i] + '0/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'random')
+
+            start_time = timeit.default_timer()
+
+            best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
+                                                                                 director, params,
+                                                                                 1, data, verbose=True)
+            cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
+
+            end_time = timeit.default_timer()
+
+            print(('The code for the trial number ' +
+                   str(seed_id) +
+                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)

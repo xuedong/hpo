@@ -62,5 +62,6 @@ if __name__ == "__main__":
         path1 = "../result/tpe_" + name + "0"
         path2 = "../result/hoo_" + name + "0"
         path3 = "../result/hct_" + name + "0"
-        paths = [path0, path1, path2, path3]
+        path4 = "../result/random_" + name + "0"
+        paths = [path0, path1, path2, path3, path4]
         plots.plot_all(paths, 1, name, '', 'wine', 0, 'iterations', type_plot='linear', devs=False)
