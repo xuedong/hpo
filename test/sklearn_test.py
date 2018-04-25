@@ -63,3 +63,32 @@ if __name__ == '__main__':
             print(('The code for the trial number ' +
                    str(seed_id) +
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+            print('<-- Running TPE -->')
+            exp_name = 'tpe_' + model_names[i] + '0/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'tpe')
+
+            start_time = timeit.default_timer()
+
+            trials = Trials()
+
+            # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
+            f_target_tpe = target.HyperMLP(test_model, epochs, director, data)
+            objective = f_target_tpe.objective
+
+            best = fmin(objective,
+                        space=tpe_hyperopt.convert_params(params),
+                        algo=tpe.suggest,
+                        max_evals=horizon,
+                        trials=trials)
+
+            with open(director + '/results.pkl', 'wb') as file:
+                cPickle.dump([trials, best], file)
+
+            end_time = timeit.default_timer()

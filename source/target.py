@@ -27,7 +27,7 @@ import source.classifiers.mlp as mlp
 
 # Black box functions
 
-class Sine1:
+class Sine1(object):
     def __init__(self):
         self.fmax = 0.
 
@@ -39,7 +39,7 @@ class Sine1:
         return self.fmax
 
 
-class Sine2:
+class Sine2(object):
     def __init__(self):
         self.xmax = 3.614
         self.fmax = self.f([self.xmax])
@@ -52,7 +52,7 @@ class Sine2:
         return self.fmax
 
 
-class DoubleSine:
+class DoubleSine(object):
     def __init__(self, rho1, rho2, tmax):
         self.ep1 = -math.log(rho1, 2)
         self.ep2 = -math.log(rho2, 2)
@@ -73,7 +73,7 @@ class DoubleSine:
         return self.fmax
 
 
-class DiffFunc:
+class DiffFunc(object):
     def __init__(self, tmax):
         self.tmax = tmax
         self.fmax = 0.
@@ -97,7 +97,7 @@ class DiffFunc:
         return self.fmax
 
 
-class Garland:
+class Garland(object):
     def __init__(self):
         self.fmax = 0.997772313413222
 
@@ -109,7 +109,7 @@ class Garland:
         return self.fmax
 
 
-class Himmelblau:
+class Himmelblau(object):
     def __init__(self):
         self.fmax = 0.
 
@@ -121,7 +121,7 @@ class Himmelblau:
         return self.fmax
 
 
-class Rosenbrock:
+class Rosenbrock(object):
     def __init__(self, a, b):
         self.fmax = 0.
         self.a = a
@@ -134,7 +134,7 @@ class Rosenbrock:
         return self.fmax
 
 
-class Gramacy1:
+class Gramacy1(object):
     def __init__(self):
         self.xmax = 0.54856343
         self.fmax = self.f([self.xmax])
@@ -149,7 +149,7 @@ class Gramacy1:
 
 # Scikit-learn functions
 
-class SklearnSVM:
+class SklearnSVM(object):
     def __init__(self, model, x, y, method, problem, director):
         self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
@@ -161,7 +161,7 @@ class SklearnSVM:
         return valid_error
 
 
-class SklearnGBM:
+class SklearnGBM(object):
     def __init__(self, model, x, y, method, problem, director):
         self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
@@ -174,7 +174,7 @@ class SklearnGBM:
         return valid_error
 
 
-class SklearnKNN:
+class SklearnKNN(object):
     def __init__(self, model, x, y, method, problem, director):
         self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
@@ -186,7 +186,7 @@ class SklearnKNN:
         return valid_error
 
 
-class SklearnMLP:
+class SklearnMLP(object):
     def __init__(self, model, x, y, method, problem, director):
         self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)
@@ -198,7 +198,7 @@ class SklearnMLP:
         return valid_error
 
 
-class SklearnRF:
+class SklearnRF(object):
     def __init__(self, model, x, y, method, problem, director):
         self.director = director
         self.loss = utils.Loss(model, x, y, method, problem)

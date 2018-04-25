@@ -36,7 +36,7 @@ def solver(model, *args, **kwargs):
     :param kwargs: parameters for the model
     :return: test error
     """
-    _, _, test_error, _ = model.run_solver(*args, **kwargs)
+    _, _, test_error, _, _ = model.run_solver(*args, **kwargs)
 
     return test_error
 
