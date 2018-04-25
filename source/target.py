@@ -392,3 +392,29 @@ class HyperMLP(object):
                 {'track_valid': cPickle.dumps(track_valid),
                  'track_test': cPickle.dumps(track_test)}
         }
+
+
+class HyperAda(object):
+    def __init__(self, model, iterations, director, data):
+        self.model = model
+        self.iterations = iterations
+        self.director = director
+        self.data = data
+
+    def objective(self, hps):
+        n_estimators, learning_rate = hps
+        arm = {'dir': self.director,
+               'n_estimators': n_estimators, 'learning_rate': learning_rate,
+               'results': []}
+        best_loss, avg_loss, track_valid, track_test = \
+            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+        return {
+            'loss': best_loss,
+            'status': STATUS_OK,
+            # -- store other results like this
+            'average_loss': avg_loss,
+            # -- attachments are handled differently
+            'attachments':
+                {'track_valid': cPickle.dumps(track_valid),
+                 'track_test': cPickle.dumps(track_test)}
+        }
