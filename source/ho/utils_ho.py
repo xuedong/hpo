@@ -125,8 +125,8 @@ def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update, director, keep=False)
         x, current, _, _ = htree.sample(alpha)
         if not keep:
             [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
-            if current < best:
-                best = current
+            if -current < best:
+                best = -current
                 test = test_score
                 losses[i] = test
             else:
@@ -206,8 +206,8 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, director, keep=Fa
         # current = bbox.f_mean(x)
         else:
             [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
-            if current < best:
-                best = current
+            if -current < best:
+                best = -current
                 test = test_score
                 losses[i] = test
             else:
