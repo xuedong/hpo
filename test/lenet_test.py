@@ -17,7 +17,7 @@ import source.utils as utils
 LEARNING_RATE = 0.1
 L1_REG = 0.
 L2_REG = 0.0001
-EPOCHS = 100
+EPOCHS = 1
 BATCH_SIZE = 500
 HIDDEN = 500
 KERNELS = [20, 50]
