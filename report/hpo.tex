@@ -17,7 +17,7 @@
 
 
 \documentclass[runningheads,a4paper]{llncs}
-
+\usepackage{fullpage}
 \usepackage{amssymb}
 \setcounter{tocdepth}{3}
 \usepackage{graphicx}
@@ -150,24 +150,26 @@ $\operatorname{k_1}$           & $\mathbb{N}^+$ & $\left[5,  k_2 \right]$       
 
 \paragraph{\textbf{Experimental Design}} In this section, we focus on neural network-typed classifiers, we will thus be maximizing the likelihood of the training set $D_{\operatorname{train}}$ under the model parameterized by $\theta$ (in this section, $\theta$ corresponds to $(W, b)$ where $W$ is the weight matrix and $b$ is the bias vector):
 \[
-\mathcal{L}(\theta, D_{\operatorname{train}}) = \frac{1}{|D_{\operatorname{train}}|} \sum_i^{|D_{\operatorname{train}}|} \log (\mathbb{P}(Y=y^{(i)}|x^{(i)},\theta),
+\mathcal{L}(\theta, D_{\operatorname{train}}) = \frac{1}{|D_{\operatorname{train}}|} \sum_{i=1}^{|D_{\operatorname{train}}|} \log (\mathbb{P}(Y=y^{(i)}|x^{(i)},\theta),
 \]
 which is equivalent to minimize the loss function:
 \[
 \ell(\theta, D_{\operatorname{train}}) = -\mathcal{L}(\theta, D_{\operatorname{train}}).
 \]
 
-At each time step $t$, we give one unit of resources (one epoch of training here) to the current algorithm, who will run one epoch of training on the training set $D_{\operatorname{train}}$. The trained model is then used to predict output values $\hat{y}_{\operatorname{pred}}$ and $\tilde{y}_{\operatorname{pred}}$ respectively over validation set $D_{\operatorname{valid}}$ and test set $D_{\operatorname{test}}$. We then compute the number that were misclassified by the model, a.k.a. the zero-one loss on the validation and test set:
+At each time step $t$, we give one unit of resources (one epoch of training here) to the current algorithm, who will run one epoch of training on the training set $D_{\operatorname{train}}$. The trained model is then used to predict output values $\hat{y}_{\operatorname{pred},t}$ and $\tilde{y}_{\operatorname{pred},t}$ respectively over validation set $D_{\operatorname{valid}}$ and test set $D_{\operatorname{test}}$. We then compute the number that were misclassified by the model, a.k.a. the zero-one loss on the validation and test set:
 \[
-\operatorname{valid\_error}_t = \frac{1}{|D_{\operatorname{valid}}|} \sum_i^{|D_{\operatorname{valid}}|} \mathbb{1}_{\{\hat{y}_{\operatorname{pred}}^{(i)} \neq y^{(i)}\}},
+\ell_t(\hat{\theta}_t, D_{\operatorname{valid}}) = \frac{1}{|D_{\operatorname{valid}}|} \sum_{i=1}^{|D_{\operatorname{valid}}|} \mathbb{1}_{\{\hat{y}_{\operatorname{pred},t}^{(i)} \neq y^{(i)}\}},
 \]
 \[
-\operatorname{test\_error}_t = \frac{1}{|D_{\operatorname{valid}}|} \sum_i^{|D_{\operatorname{valid}}|} \mathbb{1}_{\{\tilde{y}_{\operatorname{pred}}^{(i)} \neq y^{(i)}\}}.
+\ell_t(\hat{\theta}_t, D_{\operatorname{test}}) = \frac{1}{|D_{\operatorname{valid}}|} \sum_{i=1}^{|D_{\operatorname{valid}}|} \mathbb{1}_{\{\tilde{y}_{\operatorname{pred},t}^{(i)} \neq y^{(i)}\}}.
 \]
 
 During the experiment, we keep track of the best validation error and its associated test error. At each time step $t$, if the new validation error is smaller than the current best validation error, then we update the best validation error, and report the new test error. Otherwise we just report the test error associated with the previous best validation error.
 
-Note that there is a very important 'keep training' notion here, which means if we are running the classifier with a same hyper-parameter configuration, then we do not restart the training from scratch. In contrary, we always keep track of previously trained weight matrix and bias vector with respect to the current hyper-parameter configuration, and train the model from these pre-trained parameters.
+Note that there is a very important 'keep training' notion here, which means if we are running the classifier with a same hyper-parameter configuration, then we do not restart the training from scratch. In contrary, we always keep track of previously trained weight matrix and bias vector with respect to the current hyper-parameter configuration, and train the model from these pre-trained parameters. 
+
+The total budget for Hyperband would be $B = R\times s_{\max}$, and each configuration can be evaluted for $R_{\max}$ times (this $R_{\max}$ depends only on $R$ and $s_{\max}$). For HCT, we just need to feed the algorithm the total budget $B$, and the number of times that each configuration is evaluated will be decided by the algorithm itself. While for TPE, HOO and Random Search, we  evaluate each configuration for $R_{\max}$ times in order to make a fair comparison, which means $B/R_{\max}$ configurations will be evaluted.
 
 \paragraph{\textbf{Comparison}}
 All plots below are averaged on 10 trials of experiments.
@@ -191,24 +193,123 @@ All plots below are averaged on 10 trials of experiments.
 
 \section{UCI Datasets}
 
-We consider here Support Vector Machine (SVM), Adaptive Boosting (AdaBoost), Gradient Boosting Machine (GBM), Multi-Layer Perceptron (MLP), k-Nearest Neighbors (KNN), Decision Tree and Random Forest.
+We consider here Adaptive Boosting (AdaBoost), Gradient Boosting Machine (GBM), k-Nearest Neighbors (KNN), Multi-Layer Perceptron (MLP), Support Vector Machine (SVM), Decision Tree and Random Forest from Scikit-learn.
 
-\paragraph{\textbf{Dataset}} We consider here several datasets on UCI dataset archive (e.g. Wine, Breast Cancer, etc). They are all pre-split into a training set $D_{\operatorname{train}}$ and a test set $D_{\operatorname{test}}$.
+\paragraph{\textbf{Dataset}} Several datasets on UCI dataset archive (e.g. Wine, Breast Cancer, etc) are being used. They are all pre-split into a training set $D_{\operatorname{train}}$ and a test set $D_{\operatorname{test}}$.
 
-\paragraph{\textbf{Hyper-parameters}}
+\paragraph{\textbf{Hyper-parameters}} The hyper-parameters to be optimized are listed below in Table \ref{adaparam}, \ref{gbmparam},  \ref{knnparam}, \ref{mlpparam}, \ref{svmparam}, \ref{treeparam} and \ref{rfparam}.
 
-\paragraph{\textbf{Resource Allocation}} One unit of resources in this setting is one iteration of training, which means one complete training of each classifier/regressor over the whole dataset.  
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+\texttt{learning\_rate}      & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{-1}\right]$                         \\
+\texttt{n\_estimators}       & Integer        & $\left\lbrace 5,\dots, 200 \right\rbrace$
+\end{tabular}
+\caption{Hyper-parameters to be optimized for AdaBoost models.}
+\label{adaparam}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+\texttt{learning\_rate}      & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{-2}\right]$                         \\
+\texttt{n\_estimators}       & Integer        & $\left\lbrace 10,\dots, 100 \right\rbrace$ \\
+\texttt{max\_depth}          & Integer        & $\left\lbrace 2, \dots, 100 \right\rbrace$ \\
+\texttt{min\_samples\_split}  & Integer        & $\left\lbrace 2, \dots, 100 \right\rbrace$
+\end{tabular}
+\caption{Hyper-parameters to be optimized for GBM models.}
+\label{gbmparam}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Type} & \textbf{Bounds}                           \\ \midrule
+$k$                & Integer       & $\left\lbrace 10, \dots,50 \right\rbrace$
+\end{tabular}
+\caption{Hyper-parameters to be optimized for KNN models.}
+\label{knnparam}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lll}
+\hline
+\textbf{Parameter}             & \textbf{Type}    & \textbf{Bounds}       \\ \hline
+\texttt{hidden\_layer\_size} & Integer          & $\left[5, 50\right]$  \\
+\texttt{alpha}               & $\mathbb{R}^{+}$ & $\left[0, 0.9\right]$
+\end{tabular}
+\caption{Hyper-parameters to be optimized for MLP models.}
+\label{mlpparam}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Type}                      & \textbf{Bounds}               \\ \midrule
+$C$                & $\mathbb{R}^+$ & $\left[ 10^{-5}, 10^{5} \right]$ (log-scaled) \\
+$\gamma$           & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{5} \right]$  (log-scaled)       \\ \bottomrule
+\end{tabular}
+\caption{Hyper-parameters to be optimized for SVM models.}
+\label{svmparam}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+\texttt{max\_features}      & $\mathbb{R}^+$ & $\left[0.01, 0.99\right]$   \\
+\texttt{max\_depth}          & Integer        & $\left\lbrace 4, \dots, 30 \right\rbrace$ \\
+\texttt{min\_samples\_split}  & $\mathbb{R}^+$  & $\left[0.01, 0.99\right]$
+\end{tabular}
+\caption{Hyper-parameters to be optimized for Decision Tree models.}
+\label{treeparam}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+\texttt{max\_features}      & $\mathbb{R}^+$ & $\left[0.1, 0.5\right]$   \\
+\texttt{n\_estimators}          & Integer        & $\left\lbrace 10, \dots, 50 \right\rbrace$ \\
+\texttt{min\_samples\_split}  & $\mathbb{R}^+$  & $\left[0.1, 0.5\right]$
+\end{tabular}
+\caption{Hyper-parameters to be optimized for Random Forest models.}
+\label{rfparam}
+\end{table}
+
+\paragraph{\textbf{Resource Allocation}} One unit of resources in this setting is one iteration of training, which means one complete training of each classifier/regressor over the whole training set.  
 
 \paragraph{\textbf{Experimental Design}} In this section we use the logarithmic loss, also known as cross-entropy for classification problem, defined by:
 \[
-\ell(\boldsymbol{y}, \boldsymbol{\hat{p}}) = - \dfrac{1}{n} \sum_{i=1}^n\sum_{j=1}^m y_{ij}\log(\hat{p}_{ij}),
+\ell(\theta, D) = - \frac{1}{|D|} \sum_{i=1}^{|D|} \sum_{j=1}^m y^{(i)}_{j}\log(\hat{p}^{(i)}_{j}),
 \]
-where $\hat{p}_{ij}$ is the predicted probability of a sample $i$ belonging to class $j$, and $m$ is the number of classes considered. And for continuous regression problems, the loss that we use is the typical mean squared error, defined by:
+where $\hat{p}_{ij}$ is the predicted probability of a sample $i$ belonging to class $j$, and $m$ is the number of classes considered. And for regression problems, the loss that we use is the typical mean squared error, defined by:
 \[
-\ell(\boldsymbol{y}, \boldsymbol{\hat{y}}) = \dfrac{1}{n} \sum_i \left(y_i - \hat{y_i}\right)^2
+\ell(\theta, D) = - \frac{1}{|D|} \sum_{i=1}^{|D|} \left(y^{(i)} - \hat{y}^{(i)}_{\operatorname{pred}}\right)^2.
 \]
 
-\paragraph{\textbf{Comparison}}
+And for this part of experiments, we choose to perform a shuffled $k=5$ cross-validation scheme on $D_{\operatorname{train}}$ at each time step $t$. In practice, this means that we fit $5$ models with the same architecture to different train/validation splits and average the loss results in each. More precisely, for every cross-validation split 
+$\mathtt{cv}_j,j=1\ldots5$, we get a loss $\ell_{j,t}(\hat{\theta}_{j,t}, D_{\operatorname{valid},j,t}) = \dfrac{1}{n} \sum^{n}_{i=1} \left(y^{(i)}_{j} - \hat{y}^{(i)}_{\operatorname{pred},j,t}\right)^2$, where $n=|D_{\operatorname{valid}}|$ (here we take MSE as an example, it's the same for log-loss). Thus the validation loss at time $t$ is
+\[
+\frac{1}{5}\sum_{j=1}^{5}\ell_{j,t}(\hat{\theta}_{j,t}, D_{\operatorname{valid},j,t}) = \frac{1}{5n}\sum_{j=1}^{5} \sum_{i=1}^n \left(y^{(i)}_{j} - \hat{y}^{(i)}_{\operatorname{pred},j,t}\right)^2.
+\]
+Just like in the previous section, we can then compute and report the test error on the holdout test set $D_{\operatorname{test}}$:
+\[
+\ell_{t}(\hat{\theta}_t, D_{\operatorname{test}}) = \frac{1}{|D_{\operatorname{test}}|} \sum_{i=1}^{|D_{\operatorname{test}}|} \left(y^{(i)} - \tilde{y}^{(i)}_{\operatorname{pred},t}\right)^2.
+\]
+
+Note that under this experimental environment, 'keep training' does not make sense anymore. Thus for HOO, TPE and Random Search, we only need to evaluate each configuration once, contrarily to what we did in the previous setting. While for Hyperband, we still need to evaluate each configuration for a certain times based on $R$ and $s_{\max}$.
+
+\paragraph{\textbf{Comparison}} Each plot here is averaged on 20 runs of experiments.
 
 \paragraph{\textbf{Discussion}}
 
