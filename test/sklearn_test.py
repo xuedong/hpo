@@ -51,8 +51,8 @@ if __name__ == '__main__':
     # rng = np.random.RandomState(12345)
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'wine.csv'
-    problem = 'cont'
+    dataset = 'breast_cancer.csv'
+    problem = 'binary'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
     x, y = data
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         params = model.get_search_space()
         for seed_id in range(mcmc):
             print('<-- Running Hyperband -->')
-            exp_name = 'hyperband_' + model_names[i] + '0/'
+            exp_name = 'hyperband_' + model_names[i] + '1/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -93,7 +93,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running TPE -->')
-            exp_name = 'tpe_' + model_names[i] + '0/'
+            exp_name = 'tpe_' + model_names[i] + '1/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -126,7 +126,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HOO -->')
-            exp_name = 'hoo_' + model_names[i] + '0/'
+            exp_name = 'hoo_' + model_names[i] + '1/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HCT -->')
-            exp_name = 'hct_' + model_names[i] + '0/'
+            exp_name = 'hct_' + model_names[i] + '1/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -180,7 +180,7 @@ if __name__ == '__main__':
             end_time = timeit.default_timer()
 
             print('<-- Running Random Search -->', )
-            exp_name = 'random_' + model_names[i] + '0/'
+            exp_name = 'random_' + model_names[i] + '1/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)

@@ -309,7 +309,42 @@ Just like in the previous section, we can then compute and report the test error
 
 Note that under this experimental environment, 'keep training' does not make sense anymore. Thus for HOO, TPE and Random Search, we only need to evaluate each configuration once, contrarily to what we did in the previous setting. While for Hyperband, we still need to evaluate each configuration for a certain times based on $R$ and $s_{\max}$.
 
-\paragraph{\textbf{Comparison}} Each plot here is averaged on 20 runs of experiments.
+\paragraph{\textbf{Comparison}} Each plot here is averaged on 20 runs of experiments. Fig.~\ref{ada_0} to~\ref{svm_0} display the results for Wine Dataset.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/ada_0.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on AdaBoost, trained on Wine Dataset.}
+    \label{ada_0}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/gbm_0.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on GBM, trained on Wine Dataset.}
+    \label{gbm_0}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/knn_0.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on KNN, trained on Wine Dataset.}
+    \label{knn_0}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/sk_mlp_0.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on MLP, trained on Wine Dataset.}
+    \label{sk_mlp_0}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/svm_0.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on SVM, trained on Wine Dataset.}
+    \label{svm_0}
+\end{figure}
 
 \paragraph{\textbf{Discussion}}
 
