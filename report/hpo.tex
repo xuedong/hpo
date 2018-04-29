@@ -346,6 +346,43 @@ Note that under this experimental environment, 'keep training' does not make sen
     \label{svm_0}
 \end{figure}
 
+Fig.~\ref{ada_1} to~\ref{svm_1} display the results for Breast Cancer Dataset.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/ada_1.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on AdaBoost, trained on Breast Cancer Dataset.}
+    \label{ada_1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/gbm_1.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on GBM, trained on Breast Cancer Dataset.}
+    \label{gbm_1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/knn_1.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on KNN, trained on Breast Cancer Dataset.}
+    \label{knn_1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/sk_mlp_1.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on MLP, trained on Breast Cancer Dataset.}
+    \label{sk_mlp_1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.8]{img/uci/svm_1.pdf}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on SVM, trained on Breast Cancer Dataset.}
+    \label{svm_1}
+\end{figure}
+
 \paragraph{\textbf{Discussion}} In this setting, Hyperband seems to loose its advantage of exploring more configurations. It appears to me that there is no reason for HOO, TPE and Random Search to evaluate one point several times as does Hyperband.
 
 \begin{thebibliography}{4}
