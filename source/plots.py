@@ -539,9 +539,37 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     os.chdir('..')
 
+    # Hyperloop
+    os.chdir(paths[5])
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, alpha=0.5)
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"Heuristic")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"Heuristic")
+
+    os.chdir('..')
+
     plt.grid()
-    # plt.xlim((0, 400))
-    # plt.ylim((0, 0.2))
+    plt.xlim((0, 400))
+    plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     if resource_type == 'epochs':

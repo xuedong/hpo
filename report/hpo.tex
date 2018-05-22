@@ -21,6 +21,7 @@
 \usepackage{amssymb}
 \setcounter{tocdepth}{3}
 \usepackage{graphicx}
+\usepackage[ruled,linesnumbered,lined,commentsnumbered]{algorithm2e}
 
 \usepackage{url}
 \newcommand{\keywords}[1]{\par\addvspace\baselineskip
@@ -33,6 +34,10 @@
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \usepackage{expl3}
 \ExplSyntaxOn
@@ -97,7 +102,39 @@
 
 \section{Introduction}
 
-The algorithms being considered here for the moment are Hyperband~\cite{li2016}, a Bayesian-based approach TPE~\cite{bergstra2011}, two hierarchical approaches HOO~\cite{bubeck2011}, HCT~\cite{azar2014}, and a baseline method random search. Current datasets used are MNIST dataset and some datasets from UCI machine learning dataset archive.
+The algorithms being considered here for the moment are Hyperband~\cite{li2016}, a Bayesian-based approach TPE~\cite{bergstra2011}, two hierarchical approaches HOO~\cite{bubeck2011}, HCT~\cite{azar2014}, a baseline method random search, plus one new hyperband-liked heuristic on top of Top-Two Thompson Sampling (TTTS)~\cite{russo2016}. Current datasets used are MNIST dataset and some datasets from UCI machine learning dataset archive.
+
+\section{Heuristics}
+
+We propose one new heuristic based on TTTS for the moment. The idea is similar to Hyperband. By running several brackets of TTTS with different number of configurations $n$ and the same budget, we try to trade off between the number of configurations and the number of resources allocated to each configuration. Unlike Hyperband where the number of resources is fixed for each configuration in every bracket, here the number of resources is decided by the underlying Thompson Sampling.
+
+This heuristic requires three inputs $\beta$, $\eta$ and $R$, where $\eta$ and $R$ are the same inputs as in Hyperband: $\eta$ is the discarding proportion and $R$ is the maximum amount of resources that can be allocated to a single configuration. However, in this heuristic, they do not really make sense. The reason why they are required is just to keep the same budget as for Hyperband. The subroutine used here is TTTS where we make use of a prior distribution $\Pi_1$ over a set of parameters $\Theta$, where for each $\mathbf{\theta}\in\Theta$, $\theta_i$ caraterizes configuration $i$ for $i\in\{1\ldots n\}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. At each time step $t$, the subroutine samples $\theta$ from $\Pi_t$, then with probability $\beta$, the subroutine evaluates the configuration $I$ with the highest posterior optimal action probability. Otherwise it samples a new $\theta$ from $\Pi_t$ until we obtain a different configuration $J$ with the highest posterior optimal action probability.
+
+The pseudo-code is shown in Algorithm~\ref{heuristic1}.
+
+\begin{algorithm}[h]
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Init}{Initialize}
+
+\Input{$\beta$; $\eta$; $R$}
+\Init{$s_{\operatorname{max}} = \floor{\operatorname{log}_{\eta}(R)}$; $B=(s_{\operatorname{max}}+1)R$; $L=\emptyset$; $t = 0$}
+\For{$s \leftarrow s_{\operatorname{max}}$ \KwTo $0$}{
+	$n = \ceil{\frac{B}{R}\frac{\eta^s}{(s+1)}}$\; 
+	$C = \operatorname{get\_hyperparameter\_configurations(n)}$\;
+    	\For{$c\in C$}{
+		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(c)\}$\;}
+	$t = n$\;
+	\While{$t < B$}{
+		Sample $\mathbf{\hat{\theta}} \sim \Pi_t$; $I \leftarrow \argmax_{c\in C}\hat{\theta}_c$\;
+		Sample $b \sim \operatorname{Bernoulli}(\beta)$\;
+		\eIf{$b = 1$}{
+    		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(I)\}$\;}{
+    		Repeat sample $\mathbf{\hat{\theta}} \sim \Pi_t$; $J \leftarrow \argmax_{c\in C}\hat{\theta}_c$ until $I\neq J$\;
+		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(J)\}$\;}}
+	}
+\Return{Configuration\ with\ the\ smallest\ intermediate\ loss\ seen\ so\ far}
+\caption{Heuristic (TTTS)\label{heuristic1}}
+\end{algorithm}
 
 \section{MNIST}
 
@@ -391,6 +428,7 @@ Fig.~\ref{ada_1} to~\ref{svm_1} display the results for Breast Cancer Dataset.
 \bibitem{bergstra2011} Bergstra, J. S., Bardenet, R., Bengio, Y., \& Kégl, B. (2011). Algorithms for hyper-parameter optimization. In Advances in neural information processing systems (pp. 2546-2554).
 \bibitem{bubeck2011} Bubeck, S., Munos, R., Stoltz, G., \& Szepesvári, C. (2011). X-armed bandits. Journal of Machine Learning Research, 12(May), 1655-1695.
 \bibitem{azar2014} Azar, M. G., Lazaric, A., \& Brunskill, E. (2014). Online stochastic optimization under correlated bandit feedback. In Proceedings of the 31st International Conference on Machine Learning (ICML-14) (pp. 1557-1565).
+\bibitem{russo2016} Russo, D. (2016, June). Simple bayesian algorithms for best arm identification. In Conference on Learning Theory (pp. 1417-1418).
 
 \end{thebibliography}
 
