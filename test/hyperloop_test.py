@@ -16,7 +16,7 @@ import classifiers.logistic as logistic
 from heuristics.hyperloop import hyperloop_finite
 
 
-def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
+def main(model, mcmc):
     data_dir = 'mnist.pkl.gz'
     data = utils.load_data(data_dir)
 
@@ -29,9 +29,9 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
     test_model = logistic.LogisticRegression
     params = logistic.LogisticRegression.get_search_space()
 
-    exp_id = 0
+    exp_id = 1
 
-    for seed_id in range(1):
+    for seed_id in range(mcmc):
         print('<-- Running Hyperloop -->')
         exp_name = 'hyperloop_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
@@ -44,7 +44,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        hyperloop_finite(test_model, 'epochs', params, 1, 10, 360, director, data, eta=4, verbose=True)
+        hyperloop_finite(test_model, 'epochs', params, 1, 100, 360, director, data, eta=4, verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
@@ -63,5 +63,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('logistic', 5, 0.66, 1., 0.1, 0.05, 16, 100)
+    main('logistic', 10)
     # main('mlp')
