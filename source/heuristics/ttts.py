@@ -59,7 +59,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
             rewards[a] = avg_loss
 
     # best = 0
-    for t in range(n, big_r+1):
+    for _ in range(n, int(big_r)+1):
         # means = rewards / num_pulls
         # best = np.random.choice(np.flatnonzero(means == means.max()))
 
