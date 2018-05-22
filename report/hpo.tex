@@ -206,16 +206,16 @@ During the experiment, we keep track of the best validation error and its associ
 
 Note that there is a very important 'keep training' notion here, which means if we are running the classifier with a same hyper-parameter configuration, then we do not restart the training from scratch. In contrary, we always keep track of previously trained weight matrix and bias vector with respect to the current hyper-parameter configuration, and train the model from these pre-trained parameters. 
 
-The total budget for Hyperband would be $B = R\times s_{\max}$, and each configuration can be evaluted for $R_{\max}$ times (this $R_{\max}$ depends only on $R$ and $s_{\max}$). For HCT, we just need to feed the algorithm the total budget $B$, and the number of times that each configuration is evaluated will be decided by the algorithm itself. While for TPE, HOO and Random Search, we  evaluate each configuration for $R_{\max}$ times in order to make a fair comparison, which means $B/R_{\max}$ configurations will be evaluted.
+The total budget for Hyperband and the heuristic would be $B = R\times s_{\max}$, and each configuration can be evaluted for $R_{\max}$ times (this $R_{\max}$ depends only on $R$ and $s_{\max}$). For HCT, we just need to feed the algorithm the total budget $B$, and the number of times that each configuration is evaluated will be decided by the algorithm itself. While for TPE, HOO and Random Search, we  evaluate each configuration for $R_{\max}$ times in order to make a fair comparison, which means $B/R_{\max}$ configurations will be evaluted.
 
 \paragraph{\textbf{Comparison}}
-All plots below are averaged on 10 trials of experiments.
+All plots here (from Fig.~\ref{logistic_1} to Fig.~\ref{mlp_0}) are averaged on 10 trials of experiments.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[scale=0.8]{img/mnist/logistic_0.pdf}
+    \includegraphics[scale=0.8]{img/mnist/logistic_1.pdf}
     \caption{Performance (log-scale) comparison of different hyper-parameter optimization algorithms on Logistic Regression, trained on MNIST Dataset.}
-    \label{logistic_0}
+    \label{logistic_1}
 \end{figure}
 
 \begin{figure}[ht]
