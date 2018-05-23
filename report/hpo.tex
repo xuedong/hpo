@@ -130,7 +130,8 @@ The pseudo-code is shown in Algorithm~\ref{heuristic1}.
 		\eIf{$b = 1$}{
     		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(I)\}$\;}{
     		Repeat sample $\mathbf{\hat{\theta}} \sim \Pi_t$; $J \leftarrow \argmax_{c\in C}\hat{\theta}_c$ until $I\neq J$\;
-		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(J)\}$\;}}
+		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(J)\}$\;}
+		$t = t+1$\;}
 	}
 \Return{Configuration\ with\ the\ smallest\ intermediate\ loss\ seen\ so\ far}
 \caption{Heuristic (TTTS)\label{heuristic1}}
