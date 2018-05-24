@@ -3,6 +3,7 @@ import timeit
 # import os
 
 from scipy.stats import beta
+from scipy.stats import bernoulli
 from six.moves import cPickle
 
 import utils
@@ -38,6 +39,8 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
     current_track_valid = np.copy(track_valid)
     current_track_test = np.copy(track_test)
 
+    succ = np.zeros(n)
+    fail = np.zeros(n)
     num_pulls = np.zeros(n)
     rewards = np.zeros(n)
     # means = np.zeros(n)
@@ -68,8 +71,12 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1
-                ts[a] = beta.rvs(alpha_prior + rewards[a],
-                                 beta_prior + num_pulls[a] - rewards[a], size=1)[0]
+                trial = bernoulli.rvs(1-rewards[a])
+                if trial == 1:
+                    succ[a] += 1
+                else:
+                    fail[a] += 1
+                ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
 
         idx_i = np.argmax(ts)
         if np.random.rand() > frac:
@@ -80,8 +87,12 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                     alpha_prior = 1
                     beta_prior = 1
                     for a in range(n):
-                        ts[a] = beta.rvs(alpha_prior + rewards[a],
-                                         beta_prior + num_pulls[a] - rewards[a], size=1)[0]
+                        trial = bernoulli.rvs(1 - rewards[a])
+                        if trial == 1:
+                            succ[a] += 1
+                        else:
+                            fail[a] += 1
+                        ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
                 idx_j = np.argmax(ts)
             idx_i = idx_j
 
