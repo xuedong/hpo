@@ -1,0 +1,583 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ho.utils_ho &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ho.utils_ho</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># This code is based on the original code of Jean-Bastien Grill</span>
+<span class="c1"># https://team.inria.fr/sequel/Software/POO/</span>
+
+<span class="c1"># import pylab as pl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">progressbar</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="c1"># import random</span>
+<span class="c1"># import pickle</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="n">cPickle</span>
+
+<span class="kn">import</span> <span class="nn">ho.hoo</span> <span class="k">as</span> <span class="nn">hoo</span>
+<span class="kn">import</span> <span class="nn">ho.poo</span> <span class="k">as</span> <span class="nn">poo</span>
+<span class="kn">import</span> <span class="nn">ho.hct</span> <span class="k">as</span> <span class="nn">hct</span>
+
+
+<div class="viewcode-block" id="std_box"><a class="viewcode-back" href="../../index.html#ho.utils_ho.std_box">[docs]</a><span class="k">def</span> <span class="nf">std_box</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">fmax</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">):</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">fmax</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">)</span>
+    <span class="n">box</span><span class="o">.</span><span class="n">std_partition</span><span class="p">()</span>
+    <span class="n">box</span><span class="o">.</span><span class="n">std_noise</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">box</span></div>
+
+
+<div class="viewcode-block" id="Box"><a class="viewcode-back" href="../../index.html#ho.utils_ho.Box">[docs]</a><span class="k">class</span> <span class="nc">Box</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmax</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_noised</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_mean</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmax</span> <span class="o">=</span> <span class="n">fmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsplits</span> <span class="o">=</span> <span class="n">nsplits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support</span> <span class="o">=</span> <span class="n">support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_type</span> <span class="o">=</span> <span class="n">support_type</span>
+
+<div class="viewcode-block" id="Box.std_partition"><a class="viewcode-back" href="../../index.html#ho.utils_ho.Box.std_partition">[docs]</a>    <span class="k">def</span> <span class="nf">std_partition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Standard partitioning of a black box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">std_center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="n">std_rand</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="o">=</span> <span class="n">std_split_rand</span></div>
+
+<div class="viewcode-block" id="Box.std_noise"><a class="viewcode-back" href="../../index.html#ho.utils_ho.Box.std_noise">[docs]</a>    <span class="k">def</span> <span class="nf">std_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stochastic target with Gaussian or uniform noise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_noised</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span></div>
+        <span class="c1"># self.f_noised = lambda x: self.f_mean(x) + sigma*random.random()</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    def plot1D(self):</span>
+<span class="sd">        a, b = self.side</span>
+<span class="sd">        fig, ax = plt.subplots()</span>
+<span class="sd">        ax.set_xlim(a, b)</span>
+<span class="sd">        x = np.array([a+i/10000. for i in range(int((b-a)*10000))])</span>
+<span class="sd">        y = np.array([self.f_mean([x[i]]) for i in range(int((b-a)*10000))])</span>
+<span class="sd">        plt.plot(x, y)</span>
+<span class="sd">        plt.show()</span>
+
+<span class="sd">    def plot2D(self):</span>
+<span class="sd">        # 2D spaced down level curve plot</span>
+<span class="sd">        x = np.array([(i-600)/100. for i in range(1199)])</span>
+<span class="sd">        y = np.array([(j-600)/100. for j in range(1199)])</span>
+<span class="sd">        x, Y = pl.meshgrid(x, y)</span>
+<span class="sd">        Z = np.array([[self.f_mean([(i-600)/100., (j-600)/100.]) for i in range(1199)] for j in range(1199)])</span>
+
+<span class="sd">        im = pl.imshow(Z, cmap=pl.cm.RdBu)</span>
+<span class="sd">        cset = pl.contour(Z, np.arange(-1, 1.5, 0.2), linewidths=2, cmap=pl.cm.Set2)</span>
+<span class="sd">        pl.colorbar(im)</span>
+<span class="sd">        pl.show()</span>
+
+<span class="sd">        # 3D plot</span>
+<span class="sd">        fig = mpl.pyplot.figure()</span>
+<span class="sd">        ax = fig.gca(projection=&#39;3d&#39;)</span>
+<span class="sd">        surf = ax.plot_surface(x, Y, Z, rstride=1, cstride=1, cmap=pl.cm.RdBu, linewidth=0, antialiased=False)</span>
+<span class="sd">        ax.zaxis.set_major_locator(mpl.ticker.LinearLocator(10))</span>
+<span class="sd">        ax.zaxis.set_major_formatter(mpl.ticker.FormatStrFormatter(&#39;%.02f&#39;))</span>
+<span class="sd">        fig.colorbar(surf, shrink=0.5, aspect=5)</span>
+<span class="sd">        mpl.pyplot.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<span class="c1"># Regret for HOO</span>
+<div class="viewcode-block" id="regret_hoo"><a class="viewcode-back" href="../../index.html#ho.utils_ho.regret_hoo">[docs]</a><span class="k">def</span> <span class="nf">regret_hoo</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">horizon</span><span class="p">,</span> <span class="n">update</span><span class="p">):</span>
+    <span class="c1"># y = np.zeros(horizon)</span>
+    <span class="n">y_cum</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">y_sim</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">x_sel</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">htree</span> <span class="o">=</span> <span class="n">hoo</span><span class="o">.</span><span class="n">HTree</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+    <span class="n">cum</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">update</span> <span class="ow">and</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">alpha</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">htree</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">htree</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">cum</span> <span class="o">+=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">fmax</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y_cum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cum</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_sel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">x_sel</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_sel</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]))]</span>
+        <span class="n">y_sim</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">fmax</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y_cum</span><span class="p">,</span> <span class="n">y_sim</span><span class="p">,</span> <span class="n">x_sel</span></div>
+
+
+<div class="viewcode-block" id="loss_hoo"><a class="viewcode-back" href="../../index.html#ho.utils_ho.loss_hoo">[docs]</a><span class="k">def</span> <span class="nf">loss_hoo</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">horizon</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">director</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">htree</span> <span class="o">=</span> <span class="n">hoo</span><span class="o">.</span><span class="n">HTree</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+    <span class="n">best</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="mf">1.</span>
+
+    <span class="n">bar</span> <span class="o">=</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">ProgressBar</span><span class="p">()</span>
+
+    <span class="n">track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+    <span class="n">track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)):</span>
+        <span class="c1"># print(str(i+1) + &#39;/&#39; + str(horizon))</span>
+        <span class="k">if</span> <span class="n">update</span> <span class="ow">and</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">alpha</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">htree</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">htree</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">_</span><span class="p">,</span> <span class="n">test_score</span><span class="p">]</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">director</span> <span class="o">+</span> <span class="s1">&#39;/tracks.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="o">-</span><span class="n">current</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="o">-</span><span class="n">current</span>
+                <span class="n">test</span> <span class="o">=</span> <span class="n">test_score</span>
+                <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">current_track_valid</span><span class="p">,</span> <span class="n">current_track_test</span><span class="p">]</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">director</span> <span class="o">+</span> <span class="s1">&#39;/tracks.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+            <span class="c1"># print(current_track_test)</span>
+            <span class="n">current_best_valid</span> <span class="o">=</span> <span class="n">track_valid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">current_test</span> <span class="o">=</span> <span class="n">track_test</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_track_valid</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">current_track_valid</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">current_best_valid</span><span class="p">:</span>
+                    <span class="n">current_best_valid</span> <span class="o">=</span> <span class="n">current_track_valid</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">current_test</span> <span class="o">=</span> <span class="n">current_track_test</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_valid</span><span class="p">,</span> <span class="n">current_best_valid</span><span class="p">)</span>
+                    <span class="n">track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_test</span><span class="p">,</span> <span class="n">current_test</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_valid</span><span class="p">,</span> <span class="n">current_best_valid</span><span class="p">)</span>
+                    <span class="n">track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_test</span><span class="p">,</span> <span class="n">current_test</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">keep</span><span class="p">:</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">track_test</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">losses</span></div>
+
+
+<div class="viewcode-block" id="regret_hct"><a class="viewcode-back" href="../../index.html#ho.utils_ho.regret_hct">[docs]</a><span class="k">def</span> <span class="nf">regret_hct</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">horizon</span><span class="p">):</span>
+    <span class="n">y_cum</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">y_sim</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">x_sel</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">hctree</span> <span class="o">=</span> <span class="n">hct</span><span class="o">.</span><span class="n">HCTree</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+    <span class="n">cum</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">horizon</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">tplus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">i</span><span class="p">))))</span>
+        <span class="n">dvalue</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c1</span> <span class="o">*</span> <span class="n">delta</span><span class="o">/</span><span class="n">tplus</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">tplus</span><span class="p">:</span>
+            <span class="n">hctree</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">hctree</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+        <span class="n">cum</span> <span class="o">+=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">fmax</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y_cum</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cum</span><span class="o">/</span><span class="n">i</span>
+        <span class="n">x_sel</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">x_sel</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_sel</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]))]</span>
+        <span class="n">y_sim</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">fmax</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y_cum</span><span class="p">,</span> <span class="n">y_sim</span><span class="p">,</span> <span class="n">x_sel</span></div>
+
+
+<div class="viewcode-block" id="loss_hct"><a class="viewcode-back" href="../../index.html#ho.utils_ho.loss_hct">[docs]</a><span class="k">def</span> <span class="nf">loss_hct</span><span class="p">(</span><span class="n">bbox</span><span class="p">:</span> <span class="n">Box</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">horizon</span><span class="p">,</span> <span class="n">director</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span>
+    <span class="n">hctree</span> <span class="o">=</span> <span class="n">hct</span><span class="o">.</span><span class="n">HCTree</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+    <span class="n">best</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="mf">1.</span>
+
+    <span class="n">bar</span> <span class="o">=</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">ProgressBar</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)):</span>
+        <span class="n">tplus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span>
+        <span class="n">dvalue</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c1</span> <span class="o">*</span> <span class="n">delta</span> <span class="o">/</span> <span class="n">tplus</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="n">tplus</span><span class="p">:</span>
+            <span class="n">hctree</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">hctree</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">keep</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hctree</span><span class="o">.</span><span class="n">get_change_status</span><span class="p">():</span>
+                <span class="n">bbox</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bbox</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">hctree</span><span class="o">.</span><span class="n">reset_change_status</span><span class="p">()</span>
+            <span class="p">[</span><span class="n">best_valid_loss</span><span class="p">,</span> <span class="n">test_score</span><span class="p">]</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">director</span> <span class="o">+</span> <span class="s1">&#39;/tracks.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">best_valid_loss</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="n">best_valid_loss</span>
+                <span class="n">test</span> <span class="o">=</span> <span class="n">test_score</span>
+                <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+        <span class="c1"># current = bbox.f_mean(x)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">_</span><span class="p">,</span> <span class="n">test_score</span><span class="p">]</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">director</span> <span class="o">+</span> <span class="s1">&#39;/tracks.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="o">-</span><span class="n">current</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="o">-</span><span class="n">current</span>
+                <span class="n">test</span> <span class="o">=</span> <span class="n">test_score</span>
+                <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span>
+
+    <span class="k">return</span> <span class="n">losses</span></div>
+
+
+<div class="viewcode-block" id="regret_poo"><a class="viewcode-back" href="../../index.html#ho.utils_ho.regret_poo">[docs]</a><span class="k">def</span> <span class="nf">regret_poo</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">rhos</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">horizon</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+    <span class="n">y_cum</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch</span><span class="p">)]</span>
+    <span class="n">y_sim</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch</span><span class="p">)]</span>
+    <span class="n">x_sel</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="n">ptree</span> <span class="o">=</span> <span class="n">poo</span><span class="o">.</span><span class="n">PTree</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rhos</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhos</span><span class="p">)</span>
+        <span class="n">cum</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="n">length</span>
+        <span class="n">emp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="n">length</span>
+        <span class="n">smp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">length</span>
+
+        <span class="k">while</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">horizon</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">noisy</span><span class="p">,</span> <span class="n">existed</span> <span class="o">=</span> <span class="n">ptree</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="n">cum</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">fmax</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="n">existed</span>
+                <span class="n">emp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noisy</span>
+                <span class="n">smp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">existed</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="n">horizon</span><span class="p">:</span>
+                    <span class="n">best_k</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">smp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">emp</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">/</span> <span class="n">smp</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                    <span class="n">y_cum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">smp</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">cum</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">smp</span><span class="p">[</span><span class="n">best_k</span><span class="p">])</span>
+                    <span class="n">x_sel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+                    <span class="n">z</span> <span class="o">=</span> <span class="n">x_sel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">count</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_sel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">count</span><span class="p">]))]</span>
+                    <span class="n">y_sim</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">fmax</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y_cum</span><span class="p">,</span> <span class="n">y_sim</span><span class="p">,</span> <span class="n">x_sel</span></div>
+
+
+<div class="viewcode-block" id="loss_poo"><a class="viewcode-back" href="../../index.html#ho.utils_ho.loss_poo">[docs]</a><span class="k">def</span> <span class="nf">loss_poo</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">rhos</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">horizon</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">horizon</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+        <span class="n">ptree</span> <span class="o">=</span> <span class="n">poo</span><span class="o">.</span><span class="n">PTree</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rhos</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhos</span><span class="p">)</span>
+        <span class="n">cum</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="n">length</span>
+        <span class="n">emp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="n">length</span>
+        <span class="n">smp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">length</span>
+
+        <span class="k">while</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">horizon</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">noisy</span><span class="p">,</span> <span class="n">existed</span> <span class="o">=</span> <span class="n">ptree</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="n">cum</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="n">existed</span>
+                <span class="n">emp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noisy</span>
+                <span class="n">smp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">existed</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="n">horizon</span><span class="p">:</span>
+                    <span class="n">best_k</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">smp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">emp</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">/</span> <span class="n">smp</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                    <span class="n">losses</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">smp</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">cum</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">smp</span><span class="p">[</span><span class="n">best_k</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">losses</span></div>
+
+
+<span class="c1"># Plot regret curve</span>
+<span class="c1"># def show(path, epoch, horizon, rhos_hoo, rhos_poo, delta):</span>
+<span class="c1">#     data = [None for _ in range(epoch)]</span>
+<span class="c1">#     for k in range(epoch):</span>
+<span class="c1">#         with open(path + &quot;HOO&quot; + str(k + 1), &#39;rb&#39;) as file:</span>
+<span class="c1">#             data[k] = pickle.load(file)</span>
+<span class="c1">#     with open(path + &quot;POO&quot;, &#39;rb&#39;) as file:</span>
+<span class="c1">#         data_poo = pickle.load(file)</span>
+<span class="c1">#     # with open(path+&quot;GPUCB_DIRECT&quot;, &#39;rb&#39;) as file:</span>
+<span class="c1">#     #     data_ucb_direct = pickle.load(file)</span>
+<span class="c1">#     # with open(path+&quot;GPUCB_LBFGS&quot;, &#39;rb&#39;) as file:</span>
+<span class="c1">#     #     data_ucb_lbfgs = pickle.load(file)</span>
+<span class="c1">#     # with open(path+&quot;EI&quot;, &#39;rb&#39;) as file:</span>
+<span class="c1">#     #     data_ei = pickle.load(file)</span>
+<span class="c1">#     # with open(path+&quot;PI&quot;, &#39;rb&#39;) as file:</span>
+<span class="c1">#     #     data_pi = pickle.load(file)</span>
+<span class="c1">#     # with open(path+&quot;THOMP&quot;, &#39;rb&#39;) as file:</span>
+<span class="c1">#     #     data_thomp = pickle.load(file)</span>
+<span class="c1">#</span>
+<span class="c1">#     length_hoo = len(rhos_hoo)</span>
+<span class="c1">#     length_poo = len(rhos_poo)</span>
+<span class="c1">#     rhostoshow = [int(length_hoo * k / 4.) for k in range(4)]</span>
+<span class="c1">#     # rhostoshow = [0, 6, 12, 18]</span>
+<span class="c1">#     # rhostoshow = [0, 1, 3, 7, 15]</span>
+<span class="c1">#     style = [[5, 5], [1, 3], [5, 3, 1, 3], [5, 2, 5, 2, 5, 10]]</span>
+<span class="c1">#     # style = [[5, 5], [1, 3], [5, 3, 1, 3], [5, 2, 5, 2, 5, 10], [3, 1]]</span>
+<span class="c1">#</span>
+<span class="c1">#     means = [[sum([data[k][j][i] for k in range(epoch)]) / float(epoch)</span>
+<span class="c1">#               for i in range(horizon)] for j in range(length_hoo)]</span>
+<span class="c1">#     devs = [</span>
+<span class="c1">#         [math.sqrt(sum([(data[k][j][i] - means[j][i]) ** 2</span>
+<span class="c1">#                         for k in range(epoch)]) / (float(epoch) * float(epoch - 1)))</span>
+<span class="c1">#          for i in range(horizon)] for j in range(length_hoo)]</span>
+<span class="c1">#</span>
+<span class="c1">#     means_poo = [sum([data_poo[u][v] / float(epoch) for u in range(epoch)]) for v in range(horizon)]</span>
+<span class="c1">#</span>
+<span class="c1">#     # means_ucb_direct = [sum([data_ucb_direct[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]</span>
+<span class="c1">#</span>
+<span class="c1">#     # means_ucb_lbfgs = [sum([data_ucb_lbfgs[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]</span>
+<span class="c1">#</span>
+<span class="c1">#     # means_ei = [sum([data_ei[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]</span>
+<span class="c1">#</span>
+<span class="c1">#     # means_pi = [sum([data_pi[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]</span>
+<span class="c1">#</span>
+<span class="c1">#     # means_thomp = [sum([data_thomp[u][v]/float(epoch) for u in range(epoch)]) for v in range(horizon)]</span>
+<span class="c1">#</span>
+<span class="c1">#     x = np.array(range(horizon))</span>
+<span class="c1">#     for i in range(len(rhostoshow)):</span>
+<span class="c1">#         k = rhostoshow[i]</span>
+<span class="c1">#         label__ = r&quot;$\mathtt{HOO}, \rho = &quot; + str(float(k) / float(length_hoo)) + &quot;$&quot;</span>
+<span class="c1">#         pl.plot(x, np.array(means[k]), label=label__, dashes=style[i])</span>
+<span class="c1">#     pl.plot(x, np.array(means_poo), label=r&quot;$\mathtt{POO}$&quot;)</span>
+<span class="c1">#     # pl.plot(x, np.array(means_ucb_direct), label=r&quot;$\mathtt{GPUCB-DIRECT}$&quot;, color=&#39;blue&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(means_ucb_lbfgs), label=r&quot;$\mathtt{GPUCB-LBFGS}$&quot;, color=&#39;green&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(means_ei), label=r&quot;$\mathtt{EI}$&quot;, color=&#39;cyan&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(means_pi), label=r&quot;$\mathtt{PI}$&quot;, color=&#39;magenta&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(means_thomp), label=r&quot;$\mathtt{THOMPSON}$&quot;, color=&#39;magenta&#39;)</span>
+<span class="c1">#     pl.legend()</span>
+<span class="c1">#     pl.xlabel(&quot;number of evaluations&quot;)</span>
+<span class="c1">#     pl.ylabel(&quot;simple regret&quot;)</span>
+<span class="c1">#     pl.show()</span>
+<span class="c1">#</span>
+<span class="c1">#     x = np.array(map(math.log, range(horizon)[1:]))</span>
+<span class="c1">#     for i in range(len(rhostoshow)):</span>
+<span class="c1">#         k = rhostoshow[i]</span>
+<span class="c1">#         label__ = r&quot;$\mathtt{HOO}, \rho = &quot; + str(float(k) / float(length_hoo)) + &quot;$&quot;</span>
+<span class="c1">#         pl.plot(x, np.array(map(math.log, means[k][1:])), label=label__, dashes=style[i])</span>
+<span class="c1">#     pl.plot(x, np.array(map(math.log, means_poo[1:])), label=r&quot;$\mathtt{POO}$&quot;)</span>
+<span class="c1">#     # pl.plot(x, np.array(map(math.log, means_ucb_direct[1:])), label=r&quot;$\mathtt{GPUCB-DIRECT}$&quot;, color=&#39;blue&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(map(math.log, means_ucb_lbfgs[1:])), label=r&quot;$\mathtt{GPUCB-LBFGS}$&quot;, color=&#39;green&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(map(math.log, means_ei[1:])), label=r&quot;$\mathtt{EI}$&quot;, color=&#39;cyan&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(map(math.log, means_pi[1:])), label=r&quot;$\mathtt{PI}$&quot;, color=&#39;magenta&#39;)</span>
+<span class="c1">#     # pl.plot(x, np.array(map(math.log, means_thomp[1:])), label=r&quot;$\mathtt{THOMPSON}$&quot;, color=&#39;magenta&#39;)</span>
+<span class="c1">#     pl.legend(loc=3)</span>
+<span class="c1">#     pl.xlabel(&quot;number of evaluations (log-scale)&quot;)</span>
+<span class="c1">#     pl.ylabel(&quot;simple regret&quot;)</span>
+<span class="c1">#     pl.show()</span>
+<span class="c1">#</span>
+<span class="c1">#     x = np.array([float(j) / float(length_hoo - 1) for j in range(length_hoo)])</span>
+<span class="c1">#     y = np.array([means[j][horizon - 1] for j in range(length_hoo)])</span>
+<span class="c1">#     z1 = np.array([means[j][horizon - 1] + math.sqrt(2 * (devs[j][horizon - 1] ** 2) * math.log(1 / delta)) for j in</span>
+<span class="c1">#                    range(length_hoo)])</span>
+<span class="c1">#     # z1 = np.array([means[j][horizon-1]+2*devs[j][horizon-1] for j in range(length_hoo)])</span>
+<span class="c1">#     z2 = np.array([means[j][horizon - 1] - math.sqrt(2 * (devs[j][horizon - 1] ** 2) * math.log(1 / delta)) for j in</span>
+<span class="c1">#                    range(length_hoo)])</span>
+<span class="c1">#     # z2 = np.array([means[j][horizon-1]-2*devs[j][horizon-1] for j in range(length_hoo)])</span>
+<span class="c1">#     pl.plot(x, y)</span>
+<span class="c1">#     pl.plot(x, z1, color=&quot;green&quot;)</span>
+<span class="c1">#     pl.plot(x, z2, color=&quot;green&quot;)</span>
+<span class="c1">#     pl.xlabel(r&quot;$\rho$&quot;)</span>
+<span class="c1">#     pl.ylabel(&quot;simple regret after &quot; + str(horizon) + &quot; evaluations&quot;)</span>
+<span class="c1">#     pl.show()</span>
+<span class="c1">#</span>
+<span class="c1">#     x = np.array([float(j) / float(length_hoo - 1) for j in range(length_hoo)])</span>
+<span class="c1">#     y = np.array([means[j][horizon - 1] for j in range(length_hoo)])</span>
+<span class="c1">#     err = np.array([math.sqrt(2 * (devs[j][horizon - 1] ** 2) * math.log(1 / delta)) for j in range(length_hoo)])</span>
+<span class="c1">#     # err = np.array([2*devs[j][horizon-1] for j in range(length_hoo)])</span>
+<span class="c1">#     pl.errorbar(x, y, yerr=err, color=&#39;black&#39;, errorevery=3)</span>
+<span class="c1">#     pl.xlabel(r&quot;$\rho$&quot;)</span>
+<span class="c1">#     pl.ylabel(&quot;simple regret after &quot; + str(horizon) + &quot; evaluations&quot;)</span>
+<span class="c1">#     pl.show()</span>
+
+
+<span class="c1"># How to choose rhos to be used</span>
+<div class="viewcode-block" id="get_rhos"><a class="viewcode-back" href="../../index.html#ho.utils_ho.get_rhos">[docs]</a><span class="k">def</span> <span class="nf">get_rhos</span><span class="p">(</span><span class="n">nsplits</span><span class="p">,</span> <span class="n">rhomax</span><span class="p">,</span> <span class="n">horizon</span><span class="p">):</span>
+    <span class="n">dmax</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">rhomax</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">big_n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">rhos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rhomax</span><span class="p">])</span>
+
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">horizon</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dmax</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+        <span class="k">while</span> <span class="n">big_n</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">big_n</span><span class="p">):</span>
+                <span class="n">rho_current</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">rhomax</span><span class="p">,</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">big_n</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+                <span class="n">rhos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rhos</span><span class="p">,</span> <span class="n">rho_current</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span>
+            <span class="n">big_n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">big_n</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">big_n</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rhos</span><span class="p">))</span></div>
+
+
+<span class="c1"># Function domain partitioning</span>
+<div class="viewcode-block" id="std_center"><a class="viewcode-back" href="../../index.html#ho.utils_ho.std_center">[docs]</a><span class="k">def</span> <span class="nf">std_center</span><span class="p">(</span><span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pick the center of a subregion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">support_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span> <span class="ow">or</span> <span class="s1">&#39;integer&#39;</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+            <span class="n">centers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">support_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">or</span> <span class="s1">&#39;continuous&#39;</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+            <span class="n">centers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported variable type.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">centers</span></div>
+
+
+<div class="viewcode-block" id="std_rand"><a class="viewcode-back" href="../../index.html#ho.utils_ho.std_rand">[docs]</a><span class="k">def</span> <span class="nf">std_rand</span><span class="p">(</span><span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Randomly pick a point in a subregion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rands</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">support_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span> <span class="ow">or</span> <span class="s1">&#39;integer&#39;</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">rand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">rands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rand</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">support_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">or</span> <span class="s1">&#39;continuous&#39;</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">rand</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+            <span class="n">rands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rand</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported variable type.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rands</span></div>
+
+
+<div class="viewcode-block" id="std_split"><a class="viewcode-back" href="../../index.html#ho.utils_ho.std_split">[docs]</a><span class="k">def</span> <span class="nf">std_split</span><span class="p">(</span><span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split a box uniformly.</span>
+
+<span class="sd">    :param support: vector of support in each dimension</span>
+<span class="sd">    :param support_type: continuous or discrete</span>
+<span class="sd">    :param nsplits: number of splits</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">support</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">support</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">))])</span>
+    <span class="n">max_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
+    <span class="n">max_length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">max_length</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">support_type</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span> <span class="ow">or</span> <span class="s1">&#39;integer&#39;</span><span class="p">:</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">step</span><span class="o">*</span><span class="n">i</span><span class="p">),</span> <span class="n">a</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">step</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">support_type</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">or</span> <span class="s1">&#39;continuous&#39;</span><span class="p">:</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="o">+</span><span class="n">step</span><span class="o">*</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="n">step</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported variable type.&quot;</span><span class="p">)</span>
+
+    <span class="n">supports</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="n">supports_type</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">):</span>
+        <span class="n">supports</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">support</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">))]</span>
+        <span class="n">supports</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">max_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">supports_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">support_type</span>
+
+    <span class="k">return</span> <span class="n">supports</span><span class="p">,</span> <span class="n">supports_type</span></div>
+
+
+<div class="viewcode-block" id="std_split_rand"><a class="viewcode-back" href="../../index.html#ho.utils_ho.std_split_rand">[docs]</a><span class="k">def</span> <span class="nf">std_split_rand</span><span class="p">(</span><span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split a box randomly.</span>
+
+<span class="sd">    :param support:</span>
+<span class="sd">    :param support_type:</span>
+<span class="sd">    :param nsplits:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># lens = np.array([support[i][1] - support[i][0] for i in range(len(support))])</span>
+    <span class="n">rand_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">))</span>
+    <span class="n">rand_length</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">rand_index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">support</span><span class="p">[</span><span class="n">rand_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">support</span><span class="p">[</span><span class="n">rand_index</span><span class="p">]</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">rand_length</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">support_type</span><span class="p">[</span><span class="n">rand_index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span> <span class="ow">or</span> <span class="s1">&#39;integer&#39;</span><span class="p">:</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span> <span class="n">a</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">support_type</span><span class="p">[</span><span class="n">rand_index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">or</span> <span class="s1">&#39;continuous&#39;</span><span class="p">:</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span> <span class="o">+</span> <span class="n">step</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported variable type.&quot;</span><span class="p">)</span>
+
+    <span class="n">supports</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="n">supports_type</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsplits</span><span class="p">):</span>
+        <span class="n">supports</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">support</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">support</span><span class="p">))]</span>
+        <span class="n">supports</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">rand_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">supports_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">support_type</span>
+
+    <span class="k">return</span> <span class="n">supports</span><span class="p">,</span> <span class="n">supports_type</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

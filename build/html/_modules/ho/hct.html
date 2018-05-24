@@ -1,0 +1,189 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ho.hct &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ho.hct</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># import random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="HCTree"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree">[docs]</a><span class="k">class</span> <span class="nc">HCTree</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">support</span><span class="p">,</span> <span class="n">support_type</span><span class="p">,</span> <span class="n">father</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">tvalue</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bvalue</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tvalue</span> <span class="o">=</span> <span class="n">tvalue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tau</span> <span class="o">=</span> <span class="n">tau</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_reward</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noisy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluated</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support</span> <span class="o">=</span> <span class="n">support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_type</span> <span class="o">=</span> <span class="n">support_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">father</span> <span class="o">=</span> <span class="n">father</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_status</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="HCTree.add_children"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.add_children">[docs]</a>    <span class="k">def</span> <span class="nf">add_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">):</span>
+        <span class="n">supports</span><span class="p">,</span> <span class="n">supports_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">nsplits</span><span class="p">)</span>
+        <span class="c1"># print(supports)</span>
+
+        <span class="n">tau</span> <span class="o">=</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">dvalue</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">HCTree</span><span class="p">(</span><span class="n">supports</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">supports_type</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">supports</span><span class="p">))]</span></div>
+        <span class="c1"># print(self.depth)</span>
+
+<div class="viewcode-block" id="HCTree.explore"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.explore">[docs]</a>    <span class="k">def</span> <span class="nf">explore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tvalue</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change_status</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change_status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">))]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">bvalue</span><span class="p">)</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HCTree.update_node"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.update_node">[docs]</a>    <span class="k">def</span> <span class="nf">update_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tvalue</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tvalue</span><span class="p">)</span>
+            <span class="n">hoeffding</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">dvalue</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tvalue</span><span class="p">))</span>
+            <span class="n">variation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">hoeffding</span> <span class="o">+</span> <span class="n">variation</span></div>
+
+<div class="viewcode-block" id="HCTree.update_path"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.update_path">[docs]</a>    <span class="k">def</span> <span class="nf">update_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reward</span> <span class="o">+=</span> <span class="n">reward</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tvalue</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bvalue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bvalue</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span><span class="p">,</span> <span class="nb">max</span><span class="p">([</span><span class="n">child</span><span class="o">.</span><span class="n">bvalue</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">father</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">father</span><span class="o">.</span><span class="n">update_path</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HCTree.update"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bvalue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bvalue</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uvalue</span><span class="p">,</span> <span class="nb">max</span><span class="p">([</span><span class="n">child</span><span class="o">.</span><span class="n">bvalue</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="HCTree.sample"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">):</span>
+        <span class="n">leaf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_status</span> <span class="o">=</span> <span class="n">leaf</span><span class="o">.</span><span class="n">change_status</span>
+        <span class="n">existed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">leaf</span><span class="o">.</span><span class="n">noisy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">leaf</span><span class="o">.</span><span class="n">support_type</span><span class="p">)</span>
+            <span class="n">leaf</span><span class="o">.</span><span class="n">evaluated</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">leaf</span><span class="o">.</span><span class="n">mean_reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">leaf</span><span class="o">.</span><span class="n">noisy</span> <span class="o">=</span> <span class="n">leaf</span><span class="o">.</span><span class="n">mean_reward</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+            <span class="n">existed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">leaf</span><span class="o">.</span><span class="n">mean_reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">f_mean</span><span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">evaluated</span><span class="p">)</span>
+        <span class="n">leaf</span><span class="o">.</span><span class="n">update_path</span><span class="p">(</span><span class="n">leaf</span><span class="o">.</span><span class="n">noisy</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dvalue</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">leaf</span><span class="o">.</span><span class="n">evaluated</span><span class="p">,</span> <span class="n">leaf</span><span class="o">.</span><span class="n">mean_reward</span><span class="p">,</span> <span class="n">leaf</span><span class="o">.</span><span class="n">noisy</span><span class="p">,</span> <span class="n">existed</span></div>
+
+<div class="viewcode-block" id="HCTree.get_change_status"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.get_change_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_change_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_status</span></div>
+
+<div class="viewcode-block" id="HCTree.reset_change_status"><a class="viewcode-back" href="../../index.html#ho.hct.HCTree.reset_change_status">[docs]</a>    <span class="k">def</span> <span class="nf">reset_change_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_status</span> <span class="o">=</span> <span class="kc">False</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

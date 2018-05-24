@@ -1,0 +1,229 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>classifiers.knn_sklearn &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for classifiers.knn_sklearn</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">KNeighborsClassifier</span><span class="p">,</span> <span class="n">KNeighborsRegressor</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="k">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">params</span> <span class="k">import</span> <span class="n">Param</span>
+
+<span class="n">d_knn</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+<span class="n">d_knn</span><span class="p">[</span><span class="s1">&#39;n_neighbors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="KNN"><a class="viewcode-back" href="../../index.html#classifiers.knn_sklearn.KNN">[docs]</a><span class="k">class</span> <span class="nc">KNN</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="o">=</span><span class="s1">&#39;binary&#39;</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">leaf_size</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="n">problem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_neighbors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">leaf_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;KNN&#39;</span>
+
+<div class="viewcode-block" id="KNN.eval"><a class="viewcode-back" href="../../index.html#classifiers.knn_sklearn.KNN.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span>
+                                       <span class="n">leaf_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leaf_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span>
+                                      <span class="n">leaf_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leaf_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mod</span></div>
+
+<div class="viewcode-block" id="KNN.generate_arms"><a class="viewcode-back" href="../../index.html#classifiers.knn_sklearn.KNN.generate_arms">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_arms</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function that generates a dictionary of configurations/arms.</span>
+
+<span class="sd">        :param n: number of arms to generate</span>
+<span class="sd">        :param path: path to which we store the results later</span>
+<span class="sd">        :param params: hyperparameter to be optimized</span>
+<span class="sd">        :param default: default arm option</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">arms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">default</span><span class="p">:</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="s2">&quot;default_arm&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+            <span class="n">arm</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dir&#39;</span><span class="p">:</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">dirname</span><span class="p">,</span> <span class="s1">&#39;n_neighbors&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="n">arms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm</span>
+            <span class="k">return</span> <span class="n">arms</span>
+        <span class="n">subdirs</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subdirs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subdirs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="s2">&quot;arm&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_count</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+            <span class="n">arm</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dir&#39;</span><span class="p">:</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">dirname</span><span class="p">}</span>
+            <span class="n">hps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;n_neighbors&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">hp</span> <span class="ow">in</span> <span class="n">hps</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">hp</span><span class="p">]</span><span class="o">.</span><span class="n">get_param_range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">stochastic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">arm</span><span class="p">[</span><span class="n">hp</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">arm</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">arms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arm</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;../../../source&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">arms</span></div>
+
+<div class="viewcode-block" id="KNN.run_solver"><a class="viewcode-back" href="../../index.html#classifiers.knn_sklearn.KNN.run_solver">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">run_solver</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="n">arm</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
+                   <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">problem</span><span class="o">=</span><span class="s1">&#39;cont&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;5fold&#39;</span><span class="p">,</span>
+                   <span class="n">track_valid</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">track_test</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param iterations:</span>
+<span class="sd">        :param arm:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :param rng:</span>
+<span class="sd">        :param problem:</span>
+<span class="sd">        :param method:</span>
+<span class="sd">        :param track_valid:</span>
+<span class="sd">        :param track_test:</span>
+<span class="sd">        :param verbose:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">Loss</span><span class="p">(</span><span class="n">KNN</span><span class="p">(),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">)</span>
+
+        <span class="n">best_loss</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">avg_loss</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">test_score</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="k">if</span> <span class="n">track_valid</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">current_best_valid</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">current_test</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">current_track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+            <span class="n">current_track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_best_valid</span> <span class="o">=</span> <span class="n">track_valid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">current_test</span> <span class="o">=</span> <span class="n">track_test</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">current_track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">track_valid</span><span class="p">)</span>
+            <span class="n">current_track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">track_test</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="n">current_loss</span><span class="p">,</span> <span class="n">test_error</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">evaluate_loss</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">arm</span><span class="p">[</span><span class="s1">&#39;n_neighbors&#39;</span><span class="p">])</span>
+            <span class="n">current_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">current_loss</span>
+            <span class="n">avg_loss</span> <span class="o">+=</span> <span class="n">current_loss</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;iteration </span><span class="si">%i</span><span class="s1">, validation error </span><span class="si">%f</span><span class="s1"> </span><span class="si">%%</span><span class="s1">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span>
+                        <span class="n">iteration</span><span class="p">,</span>
+                        <span class="n">current_loss</span> <span class="o">*</span> <span class="mf">100.</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">current_loss</span> <span class="o">&lt;</span> <span class="n">best_loss</span><span class="p">:</span>
+                <span class="n">best_loss</span> <span class="o">=</span> <span class="n">current_loss</span>
+                <span class="n">test_score</span> <span class="o">=</span> <span class="o">-</span><span class="n">test_error</span>
+                <span class="c1"># best_iter = iteration</span>
+
+            <span class="k">if</span> <span class="n">best_loss</span> <span class="o">&lt;</span> <span class="n">current_best_valid</span><span class="p">:</span>
+                <span class="n">current_best_valid</span> <span class="o">=</span> <span class="n">best_loss</span>
+                <span class="n">current_test</span> <span class="o">=</span> <span class="n">test_score</span>
+                <span class="n">current_track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_track_valid</span><span class="p">,</span> <span class="n">current_best_valid</span><span class="p">)</span>
+                <span class="n">current_track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_track_test</span><span class="p">,</span> <span class="n">current_test</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current_track_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_track_valid</span><span class="p">,</span> <span class="n">current_best_valid</span><span class="p">)</span>
+                <span class="n">current_track_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_track_test</span><span class="p">,</span> <span class="n">current_test</span><span class="p">)</span>
+
+        <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="n">iterations</span>
+
+        <span class="k">return</span> <span class="n">best_loss</span><span class="p">,</span> <span class="n">avg_loss</span><span class="p">,</span> <span class="n">current_track_valid</span><span class="p">,</span> <span class="n">current_track_test</span></div>
+
+<div class="viewcode-block" id="KNN.get_search_space"><a class="viewcode-back" href="../../index.html#classifiers.knn_sklearn.KNN.get_search_space">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_search_space</span><span class="p">():</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;n_neighbors&#39;</span><span class="p">:</span> <span class="n">Param</span><span class="p">(</span><span class="s1">&#39;n_neighbors&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">params</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

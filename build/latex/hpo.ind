@@ -1,0 +1,273 @@
+\begin{sphinxtheindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item Acquisition (class in bo.acquisition), \hyperpage{15}
+  \item Ada (class in classifiers.ada\_sklearn), \hyperpage{9}
+  \item add\_children() (ho.hct.HCTree method), \hyperpage{5}
+  \item add\_children() (ho.hoo.HTree method), \hyperpage{5}
+  \item add\_children() (ho.poo.PTree method), \hyperpage{6}
+
+  \indexspace
+  \bigletter B
+  \item BColors (class in bo.logger), \hyperpage{20}
+  \item BO (class in bo.bo), \hyperpage{16}
+  \item bo.acquisition (module), \hyperpage{15}
+  \item bo.bo (module), \hyperpage{16}
+  \item bo.covfunc (module), \hyperpage{17}
+  \item bo.logger (module), \hyperpage{20}
+  \item bo.surrogates.gaussian\_process (module), \hyperpage{14}
+  \item bo.tpe\_hyperopt (module), \hyperpage{20}
+  \item bo.utils\_bo (module), \hyperpage{21}
+  \item BOLD (bo.logger.BColors attribute), \hyperpage{20}
+  \item Box (class in ho.utils\_ho), \hyperpage{6}
+  \item build() (in module utils), \hyperpage{3}
+
+  \indexspace
+  \bigletter C
+  \item classifiers.ada\_sklearn (module), \hyperpage{9}
+  \item classifiers.cnn (module), \hyperpage{9}
+  \item classifiers.gbm\_sklearn (module), \hyperpage{10}
+  \item classifiers.knn\_sklearn (module), \hyperpage{11}
+  \item classifiers.logistic (module), \hyperpage{8}
+  \item classifiers.mlp (module), \hyperpage{9}
+  \item classifiers.mlp\_sklearn (module), \hyperpage{11}
+  \item classifiers.rf\_sklearn (module), \hyperpage{12}
+  \item classifiers.svm\_sklearn (module), \hyperpage{13}
+  \item classifiers.tree\_sklearn (module), \hyperpage{13}
+  \item combine\_tracks() (in module bo.tpe\_hyperopt), \hyperpage{20}
+  \item convert\_params() (in module bo.tpe\_hyperopt), \hyperpage{21}
+  \item ConvolutionPoolLayer (class in classifiers.cnn), \hyperpage{9}
+  \item cov() (bo.covfunc.DotProd method), \hyperpage{17}
+  \item cov() (bo.covfunc.ExpSine method), \hyperpage{17}
+  \item cov() (bo.covfunc.GammaExponential method), \hyperpage{18}
+  \item cov() (bo.covfunc.Matern method), \hyperpage{18}
+  \item cov() (bo.covfunc.Matern32 method), \hyperpage{18}
+  \item cov() (bo.covfunc.Matern52 method), \hyperpage{19}
+  \item cov() (bo.covfunc.RationalQuadratic method), \hyperpage{19}
+  \item cov() (bo.covfunc.SquaredExponential method), \hyperpage{19}
+  \item cum\_max() (in module utils), \hyperpage{3}
+
+  \indexspace
+  \bigletter D
+  \item DotProd (class in bo.covfunc), \hyperpage{17}
+
+  \indexspace
+  \bigletter E
+  \item ENDC (bo.logger.BColors attribute), \hyperpage{20}
+  \item entropy() (bo.acquisition.Acquisition method), \hyperpage{15}
+  \item eval() (bo.acquisition.Acquisition method), \hyperpage{15}
+  \item eval() (classifiers.ada\_sklearn.Ada method), \hyperpage{9}
+  \item eval() (classifiers.gbm\_sklearn.GBM method), \hyperpage{10}
+  \item eval() (classifiers.knn\_sklearn.KNN method), \hyperpage{11}
+  \item eval() (classifiers.mlp\_sklearn.MLP method), \hyperpage{12}
+  \item eval() (classifiers.rf\_sklearn.RF method), \hyperpage{12}
+  \item eval() (classifiers.svm\_sklearn.SVM method), \hyperpage{13}
+  \item eval() (classifiers.tree\_sklearn.Tree method), \hyperpage{14}
+  \item evaluate\_dataset() (in module bo.utils\_bo), \hyperpage{21}
+  \item evaluate\_loss() (utils.Loss method), \hyperpage{3}
+  \item evaluate\_random() (in module bo.utils\_bo), \hyperpage{21}
+  \item EventLogger (class in bo.logger), \hyperpage{20}
+  \item expected\_improvement() (bo.acquisition.Acquisition method), \hyperpage{16}
+  \item explore() (ho.hct.HCTree method), \hyperpage{5}
+  \item explore() (ho.hoo.HTree method), \hyperpage{5}
+  \item explore() (ho.poo.PTree method), \hyperpage{6}
+  \item explore\_bis() (ho.poo.PTree method), \hyperpage{6}
+  \item ExpSine (class in bo.covfunc), \hyperpage{17}
+
+  \indexspace
+  \bigletter F
+  \item FAIL (bo.logger.BColors attribute), \hyperpage{20}
+  \item fit() (bo.surrogates.gaussian\_process.GaussianProcess method), \hyperpage{14}
+
+  \indexspace
+  \bigletter G
+  \item GammaExponential (class in bo.covfunc), \hyperpage{17}
+  \item GaussianProcess (class in bo.surrogates.gaussian\_process), \hyperpage{14}
+  \item GBM (class in classifiers.gbm\_sklearn), \hyperpage{10}
+  \item generate\_arms() (classifiers.ada\_sklearn.Ada static method), \hyperpage{9}
+  \item generate\_arms() (classifiers.gbm\_sklearn.GBM static method), \hyperpage{10}
+  \item generate\_arms() (classifiers.knn\_sklearn.KNN static method), \hyperpage{11}
+  \item generate\_arms() (classifiers.logistic.LogisticRegression static method), \hyperpage{8}
+  \item generate\_arms() (classifiers.mlp.MLP static method), \hyperpage{9}
+  \item generate\_arms() (classifiers.mlp\_sklearn.MLP static method), \hyperpage{12}
+  \item generate\_arms() (classifiers.rf\_sklearn.RF static method), \hyperpage{12}
+  \item generate\_arms() (classifiers.svm\_sklearn.SVM static method), \hyperpage{13}
+  \item generate\_arms() (classifiers.tree\_sklearn.Tree static method), \hyperpage{14}
+  \item generate\_arms() (models.Model static method), \hyperpage{1}
+  \item get\_budget() (in module utils), \hyperpage{3}
+  \item get\_change\_status() (ho.hct.HCTree method), \hyperpage{5}
+  \item get\_cov\_params() (bo.surrogates.gaussian\_process.GaussianProcess method), \hyperpage{14}
+  \item get\_dist() (params.Param method), \hyperpage{1}
+  \item get\_max() (params.Param method), \hyperpage{1}
+  \item get\_min() (params.Param method), \hyperpage{1}
+  \item get\_name() (params.Param method), \hyperpage{1}
+  \item get\_param\_range() (params.Param method), \hyperpage{1}
+  \item get\_result() (bo.bo.BO method), \hyperpage{16}
+  \item get\_rhos() (in module ho.utils\_ho), \hyperpage{6}
+  \item get\_scale() (params.Param method), \hyperpage{1}
+  \item get\_search\_space() (classifiers.ada\_sklearn.Ada static method), \hyperpage{10}
+  \item get\_search\_space() (classifiers.gbm\_sklearn.GBM static method), \hyperpage{10}
+  \item get\_search\_space() (classifiers.knn\_sklearn.KNN static method), \hyperpage{11}
+  \item get\_search\_space() (classifiers.logistic.LogisticRegression static method), \hyperpage{8}
+  \item get\_search\_space() (classifiers.mlp.MLP static method), \hyperpage{9}
+  \item get\_search\_space() (classifiers.mlp\_sklearn.MLP static method), \hyperpage{12}
+  \item get\_search\_space() (classifiers.rf\_sklearn.RF static method), \hyperpage{12}
+  \item get\_search\_space() (classifiers.svm\_sklearn.SVM static method), \hyperpage{13}
+  \item get\_search\_space() (classifiers.tree\_sklearn.Tree static method), \hyperpage{14}
+  \item get\_search\_space() (models.Model static method), \hyperpage{1}
+  \item get\_type() (params.Param method), \hyperpage{1}
+  \item gpucb() (bo.acquisition.Acquisition method), \hyperpage{16}
+  \item grad\_matrix() (bo.covfunc.DotProd method), \hyperpage{17}
+  \item grad\_matrix() (bo.covfunc.ExpSine method), \hyperpage{17}
+  \item grad\_matrix() (bo.covfunc.GammaExponential method), \hyperpage{18}
+  \item grad\_matrix() (bo.covfunc.Matern32 method), \hyperpage{18}
+  \item grad\_matrix() (bo.covfunc.Matern52 method), \hyperpage{19}
+  \item grad\_matrix() (bo.covfunc.RationalQuadratic method), \hyperpage{19}
+  \item grad\_matrix() (bo.covfunc.SquaredExponential method), \hyperpage{20}
+
+  \indexspace
+  \bigletter H
+  \item HCTree (class in ho.hct), \hyperpage{5}
+  \item HEADER (bo.logger.BColors attribute), \hyperpage{20}
+  \item heuristics.hyperloop (module), \hyperpage{7}
+  \item heuristics.ttts (module), \hyperpage{7}
+  \item HiddenLayer (class in classifiers.mlp), \hyperpage{9}
+  \item ho.hct (module), \hyperpage{5}
+  \item ho.hoo (module), \hyperpage{5}
+  \item ho.poo (module), \hyperpage{5}
+  \item ho.utils\_ho (module), \hyperpage{6}
+  \item HTree (class in ho.hoo), \hyperpage{5}
+  \item hyperband.hyperband\_finite (module), \hyperpage{4}
+  \item hyperband\_finite() (in module hyperband.hyperband\_finite), \hyperpage{4}
+  \item hyperloop\_finite() (in module heuristics.hyperloop), \hyperpage{7}
+
+  \indexspace
+  \bigletter K
+  \item KNN (class in classifiers.knn\_sklearn), \hyperpage{11}
+  \item kronecker\_delta() (in module bo.covfunc), \hyperpage{20}
+
+  \indexspace
+  \bigletter L
+  \item l2\_norm() (in module bo.covfunc), \hyperpage{20}
+  \item load\_data() (in module utils), \hyperpage{3}
+  \item log\_eta() (in module utils), \hyperpage{4}
+  \item LogisticRegression (class in classifiers.logistic), \hyperpage{8}
+  \item Loss (class in utils), \hyperpage{3}
+  \item loss\_hct() (in module ho.utils\_ho), \hyperpage{6}
+  \item loss\_hoo() (in module ho.utils\_ho), \hyperpage{6}
+  \item loss\_poo() (in module ho.utils\_ho), \hyperpage{6}
+
+  \indexspace
+  \bigletter M
+  \item Matern (class in bo.covfunc), \hyperpage{18}
+  \item Matern32 (class in bo.covfunc), \hyperpage{18}
+  \item Matern52 (class in bo.covfunc), \hyperpage{19}
+  \item MLP (class in classifiers.mlp), \hyperpage{9}
+  \item MLP (class in classifiers.mlp\_sklearn), \hyperpage{11}
+  \item Model (class in models), \hyperpage{1}
+  \item models (module), \hyperpage{1}
+
+  \indexspace
+  \bigletter N
+  \item neg\_log\_likelihood() (classifiers.logistic.LogisticRegression method), \hyperpage{8}
+
+  \indexspace
+  \bigletter O
+  \item OKBLUE (bo.logger.BColors attribute), \hyperpage{20}
+  \item OKGREEN (bo.logger.BColors attribute), \hyperpage{20}
+  \item opt\_hyp() (bo.surrogates.gaussian\_process.GaussianProcess method), \hyperpage{14}
+
+  \indexspace
+  \bigletter P
+  \item Param (class in params), \hyperpage{1}
+  \item param\_grad() (bo.surrogates.gaussian\_process.GaussianProcess method), \hyperpage{15}
+  \item params (module), \hyperpage{1}
+  \item plot\_all() (in module plots), \hyperpage{1}
+  \item plot\_bo() (in module plots), \hyperpage{1}
+  \item plot\_hct() (in module plots), \hyperpage{1}
+  \item plot\_hoo() (in module plots), \hyperpage{1}
+  \item plot\_hyperband() (in module plots), \hyperpage{2}
+  \item plot\_hyperband\_only() (in module plots), \hyperpage{2}
+  \item plot\_hyperloop\_only() (in module plots), \hyperpage{2}
+  \item plot\_random() (in module plots), \hyperpage{3}
+  \item plot\_tpe() (in module plots), \hyperpage{3}
+  \item plots (module), \hyperpage{1}
+  \item predict() (bo.surrogates.gaussian\_process.GaussianProcess method), \hyperpage{15}
+  \item print\_current() (bo.logger.EventLogger method), \hyperpage{20}
+  \item print\_init() (bo.logger.EventLogger method), \hyperpage{20}
+  \item probability\_improvement() (bo.acquisition.Acquisition method), \hyperpage{16}
+  \item PTree (class in ho.poo), \hyperpage{5}
+
+  \indexspace
+  \bigletter R
+  \item RationalQuadratic (class in bo.covfunc), \hyperpage{19}
+  \item regret\_hct() (in module ho.utils\_ho), \hyperpage{6}
+  \item regret\_hoo() (in module ho.utils\_ho), \hyperpage{6}
+  \item regret\_poo() (in module ho.utils\_ho), \hyperpage{6}
+  \item reset\_change\_status() (ho.hct.HCTree method), \hyperpage{5}
+  \item RF (class in classifiers.rf\_sklearn), \hyperpage{12}
+  \item run() (bo.bo.BO method), \hyperpage{16}
+  \item run\_solver() (classifiers.ada\_sklearn.Ada static method), \hyperpage{10}
+  \item run\_solver() (classifiers.gbm\_sklearn.GBM static method), \hyperpage{10}
+  \item run\_solver() (classifiers.knn\_sklearn.KNN static method), \hyperpage{11}
+  \item run\_solver() (classifiers.logistic.LogisticRegression static method), \hyperpage{8}
+  \item run\_solver() (classifiers.mlp.MLP static method), \hyperpage{9}
+  \item run\_solver() (classifiers.mlp\_sklearn.MLP static method), \hyperpage{12}
+  \item run\_solver() (classifiers.rf\_sklearn.RF static method), \hyperpage{12}
+  \item run\_solver() (classifiers.svm\_sklearn.SVM static method), \hyperpage{13}
+  \item run\_solver() (classifiers.tree\_sklearn.Tree static method), \hyperpage{14}
+  \item run\_solver() (models.Model static method), \hyperpage{1}
+
+  \indexspace
+  \bigletter S
+  \item s\_to\_m() (in module utils), \hyperpage{4}
+  \item sample() (ho.hct.HCTree method), \hyperpage{5}
+  \item sample() (ho.hoo.HTree method), \hyperpage{5}
+  \item sample() (ho.poo.PTree method), \hyperpage{6}
+  \item sample\_bis() (ho.poo.PTree method), \hyperpage{6}
+  \item sample\_param() (bo.bo.BO method), \hyperpage{17}
+  \item sh\_finite() (in module hyperband.hyperband\_finite), \hyperpage{4}
+  \item SquaredExponential (class in bo.covfunc), \hyperpage{19}
+  \item std\_box() (in module ho.utils\_ho), \hyperpage{6}
+  \item std\_center() (in module ho.utils\_ho), \hyperpage{6}
+  \item std\_noise() (ho.utils\_ho.Box method), \hyperpage{6}
+  \item std\_partition() (ho.utils\_ho.Box method), \hyperpage{6}
+  \item std\_rand() (in module ho.utils\_ho), \hyperpage{6}
+  \item std\_split() (in module ho.utils\_ho), \hyperpage{6}
+  \item std\_split\_rand() (in module ho.utils\_ho), \hyperpage{6}
+  \item SVM (class in classifiers.svm\_sklearn), \hyperpage{13}
+
+  \indexspace
+  \bigletter T
+  \item Tree (class in classifiers.tree\_sklearn), \hyperpage{13}
+  \item ttts() (in module heuristics.ttts), \hyperpage{7}
+
+  \indexspace
+  \bigletter U
+  \item UNDERLINE (bo.logger.BColors attribute), \hyperpage{20}
+  \item update() (bo.surrogates.gaussian\_process.GaussianProcess method), \hyperpage{15}
+  \item update() (ho.hct.HCTree method), \hyperpage{5}
+  \item update() (ho.hoo.HTree method), \hyperpage{5}
+  \item update\_all() (ho.poo.PTree method), \hyperpage{6}
+  \item update\_all\_bis() (ho.poo.PTree method), \hyperpage{6}
+  \item update\_gp() (bo.bo.BO method), \hyperpage{17}
+  \item update\_node() (ho.hct.HCTree method), \hyperpage{5}
+  \item update\_node() (ho.hoo.HTree method), \hyperpage{5}
+  \item update\_node() (ho.poo.PTree method), \hyperpage{6}
+  \item update\_node\_bis() (ho.poo.PTree method), \hyperpage{6}
+  \item update\_path() (ho.hct.HCTree method), \hyperpage{5}
+  \item update\_path() (ho.hoo.HTree method), \hyperpage{5}
+  \item update\_path() (ho.poo.PTree method), \hyperpage{6}
+  \item update\_path\_bis() (ho.poo.PTree method), \hyperpage{6}
+  \item utils (module), \hyperpage{3}
+
+  \indexspace
+  \bigletter W
+  \item WARNING (bo.logger.BColors attribute), \hyperpage{20}
+
+  \indexspace
+  \bigletter Z
+  \item zero\_one() (classifiers.logistic.LogisticRegression method), \hyperpage{9}
+
+\end{sphinxtheindex}

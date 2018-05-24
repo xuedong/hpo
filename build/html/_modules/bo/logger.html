@@ -1,0 +1,139 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>bo.logger &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bo.logger</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="BColors"><a class="viewcode-back" href="../../index.html#bo.logger.BColors">[docs]</a><span></span><span class="k">class</span> <span class="nc">BColors</span><span class="p">:</span>
+    <span class="n">HEADER</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[95m&#39;</span>
+    <span class="n">OKBLUE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[94m&#39;</span>
+    <span class="n">OKGREEN</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[92m&#39;</span>
+    <span class="n">WARNING</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[93m&#39;</span>
+    <span class="n">FAIL</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[91m&#39;</span>
+    <span class="n">ENDC</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span>
+    <span class="n">BOLD</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span>
+    <span class="n">UNDERLINE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[4m&#39;</span></div>
+
+
+<div class="viewcode-block" id="EventLogger"><a class="viewcode-back" href="../../index.html#bo.logger.EventLogger">[docs]</a><span class="k">class</span> <span class="nc">EventLogger</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bo_instance</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bo</span> <span class="o">=</span> <span class="n">bo_instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Evaluation </span><span class="se">\t</span><span class="s1"> Proposed point </span><span class="se">\t</span><span class="s1">  Current eval. </span><span class="se">\t</span><span class="s1"> Best eval.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:6}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> </span><span class="si">{}</span><span class="s1">. </span><span class="se">\t</span><span class="s1">  </span><span class="si">{:6}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> </span><span class="si">{:6}</span><span class="s1">&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EventLogger.print_current"><a class="viewcode-back" href="../../index.html#bo.logger.EventLogger.print_current">[docs]</a>    <span class="k">def</span> <span class="nf">print_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bo_instance</span><span class="p">):</span>
+        <span class="n">evaluation</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bo_instance</span><span class="o">.</span><span class="n">GP</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">bo_instance</span><span class="o">.</span><span class="n">init_evals</span><span class="p">)</span>
+        <span class="n">proposed</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bo_instance</span><span class="o">.</span><span class="n">best</span><span class="p">)</span>
+        <span class="n">curr_eval</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bo_instance</span><span class="o">.</span><span class="n">GP</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">curr_best</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bo_instance</span><span class="o">.</span><span class="n">tau</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">curr_eval</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">curr_best</span><span class="p">):</span>
+            <span class="n">curr_eval</span> <span class="o">=</span> <span class="n">BColors</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="n">curr_eval</span> <span class="o">+</span> <span class="n">BColors</span><span class="o">.</span><span class="n">ENDC</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">proposed</span><span class="p">,</span> <span class="n">curr_eval</span><span class="p">,</span> <span class="n">curr_best</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="EventLogger.print_init"><a class="viewcode-back" href="../../index.html#bo.logger.EventLogger.print_init">[docs]</a>    <span class="k">def</span> <span class="nf">print_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bo_instance</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">init_eval</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bo_instance</span><span class="o">.</span><span class="n">init_evals</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">,</span> <span class="n">bo_instance</span><span class="o">.</span><span class="n">GP</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">init_eval</span><span class="p">],</span>
+                                       <span class="n">bo_instance</span><span class="o">.</span><span class="n">GP</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">init_eval</span><span class="p">],</span> <span class="n">bo_instance</span><span class="o">.</span><span class="n">tau</span><span class="p">))</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="c1"># import matplotlib.pyplot as plt</span>
+    <span class="kn">from</span> <span class="nn">src.bo.covfunc</span> <span class="k">import</span> <span class="n">SquaredExponential</span>
+    <span class="kn">from</span> <span class="nn">src.bo.surrogates.gaussian_process</span> <span class="k">import</span> <span class="n">GaussianProcess</span>
+    <span class="kn">from</span> <span class="nn">src.bo.acquisition</span> <span class="k">import</span> <span class="n">Acquisition</span>
+    <span class="kn">from</span> <span class="nn">src.bo.bo</span> <span class="k">import</span> <span class="n">BO</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="p">((</span><span class="mi">6</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="mi">4</span><span class="p">))</span>
+
+    <span class="n">sexp</span> <span class="o">=</span> <span class="n">SquaredExponential</span><span class="p">()</span>
+    <span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcess</span><span class="p">(</span><span class="n">sexp</span><span class="p">)</span>
+    <span class="n">acq</span> <span class="o">=</span> <span class="n">Acquisition</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;expected_improvement&#39;</span><span class="p">)</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;cont&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))}</span>
+    <span class="n">bo</span> <span class="o">=</span> <span class="n">BO</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">acq</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="n">bo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">bo</span><span class="o">.</span><span class="n">get_result</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

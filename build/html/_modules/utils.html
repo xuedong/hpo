@@ -1,0 +1,257 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>utils &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">theano</span>
+<span class="kn">import</span> <span class="nn">theano.tensor</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="n">urllib</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="n">cPickle</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">log_loss</span><span class="p">,</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">KFold</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">StandardScaler</span>
+
+
+<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../index.html#utils.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function that loads the data at dataset.</span>
+
+<span class="sd">    :param dataset: path to the dataset</span>
+<span class="sd">    :return: separated training, validation and test dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># download the dataset if not already present (mnist dataset by default)</span>
+    <span class="n">data_dir</span><span class="p">,</span> <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">data_dir</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+        <span class="c1"># check if dataset is in the data folder</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data_file</span> <span class="o">==</span> <span class="s1">&#39;mnist.pkl.gz&#39;</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span> <span class="ow">and</span> <span class="n">data_file</span> <span class="o">==</span> <span class="s1">&#39;mnist.pkl.gz&#39;</span><span class="p">:</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="s1">&#39;http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Downloading data from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">origin</span><span class="p">)</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading data...&#39;</span><span class="p">)</span>
+
+    <span class="c1"># load the dataset</span>
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin1&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">shared_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">borrow</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load dataset into shared variables.</span>
+
+<span class="sd">        :param data: dataset</span>
+<span class="sd">        :param borrow: True to permit returning of an object aliased to internal memory</span>
+<span class="sd">        :return: shared_input and shared_target</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_input</span><span class="p">,</span> <span class="n">data_target</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">shared_input</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data_input</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">theano</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">floatX</span><span class="p">),</span> <span class="n">borrow</span><span class="o">=</span><span class="n">borrow</span><span class="p">)</span>
+        <span class="n">shared_target</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data_target</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">theano</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">floatX</span><span class="p">),</span> <span class="n">borrow</span><span class="o">=</span><span class="n">borrow</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">shared_input</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">shared_target</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+
+    <span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span> <span class="o">=</span> <span class="n">shared_dataset</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+    <span class="n">valid_input</span><span class="p">,</span> <span class="n">valid_target</span> <span class="o">=</span> <span class="n">shared_dataset</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
+    <span class="n">test_input</span><span class="p">,</span> <span class="n">test_target</span> <span class="o">=</span> <span class="n">shared_dataset</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+
+    <span class="n">data_values</span> <span class="o">=</span> <span class="p">[(</span><span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">),</span> <span class="p">(</span><span class="n">valid_input</span><span class="p">,</span> <span class="n">valid_target</span><span class="p">),</span> <span class="p">(</span><span class="n">test_input</span><span class="p">,</span> <span class="n">test_target</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">data_values</span></div>
+
+
+<div class="viewcode-block" id="s_to_m"><a class="viewcode-back" href="../index.html#utils.s_to_m">[docs]</a><span class="k">def</span> <span class="nf">s_to_m</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">current_time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function that converts time in seconds to time in minutes.</span>
+
+<span class="sd">    :param start_time: starting time in seconds</span>
+<span class="sd">    :param current_time: current time in seconds</span>
+<span class="sd">    :return: minutes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.</span></div>
+
+
+<div class="viewcode-block" id="log_eta"><a class="viewcode-back" href="../index.html#utils.log_eta">[docs]</a><span class="k">def</span> <span class="nf">log_eta</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute log of x with base eta.</span>
+
+<span class="sd">    :param x: input value</span>
+<span class="sd">    :param eta: base</span>
+<span class="sd">    :return: rounded log_eta(x)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">eta</span><span class="p">),</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_budget"><a class="viewcode-back" href="../index.html#utils.get_budget">[docs]</a><span class="k">def</span> <span class="nf">get_budget</span><span class="p">(</span><span class="n">min_units</span><span class="p">,</span> <span class="n">max_units</span><span class="p">,</span> <span class="n">eta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the total budget.</span>
+
+<span class="sd">    :param min_units: minimum units of resources can be allocated to one configuration</span>
+<span class="sd">    :param max_units: maximum units of resources can be allocated to one configuration</span>
+<span class="sd">    :param eta: elimination proportion</span>
+<span class="sd">    :return: the corresponding total budget and the number of configurations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">budget</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">log_eta</span><span class="p">(</span><span class="n">max_units</span> <span class="o">/</span> <span class="n">min_units</span><span class="p">,</span> <span class="n">eta</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">max_units</span>
+    <span class="k">return</span> <span class="n">budget</span><span class="p">,</span> <span class="n">budget</span> <span class="o">/</span> <span class="n">max_units</span></div>
+
+
+<div class="viewcode-block" id="Loss"><a class="viewcode-back" href="../index.html#utils.Loss">[docs]</a><span class="k">class</span> <span class="nc">Loss</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;holdout&#39;</span><span class="p">,</span> <span class="n">problem</span><span class="o">=</span><span class="s1">&#39;binary&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="n">problem</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">log_loss</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">mean_squared_error</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">log_loss</span>
+
+<div class="viewcode-block" id="Loss.evaluate_loss"><a class="viewcode-back" href="../index.html#utils.Loss.evaluate_loss">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;holdout&#39;</span><span class="p">:</span>
+            <span class="n">x_train_valid</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train_valid</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                                                            <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">93</span><span class="p">)</span>
+            <span class="n">x_train</span><span class="p">,</span> <span class="n">x_valid</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_train_valid</span><span class="p">,</span> <span class="n">y_train_valid</span><span class="p">,</span>
+                                                                  <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">93</span><span class="p">)</span>
+            <span class="n">clf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+            <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span>
+                <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">y_hat_valid</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_valid</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+                <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+                <span class="n">y_hat_valid</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_valid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+                <span class="n">y_hat_valid</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_valid</span><span class="p">)</span>
+            <span class="n">valid_error</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="n">y_hat_valid</span><span class="p">)</span>
+            <span class="n">test_error</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_hat_test</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">valid_error</span><span class="p">,</span> <span class="n">test_error</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;5fold&#39;</span><span class="p">:</span>
+            <span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">test_errors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">x_train_valid</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train_valid</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                                                            <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">93</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">valid_index</span> <span class="ow">in</span> <span class="n">kf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x_train_valid</span><span class="p">):</span>
+                <span class="n">x_train</span><span class="p">,</span> <span class="n">x_valid</span> <span class="o">=</span> <span class="n">x_train_valid</span><span class="p">[</span><span class="n">train_index</span><span class="p">],</span> <span class="n">x_train_valid</span><span class="p">[</span><span class="n">valid_index</span><span class="p">]</span>
+                <span class="n">y_train</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">y_train_valid</span><span class="p">[</span><span class="n">train_index</span><span class="p">],</span> <span class="n">y_train_valid</span><span class="p">[</span><span class="n">valid_index</span><span class="p">]</span>
+                <span class="n">clf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span> <span class="o">**</span><span class="n">param</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span>
+                    <span class="n">y_hat_valid</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_valid</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+                    <span class="n">y_hat_valid</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_valid</span><span class="p">)</span>
+                    <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">y_hat_valid</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_valid</span><span class="p">)</span>
+                    <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+                <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">y_valid</span><span class="p">,</span> <span class="n">y_hat_valid</span><span class="p">))</span>
+                <span class="n">test_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_hat_test</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">losses</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">test_errors</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="cum_max"><a class="viewcode-back" href="../index.html#utils.cum_max">[docs]</a><span class="k">def</span> <span class="nf">cum_max</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n</span><span class="p">,))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">history</span><span class="p">[:(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="build"><a class="viewcode-back" href="../index.html#utils.build">[docs]</a><span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">target_index</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">target_index</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">target_index</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

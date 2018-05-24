@@ -1,0 +1,272 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>bo.surrogates.gaussian_process &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bo.surrogates.gaussian_process</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">cholesky</span><span class="p">,</span> <span class="n">solve</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+
+
+<div class="viewcode-block" id="GaussianProcess"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess">[docs]</a><span class="k">class</span> <span class="nc">GaussianProcess</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">optimize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">usegrads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mprior</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gaussian Process regressor class.</span>
+
+<span class="sd">        :type covfunc: instance from a class of covfunc module</span>
+<span class="sd">        :param covfunc: covariance function</span>
+<span class="sd">        :type optimize: bool</span>
+<span class="sd">        :param optimize: whether to perform covariance function hyperparameter optimization</span>
+<span class="sd">        :type usegrads: bool</span>
+<span class="sd">        :param usegrads: whether to use gradient information on hyperparameter optimization, only used</span>
+<span class="sd">        if `optimize=True`</span>
+<span class="sd">        :type mprior: float</span>
+<span class="sd">        :param mprior: explicit value for the mean function of the prior Gaussian Process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">covfunc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="n">optimize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usegrads</span> <span class="o">=</span> <span class="n">usegrads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mprior</span> <span class="o">=</span> <span class="n">mprior</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsamples</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="GaussianProcess.get_cov_params"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess.get_cov_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_cov_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Current covariance function hyperparameters.</span>
+
+<span class="sd">        :return: the dictionary containing covariance function hyperparameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="GaussianProcess.fit"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fits a Gaussian Process regressor.</span>
+
+<span class="sd">        :type x: np.ndarray, shape=(nsamples, nfeatures)</span>
+<span class="sd">        :param x: training instances to fit the GP</span>
+<span class="sd">        :type y: np.ndarray, shape=(nsamples,)</span>
+<span class="sd">        :param y: corresponding continuous target values to x</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsamples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span><span class="p">:</span>
+            <span class="n">grads</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">usegrads</span><span class="p">:</span>
+                <span class="n">grads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grad</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opt_hyp</span><span class="p">(</span><span class="n">param_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">param_bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mprior</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logp</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">)))</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsamples</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianProcess.param_grad"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess.param_grad">[docs]</a>    <span class="k">def</span> <span class="nf">param_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_param</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gradient over hyperparameters. It is recommended to use `self._grad` instead.</span>
+
+<span class="sd">        :type k_param: dict</span>
+<span class="sd">        :param k_param: dictionary with keys being hyperparameters and values their queried values</span>
+<span class="sd">        :return: the gradient corresponding to each hyperparameters, order given by `k_param.keys()`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k_param_key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">k_param</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">k_param</span><span class="p">)</span>
+        <span class="c1"># n = self.x.shape[0]</span>
+        <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">lower_matrix</span> <span class="o">=</span> <span class="n">cholesky</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">lower_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">solve</span><span class="p">(</span><span class="n">lower_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">inner</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
+        <span class="n">grads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">k_param_key</span><span class="p">:</span>
+            <span class="n">grad_matrix</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">grad_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">)</span>
+            <span class="n">grad_matrix</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">grad_matrix</span><span class="p">))</span>
+            <span class="n">grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grad_matrix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_lmlik</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_vector</span><span class="p">,</span> <span class="n">param_key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Marginal negative log-likelihood for given covariance hyperparameters.</span>
+
+<span class="sd">        :type param_vector: list</span>
+<span class="sd">        :param param_vector: list of values corresponding to hyperparameters to query</span>
+<span class="sd">        :type param_key: list</span>
+<span class="sd">        :param param_key: list of hyperparameter strings corresponding to `param_vector`</span>
+<span class="sd">        :return: the negative log-marginal likelihood for chosen hyperparameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k_param</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_key</span><span class="p">,</span> <span class="n">param_vector</span><span class="p">):</span>
+            <span class="n">k_param</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">k_param</span><span class="p">)</span>
+
+        <span class="c1"># This fixes recursion</span>
+        <span class="n">original_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span>
+        <span class="n">original_grad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">usegrads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usegrads</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="n">original_opt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usegrads</span> <span class="o">=</span> <span class="n">original_grad</span>
+        <span class="k">return</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">logp</span>
+
+    <span class="k">def</span> <span class="nf">_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_vector</span><span class="p">,</span> <span class="n">param_key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gradient for each hyperparameter, evaluated at a given point.</span>
+
+<span class="sd">        :type param_vector: list</span>
+<span class="sd">        :param param_vector: list of values corresponding to hyperparameters to query</span>
+<span class="sd">        :type param_key: list</span>
+<span class="sd">        :param: list of hyperparameter strings corresponding to `param_vector`</span>
+<span class="sd">        :return: the gradient for each evaluated hyperparameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k_param</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_key</span><span class="p">,</span> <span class="n">param_vector</span><span class="p">):</span>
+            <span class="n">k_param</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_grad</span><span class="p">(</span><span class="n">k_param</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GaussianProcess.opt_hyp"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess.opt_hyp">[docs]</a>    <span class="k">def</span> <span class="nf">opt_hyp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_key</span><span class="p">,</span> <span class="n">param_bounds</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Optimizes the negative marginal log-likelihood for given hyperparameters and bounds.</span>
+<span class="sd">        This is an empirical Bayes approach (or Type II maximum-likelihood).</span>
+
+<span class="sd">        :type param_key: list</span>
+<span class="sd">        :param param_key: list of hyperparameters to optimize</span>
+<span class="sd">        :type param_bounds: list</span>
+<span class="sd">        :param param_bounds: list containing tuples defining bounds for each hyperparameter to optimize over</span>
+<span class="sd">        :param grads: gradient matrix</span>
+<span class="sd">        :param n_trials: number of trials</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_lmlik</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">param_key</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">):</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">bound</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_key</span><span class="p">,</span> <span class="n">param_bounds</span><span class="p">):</span>
+                <span class="n">x0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">bound</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bound</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">grads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lmlik</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span> <span class="n">args</span><span class="o">=</span><span class="n">param_key</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;L-BFGS-B&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">param_bounds</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lmlik</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span> <span class="n">args</span><span class="o">=</span><span class="n">param_key</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;L-BFGS-B&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">param_bounds</span><span class="p">,</span>
+                               <span class="n">jac</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">fun</span><span class="p">)</span>
+
+        <span class="n">arg_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+        <span class="n">opt_param</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">arg_min</span><span class="p">)]</span>
+        <span class="n">k_param</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_key</span><span class="p">,</span> <span class="n">opt_param</span><span class="p">):</span>
+            <span class="n">k_param</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">k_param</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianProcess.predict"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_star</span><span class="p">,</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Mean and covariances for the posterior Gaussian Process.</span>
+
+<span class="sd">        :type x_star: np.ndarray, shape=((nsamples, nfeatures))</span>
+<span class="sd">        :param x_star: testing instances to predict</span>
+<span class="sd">        :type return_std: bool</span>
+<span class="sd">        :param return_std: whether to return the standard deviation of the posterior process</span>
+<span class="sd">        :return: mean and covariance of the posterior process for testing instances</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_star</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">x_star</span><span class="p">)</span>
+        <span class="n">k_star</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x_star</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">fmean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mprior</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">k_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">,</span> <span class="n">k_star</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">fcov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">x_star</span><span class="p">,</span> <span class="n">x_star</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_std</span><span class="p">:</span>
+            <span class="n">fcov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">fcov</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fmean</span><span class="p">,</span> <span class="n">fcov</span></div>
+
+<div class="viewcode-block" id="GaussianProcess.update"><a class="viewcode-back" href="../../../index.html#bo.surrogates.gaussian_process.GaussianProcess.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the internal model with `x_new` and `y_new` instances.</span>
+
+<span class="sd">        :type x_new: np.ndarray, shape=((m, nfeatures))</span>
+<span class="sd">        :param x_new: new training instances to update the model with</span>
+<span class="sd">        :type y_new: np.ndarray, shape=((m,))</span>
+<span class="sd">        :param y_new: new training targets to update the model with</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">y_new</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x_new</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -55,7 +55,7 @@
 
 
 \title{hpo Documentation}
-\date{Mar 26, 2018}
+\date{May 24, 2018}
 \release{0.0.1}
 \author{xuedong}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -67,6 +67,2755 @@
 \maketitle
 \sphinxtableofcontents
 \phantomsection\label{\detokenize{index::doc}}
+
+\phantomsection\label{\detokenize{index:module-models}}\index{models (module)}\index{Model (class in models)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:models.Model}}\pysigline{\sphinxbfcode{class }\sphinxcode{models.}\sphinxbfcode{Model}}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{generate\_arms() (models.Model static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:models.Model.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}}{}
+\end{fulllineitems}
+
+\index{get\_search\_space() (models.Model static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:models.Model.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (models.Model static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:models.Model.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-params}}\index{params (module)}\index{Param (class in params)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{params.}\sphinxbfcode{Param}}{\emph{name}, \emph{min\_val}, \emph{max\_val}, \emph{init\_val=None}, \emph{dist='uniform'}, \emph{scale='log'}, \emph{log\_base=2.718281828459045}, \emph{interval=None}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{get\_dist() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_dist}}\pysiglinewithargsret{\sphinxbfcode{get\_dist}}{}{}
+\end{fulllineitems}
+
+\index{get\_max() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_max}}\pysiglinewithargsret{\sphinxbfcode{get\_max}}{}{}
+\end{fulllineitems}
+
+\index{get\_min() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_min}}\pysiglinewithargsret{\sphinxbfcode{get\_min}}{}{}
+\end{fulllineitems}
+
+\index{get\_name() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_name}}\pysiglinewithargsret{\sphinxbfcode{get\_name}}{}{}
+\end{fulllineitems}
+
+\index{get\_param\_range() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_param_range}}\pysiglinewithargsret{\sphinxbfcode{get\_param\_range}}{\emph{num}, \emph{stochastic=False}}{}
+\end{fulllineitems}
+
+\index{get\_scale() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_scale}}\pysiglinewithargsret{\sphinxbfcode{get\_scale}}{}{}
+\end{fulllineitems}
+
+\index{get\_type() (params.Param method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:params.Param.get_type}}\pysiglinewithargsret{\sphinxbfcode{get\_type}}{}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-plots}}\index{plots (module)}\index{plot\_all() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_all}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_all}}{\emph{paths}, \emph{runs}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}, \emph{resource\_type}, \emph{type\_plot='linear'}, \emph{devs=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{paths} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{runs} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{resource\_type} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{type\_plot} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{devs} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_bo() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_bo}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_bo}}{\emph{bo\_ei\_history}, \emph{bo\_ucb\_history}, \emph{random}, \emph{dataset\_name}, \emph{model}, \emph{problem}}{}
+\end{fulllineitems}
+
+\index{plot\_hct() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_hct}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_hct}}{\emph{path}, \emph{runs}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which the result image is stored
+
+\item {} 
+\sphinxstyleliteralstrong{runs} \textendash{} number of runs
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} name of the classifier
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} name of the optimizer
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} name of the dataset
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} id of the experiment
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_hoo() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_hoo}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_hoo}}{\emph{path}, \emph{runs}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which the result image is stored
+
+\item {} 
+\sphinxstyleliteralstrong{runs} \textendash{} number of runs
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} name of the classifier
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} name of the optimizer
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} name of the dataset
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} id of the experiment
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_hyperband() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_hyperband}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_hyperband}}{\emph{path}, \emph{s\_max}, \emph{trials}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}
+Plot test error evaluation of hyperband with different s values.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which the result image is stored
+
+\item {} 
+\sphinxstyleliteralstrong{s\_max} \textendash{} maximum number of brackets
+
+\item {} 
+\sphinxstyleliteralstrong{trials} \textendash{} number of trials of one algorithm
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} name of the classifier
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} name of the optimizer
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} name of the dataset
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} id of the experiment
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_hyperband\_only() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_hyperband_only}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_hyperband\_only}}{\emph{path}, \emph{trials}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}
+Plot test error evaluation of hyperband.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which the result image is stored
+
+\item {} 
+\sphinxstyleliteralstrong{trials} \textendash{} number of trials of one algorithm
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} name of the classifier
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} name of the optimizer
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} name of the dataset
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} id of the experiment
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_hyperloop\_only() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_hyperloop_only}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_hyperloop\_only}}{\emph{path}, \emph{trials}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}
+Plot test error evaluation of hyperloop.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which the result image is stored
+
+\item {} 
+\sphinxstyleliteralstrong{trials} \textendash{} number of trials of one algorithm
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} name of the classifier
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} name of the optimizer
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} name of the dataset
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} id of the experiment
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_random() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_random}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_random}}{\emph{path}, \emph{trials}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}
+Plot test error evaluation of random search.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{trials} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{plot\_tpe() (in module plots)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:plots.plot_tpe}}\pysiglinewithargsret{\sphinxcode{plots.}\sphinxbfcode{plot\_tpe}}{\emph{path}, \emph{runs}, \emph{classifier\_name}, \emph{optimizer\_name}, \emph{dataset\_name}, \emph{idx}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which the result image is stored
+
+\item {} 
+\sphinxstyleliteralstrong{runs} \textendash{} number of runs
+
+\item {} 
+\sphinxstyleliteralstrong{classifier\_name} \textendash{} name of the classifier
+
+\item {} 
+\sphinxstyleliteralstrong{optimizer\_name} \textendash{} name of the optimizer
+
+\item {} 
+\sphinxstyleliteralstrong{dataset\_name} \textendash{} name of the dataset
+
+\item {} 
+\sphinxstyleliteralstrong{idx} \textendash{} id of the experiment
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-utils}}\index{utils (module)}\index{Loss (class in utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.Loss}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{utils.}\sphinxbfcode{Loss}}{\emph{model}, \emph{x}, \emph{y}, \emph{method='holdout'}, \emph{problem='binary'}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{evaluate\_loss() (utils.Loss method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.Loss.evaluate_loss}}\pysiglinewithargsret{\sphinxbfcode{evaluate\_loss}}{\emph{**param}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{build() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.build}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{build}}{\emph{csv\_path}, \emph{target\_index}, \emph{header=None}}{}
+\end{fulllineitems}
+
+\index{cum\_max() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.cum_max}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{cum\_max}}{\emph{history}}{}
+\end{fulllineitems}
+
+\index{get\_budget() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.get_budget}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{get\_budget}}{\emph{min\_units}, \emph{max\_units}, \emph{eta}}{}
+Compute the total budget.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{min\_units} \textendash{} minimum units of resources can be allocated to one configuration
+
+\item {} 
+\sphinxstyleliteralstrong{max\_units} \textendash{} maximum units of resources can be allocated to one configuration
+
+\item {} 
+\sphinxstyleliteralstrong{eta} \textendash{} elimination proportion
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the corresponding total budget and the number of configurations
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{load\_data() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.load_data}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{load\_data}}{\emph{dataset}}{}
+Function that loads the data at dataset.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{dataset} \textendash{} path to the dataset
+
+\item[{Returns}] \leavevmode
+separated training, validation and test dataset
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{log\_eta() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.log_eta}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{log\_eta}}{\emph{x}, \emph{eta}}{}
+Compute log of x with base eta.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} \textendash{} input value
+
+\item {} 
+\sphinxstyleliteralstrong{eta} \textendash{} base
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+rounded log\_eta(x)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{s\_to\_m() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:utils.s_to_m}}\pysiglinewithargsret{\sphinxcode{utils.}\sphinxbfcode{s\_to\_m}}{\emph{start\_time}, \emph{current\_time}}{}
+Function that converts time in seconds to time in minutes.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{start\_time} \textendash{} starting time in seconds
+
+\item {} 
+\sphinxstyleliteralstrong{current\_time} \textendash{} current time in seconds
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+minutes
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-hyperband.hyperband_finite}}\index{hyperband.hyperband\_finite (module)}\index{hyperband\_finite() (in module hyperband.hyperband\_finite)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:hyperband.hyperband_finite.hyperband_finite}}\pysiglinewithargsret{\sphinxcode{hyperband.hyperband\_finite.}\sphinxbfcode{hyperband\_finite}}{\emph{model}, \emph{resource\_type}, \emph{params}, \emph{min\_units}, \emph{max\_units}, \emph{runtime}, \emph{director}, \emph{data}, \emph{rng=\textless{}mtrand.RandomState object\textgreater{}}, \emph{eta=4.0}, \emph{budget=0}, \emph{n\_hyperbands=1}, \emph{s\_run=None}, \emph{doubling=False}, \emph{verbose=False}}{}
+Hyperband with finite horizon.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{model} \textendash{} object with subroutines to generate arms and train models
+
+\item {} 
+\sphinxstyleliteralstrong{resource\_type} \textendash{} type of resource to be allocated
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter search space
+
+\item {} 
+\sphinxstyleliteralstrong{min\_units} \textendash{} minimum units of resources can be allocated to one configuration
+
+\item {} 
+\sphinxstyleliteralstrong{max\_units} \textendash{} maximum units of resources can be allocated to one configuration
+
+\item {} 
+\sphinxstyleliteralstrong{runtime} \textendash{} runtime patience (in min)
+
+\item {} 
+\sphinxstyleliteralstrong{director} \textendash{} path to the directory where output are stored
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} dataset to use
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} random state
+
+\item {} 
+\sphinxstyleliteralstrong{eta} \textendash{} elimination proportion
+
+\item {} 
+\sphinxstyleliteralstrong{budget} \textendash{} total budget for one bracket
+
+\item {} 
+\sphinxstyleliteralstrong{n\_hyperbands} \textendash{} maximum number of hyperbands to run
+
+\item {} 
+\sphinxstyleliteralstrong{s\_run} \textendash{} option to repeat a specific bracket
+
+\item {} 
+\sphinxstyleliteralstrong{doubling} \textendash{} option to decide whether we want to double the per bracket budget in the outer loop
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} verbose option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{sh\_finite() (in module hyperband.hyperband\_finite)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:hyperband.hyperband_finite.sh_finite}}\pysiglinewithargsret{\sphinxcode{hyperband.hyperband\_finite.}\sphinxbfcode{sh\_finite}}{\emph{model}, \emph{resource\_type}, \emph{params}, \emph{n}, \emph{i}, \emph{eta}, \emph{big\_r}, \emph{director}, \emph{data}, \emph{rng=\textless{}mtrand.RandomState object\textgreater{}}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}
+Successive halving.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{model} \textendash{} model to be trained
+
+\item {} 
+\sphinxstyleliteralstrong{resource\_type} \textendash{} type of resource to be allocated
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter search space
+
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of configurations in this successive halving phase
+
+\item {} 
+\sphinxstyleliteralstrong{i} \textendash{} the number of the bracket
+
+\item {} 
+\sphinxstyleliteralstrong{eta} \textendash{} elimination proportion
+
+\item {} 
+\sphinxstyleliteralstrong{big\_r} \textendash{} number of resources
+
+\item {} 
+\sphinxstyleliteralstrong{director} \textendash{} where we store the results
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} dataset
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} random state
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} initial track vector
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} initial track vector
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} verbose option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the dictionary of arms, the stored results and the vector of test errors
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-ho.hct}}\index{ho.hct (module)}\index{HCTree (class in ho.hct)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{ho.hct.}\sphinxbfcode{HCTree}}{\emph{support}, \emph{support\_type}, \emph{father}, \emph{depth}, \emph{rho}, \emph{nu}, \emph{tvalue}, \emph{tau}, \emph{sigma}, \emph{box}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{add\_children() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.add_children}}\pysiglinewithargsret{\sphinxbfcode{add\_children}}{\emph{c}, \emph{dvalue}}{}
+\end{fulllineitems}
+
+\index{explore() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.explore}}\pysiglinewithargsret{\sphinxbfcode{explore}}{\emph{c}, \emph{dvalue}}{}
+\end{fulllineitems}
+
+\index{get\_change\_status() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.get_change_status}}\pysiglinewithargsret{\sphinxbfcode{get\_change\_status}}{}{}
+\end{fulllineitems}
+
+\index{reset\_change\_status() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.reset_change_status}}\pysiglinewithargsret{\sphinxbfcode{reset\_change\_status}}{}{}
+\end{fulllineitems}
+
+\index{sample() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.sample}}\pysiglinewithargsret{\sphinxbfcode{sample}}{\emph{c}, \emph{dvalue}}{}
+\end{fulllineitems}
+
+\index{update() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.update}}\pysiglinewithargsret{\sphinxbfcode{update}}{\emph{c}, \emph{dvalue}}{}
+\end{fulllineitems}
+
+\index{update\_node() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.update_node}}\pysiglinewithargsret{\sphinxbfcode{update\_node}}{\emph{c}, \emph{dvalue}}{}
+\end{fulllineitems}
+
+\index{update\_path() (ho.hct.HCTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hct.HCTree.update_path}}\pysiglinewithargsret{\sphinxbfcode{update\_path}}{\emph{reward}, \emph{c}, \emph{dvalue}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-ho.hoo}}\index{ho.hoo (module)}\index{HTree (class in ho.hoo)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{ho.hoo.}\sphinxbfcode{HTree}}{\emph{support}, \emph{support\_type}, \emph{father}, \emph{depth}, \emph{rho}, \emph{nu}, \emph{sigma}, \emph{box}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{add\_children() (ho.hoo.HTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree.add_children}}\pysiglinewithargsret{\sphinxbfcode{add\_children}}{}{}
+\end{fulllineitems}
+
+\index{explore() (ho.hoo.HTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree.explore}}\pysiglinewithargsret{\sphinxbfcode{explore}}{}{}
+\end{fulllineitems}
+
+\index{sample() (ho.hoo.HTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree.sample}}\pysiglinewithargsret{\sphinxbfcode{sample}}{\emph{alpha}}{}
+\end{fulllineitems}
+
+\index{update() (ho.hoo.HTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree.update}}\pysiglinewithargsret{\sphinxbfcode{update}}{\emph{alpha}}{}
+\end{fulllineitems}
+
+\index{update\_node() (ho.hoo.HTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree.update_node}}\pysiglinewithargsret{\sphinxbfcode{update\_node}}{\emph{alpha}}{}
+\end{fulllineitems}
+
+\index{update\_path() (ho.hoo.HTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.hoo.HTree.update_path}}\pysiglinewithargsret{\sphinxbfcode{update\_path}}{\emph{reward}, \emph{alpha}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-ho.poo}}\index{ho.poo (module)}\index{PTree (class in ho.poo)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{ho.poo.}\sphinxbfcode{PTree}}{\emph{support}, \emph{support\_type}, \emph{father}, \emph{depth}, \emph{rhos}, \emph{nu}, \emph{box}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{add\_children() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.add_children}}\pysiglinewithargsret{\sphinxbfcode{add\_children}}{}{}
+\end{fulllineitems}
+
+\index{explore() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.explore}}\pysiglinewithargsret{\sphinxbfcode{explore}}{\emph{k}}{}
+\end{fulllineitems}
+
+\index{explore\_bis() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.explore_bis}}\pysiglinewithargsret{\sphinxbfcode{explore\_bis}}{\emph{k}}{}
+\end{fulllineitems}
+
+\index{sample() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.sample}}\pysiglinewithargsret{\sphinxbfcode{sample}}{\emph{alpha}, \emph{k}}{}
+\end{fulllineitems}
+
+\index{sample\_bis() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.sample_bis}}\pysiglinewithargsret{\sphinxbfcode{sample\_bis}}{\emph{alpha}, \emph{k}}{}
+\end{fulllineitems}
+
+\index{update\_all() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.update_all}}\pysiglinewithargsret{\sphinxbfcode{update\_all}}{\emph{alpha}}{}
+\end{fulllineitems}
+
+\index{update\_all\_bis() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.update_all_bis}}\pysiglinewithargsret{\sphinxbfcode{update\_all\_bis}}{\emph{alpha}}{}
+\end{fulllineitems}
+
+\index{update\_node() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.update_node}}\pysiglinewithargsret{\sphinxbfcode{update\_node}}{\emph{alpha}, \emph{k}}{}
+\end{fulllineitems}
+
+\index{update\_node\_bis() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.update_node_bis}}\pysiglinewithargsret{\sphinxbfcode{update\_node\_bis}}{\emph{alpha}, \emph{k}}{}
+\end{fulllineitems}
+
+\index{update\_path() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.update_path}}\pysiglinewithargsret{\sphinxbfcode{update\_path}}{\emph{reward}, \emph{alpha}, \emph{k}}{}
+\end{fulllineitems}
+
+\index{update\_path\_bis() (ho.poo.PTree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.poo.PTree.update_path_bis}}\pysiglinewithargsret{\sphinxbfcode{update\_path\_bis}}{\emph{reward}, \emph{alpha}, \emph{k}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-ho.utils_ho}}\index{ho.utils\_ho (module)}\index{Box (class in ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.Box}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{ho.utils\_ho.}\sphinxbfcode{Box}}{\emph{target}, \emph{fmax}, \emph{nsplits}, \emph{sigma}, \emph{support}, \emph{support\_type}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{std\_noise() (ho.utils\_ho.Box method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.Box.std_noise}}\pysiglinewithargsret{\sphinxbfcode{std\_noise}}{\emph{sigma}}{}
+Stochastic target with Gaussian or uniform noise.
+
+\end{fulllineitems}
+
+\index{std\_partition() (ho.utils\_ho.Box method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.Box.std_partition}}\pysiglinewithargsret{\sphinxbfcode{std\_partition}}{}{}
+Standard partitioning of a black box.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{get\_rhos() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.get_rhos}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{get\_rhos}}{\emph{nsplits}, \emph{rhomax}, \emph{horizon}}{}
+\end{fulllineitems}
+
+\index{loss\_hct() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.loss_hct}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{loss\_hct}}{\emph{bbox: ho.utils\_ho.Box}, \emph{rho}, \emph{nu}, \emph{c}, \emph{c1}, \emph{delta}, \emph{sigma}, \emph{horizon}, \emph{director}, \emph{keep=False}}{}
+\end{fulllineitems}
+
+\index{loss\_hoo() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.loss_hoo}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{loss\_hoo}}{\emph{bbox}, \emph{rho}, \emph{nu}, \emph{alpha}, \emph{sigma}, \emph{horizon}, \emph{update}, \emph{director}, \emph{keep=False}}{}
+\end{fulllineitems}
+
+\index{loss\_poo() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.loss_poo}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{loss\_poo}}{\emph{bbox}, \emph{rhos}, \emph{nu}, \emph{alpha}, \emph{horizon}, \emph{epoch}}{}
+\end{fulllineitems}
+
+\index{regret\_hct() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.regret_hct}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{regret\_hct}}{\emph{bbox}, \emph{rho}, \emph{nu}, \emph{c}, \emph{c1}, \emph{delta}, \emph{sigma}, \emph{horizon}}{}
+\end{fulllineitems}
+
+\index{regret\_hoo() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.regret_hoo}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{regret\_hoo}}{\emph{bbox}, \emph{rho}, \emph{nu}, \emph{alpha}, \emph{sigma}, \emph{horizon}, \emph{update}}{}
+\end{fulllineitems}
+
+\index{regret\_poo() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.regret_poo}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{regret\_poo}}{\emph{bbox}, \emph{rhos}, \emph{nu}, \emph{alpha}, \emph{horizon}, \emph{epoch}}{}
+\end{fulllineitems}
+
+\index{std\_box() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.std_box}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{std\_box}}{\emph{target}, \emph{fmax}, \emph{nsplits}, \emph{sigma}, \emph{support}, \emph{support\_type}}{}
+\end{fulllineitems}
+
+\index{std\_center() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.std_center}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{std\_center}}{\emph{support}, \emph{support\_type}}{}
+Pick the center of a subregion.
+
+\end{fulllineitems}
+
+\index{std\_rand() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.std_rand}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{std\_rand}}{\emph{support}, \emph{support\_type}}{}
+Randomly pick a point in a subregion.
+
+\end{fulllineitems}
+
+\index{std\_split() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.std_split}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{std\_split}}{\emph{support}, \emph{support\_type}, \emph{nsplits}}{}
+Split a box uniformly.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{support} \textendash{} vector of support in each dimension
+
+\item {} 
+\sphinxstyleliteralstrong{support\_type} \textendash{} continuous or discrete
+
+\item {} 
+\sphinxstyleliteralstrong{nsplits} \textendash{} number of splits
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{std\_split\_rand() (in module ho.utils\_ho)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:ho.utils_ho.std_split_rand}}\pysiglinewithargsret{\sphinxcode{ho.utils\_ho.}\sphinxbfcode{std\_split\_rand}}{\emph{support}, \emph{support\_type}, \emph{nsplits}}{}
+Split a box randomly.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{support} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{support\_type} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{nsplits} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-heuristics.hyperloop}}\index{heuristics.hyperloop (module)}\index{hyperloop\_finite() (in module heuristics.hyperloop)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:heuristics.hyperloop.hyperloop_finite}}\pysiglinewithargsret{\sphinxcode{heuristics.hyperloop.}\sphinxbfcode{hyperloop\_finite}}{\emph{model}, \emph{resource\_type}, \emph{params}, \emph{min\_units}, \emph{max\_units}, \emph{runtime}, \emph{director}, \emph{data}, \emph{rng=\textless{}mtrand.RandomState object\textgreater{}}, \emph{eta=4.0}, \emph{budget=0}, \emph{n\_hyperloops=1}, \emph{s\_run=None}, \emph{doubling=False}, \emph{verbose=False}}{}
+Hyperband with finite horizon.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{model} \textendash{} object with subroutines to generate arms and train models
+
+\item {} 
+\sphinxstyleliteralstrong{resource\_type} \textendash{} type of resource to be allocated
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter search space
+
+\item {} 
+\sphinxstyleliteralstrong{min\_units} \textendash{} minimum units of resources can be allocated to one configuration
+
+\item {} 
+\sphinxstyleliteralstrong{max\_units} \textendash{} maximum units of resources can be allocated to one configuration
+
+\item {} 
+\sphinxstyleliteralstrong{runtime} \textendash{} runtime patience (in min)
+
+\item {} 
+\sphinxstyleliteralstrong{director} \textendash{} path to the directory where output are stored
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} dataset to use
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} random state
+
+\item {} 
+\sphinxstyleliteralstrong{eta} \textendash{} elimination proportion
+
+\item {} 
+\sphinxstyleliteralstrong{budget} \textendash{} total budget for one bracket
+
+\item {} 
+\sphinxstyleliteralstrong{n\_hyperloops} \textendash{} maximum number of hyperloops to run
+
+\item {} 
+\sphinxstyleliteralstrong{s\_run} \textendash{} option to repeat a specific bracket
+
+\item {} 
+\sphinxstyleliteralstrong{doubling} \textendash{} option to decide whether we want to double the per bracket budget in the outer loop
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} verbose option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-heuristics.ttts}}\index{heuristics.ttts (module)}\index{ttts() (in module heuristics.ttts)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:heuristics.ttts.ttts}}\pysiglinewithargsret{\sphinxcode{heuristics.ttts.}\sphinxbfcode{ttts}}{\emph{model}, \emph{resource\_type}, \emph{params}, \emph{n}, \emph{i}, \emph{big\_r}, \emph{director}, \emph{data}, \emph{frac=0.5}, \emph{dist='Bernoulli'}, \emph{rng=\textless{}mtrand.RandomState object\textgreater{}}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}
+Top-Two Thompson Sampling.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{model} \textendash{} model to be trained
+
+\item {} 
+\sphinxstyleliteralstrong{resource\_type} \textendash{} type of resource to be allocated
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter search space
+
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of configurations in this ttts phase
+
+\item {} 
+\sphinxstyleliteralstrong{i} \textendash{} the number of the bracket
+
+\item {} 
+\sphinxstyleliteralstrong{big\_r} \textendash{} number of resources
+
+\item {} 
+\sphinxstyleliteralstrong{director} \textendash{} where we store the results
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} dataset
+
+\item {} 
+\sphinxstyleliteralstrong{frac} \textendash{} threshold in ttts
+
+\item {} 
+\sphinxstyleliteralstrong{dist} \textendash{} type of prior distribution
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} random state
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} initial track vector
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} initial track vector
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} verbose option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the dictionary of arms, the stored results and the vector of test errors
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.logistic}}\index{classifiers.logistic (module)}\index{LogisticRegression (class in classifiers.logistic)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.logistic.LogisticRegression}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.logistic.}\sphinxbfcode{LogisticRegression}}{\emph{input\_data}, \emph{n}, \emph{m}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{generate\_arms() (classifiers.logistic.LogisticRegression static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.logistic.LogisticRegression.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.logistic.LogisticRegression static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.logistic.LogisticRegression.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{neg\_log\_likelihood() (classifiers.logistic.LogisticRegression method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.logistic.LogisticRegression.neg_log_likelihood}}\pysiglinewithargsret{\sphinxbfcode{neg\_log\_likelihood}}{\emph{y}}{}
+Log-likelihood Loss.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{y} \textendash{} correct label vector
+
+\item[{Returns}] \leavevmode
+the mean of the negative log-likelihood of the prediction, we use mean instead of sum here
+
+\end{description}\end{quote}
+
+to make the learning rate less dependent of the size of the minibatch size
+
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.logistic.LogisticRegression static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.logistic.LogisticRegression.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{epochs}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{classifier=None}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{epochs} \textendash{} number of epochs
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} hyperparameter configuration encoded as a dictionary
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} dataset to use
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} not used here
+
+\item {} 
+\sphinxstyleliteralstrong{classifier} \textendash{} initial model, set as None by default
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} vector where we store the best validation errors
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} vector where we store the test errors
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} verbose option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{zero\_one() (classifiers.logistic.LogisticRegression method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.logistic.LogisticRegression.zero_one}}\pysiglinewithargsret{\sphinxbfcode{zero\_one}}{\emph{y}}{}
+Zero-one Loss.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{y} \textendash{} correct label vector
+
+\item[{Returns}] \leavevmode
+the zero-one Loss over the size of minibatch
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.mlp}}\index{classifiers.mlp (module)}\index{HiddenLayer (class in classifiers.mlp)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp.HiddenLayer}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.mlp.}\sphinxbfcode{HiddenLayer}}{\emph{rng}, \emph{input\_data}, \emph{n}, \emph{m}, \emph{w=None}, \emph{b=None}, \emph{activation=\textless{}theano.tensor.elemwise.Elemwise object\textgreater{}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+
+\end{fulllineitems}
+
+\index{MLP (class in classifiers.mlp)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp.MLP}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.mlp.}\sphinxbfcode{MLP}}{\emph{input\_data}, \emph{n\_in}, \emph{n\_hidden}, \emph{n\_out}, \emph{rng=\textless{}mtrand.RandomState object\textgreater{}}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{generate\_arms() (classifiers.mlp.MLP static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp.MLP.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.mlp.MLP static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp.MLP.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.mlp.MLP static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp.MLP.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{epochs}, \emph{arm}, \emph{data}, \emph{rng=\textless{}mtrand.RandomState object\textgreater{}}, \emph{classifier=None}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{epochs} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{classifier} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.cnn}}\index{classifiers.cnn (module)}\index{ConvolutionPoolLayer (class in classifiers.cnn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.cnn.ConvolutionPoolLayer}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.cnn.}\sphinxbfcode{ConvolutionPoolLayer}}{\emph{rng}, \emph{input\_data}, \emph{filter\_shape}, \emph{image\_shape}, \emph{pool\_size}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.ada_sklearn}}\index{classifiers.ada\_sklearn (module)}\index{Ada (class in classifiers.ada\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.ada_sklearn.Ada}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.ada\_sklearn.}\sphinxbfcode{Ada}}{\emph{problem='binary'}, \emph{n\_estimators=50}, \emph{learning\_rate=1}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.ada\_sklearn.Ada method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.ada_sklearn.Ada.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.ada\_sklearn.Ada static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.ada_sklearn.Ada.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.ada\_sklearn.Ada static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.ada_sklearn.Ada.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.ada\_sklearn.Ada static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.ada_sklearn.Ada.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.gbm_sklearn}}\index{classifiers.gbm\_sklearn (module)}\index{GBM (class in classifiers.gbm\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.gbm_sklearn.GBM}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.gbm\_sklearn.}\sphinxbfcode{GBM}}{\emph{problem='binary'}, \emph{learning\_rate=0.1}, \emph{n\_estimators=100}, \emph{max\_depth=3}, \emph{min\_samples\_split=2}, \emph{min\_samples\_leaf=1}, \emph{min\_weight\_fraction\_leaf=0.0}, \emph{subsample=1.0}, \emph{max\_features=1.0}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.gbm\_sklearn.GBM method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.gbm_sklearn.GBM.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.gbm\_sklearn.GBM static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.gbm_sklearn.GBM.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.gbm\_sklearn.GBM static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.gbm_sklearn.GBM.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.gbm\_sklearn.GBM static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.gbm_sklearn.GBM.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.knn_sklearn}}\index{classifiers.knn\_sklearn (module)}\index{KNN (class in classifiers.knn\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.knn_sklearn.KNN}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.knn\_sklearn.}\sphinxbfcode{KNN}}{\emph{problem='binary'}, \emph{n\_neighbors=5}, \emph{leaf\_size=30}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.knn\_sklearn.KNN method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.knn_sklearn.KNN.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.knn\_sklearn.KNN static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.knn_sklearn.KNN.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.knn\_sklearn.KNN static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.knn_sklearn.KNN.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.knn\_sklearn.KNN static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.knn_sklearn.KNN.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.mlp_sklearn}}\index{classifiers.mlp\_sklearn (module)}\index{MLP (class in classifiers.mlp\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp_sklearn.MLP}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.mlp\_sklearn.}\sphinxbfcode{MLP}}{\emph{problem='binary'}, \emph{hidden\_layer\_size=100}, \emph{alpha=0.001}, \emph{learning\_rate\_init=0.001}, \emph{beta\_1=0.9}, \emph{beta\_2=0.999}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.mlp\_sklearn.MLP method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp_sklearn.MLP.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.mlp\_sklearn.MLP static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp_sklearn.MLP.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.mlp\_sklearn.MLP static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp_sklearn.MLP.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.mlp\_sklearn.MLP static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.mlp_sklearn.MLP.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.rf_sklearn}}\index{classifiers.rf\_sklearn (module)}\index{RF (class in classifiers.rf\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.rf_sklearn.RF}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.rf\_sklearn.}\sphinxbfcode{RF}}{\emph{problem='binary'}, \emph{n\_estimators=10}, \emph{max\_features=0.5}, \emph{min\_samples\_split=0.3}, \emph{min\_samples\_leaf=0.2}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.rf\_sklearn.RF method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.rf_sklearn.RF.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.rf\_sklearn.RF static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.rf_sklearn.RF.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.rf\_sklearn.RF static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.rf_sklearn.RF.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.rf\_sklearn.RF static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.rf_sklearn.RF.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.svm_sklearn}}\index{classifiers.svm\_sklearn (module)}\index{SVM (class in classifiers.svm\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.svm_sklearn.SVM}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.svm\_sklearn.}\sphinxbfcode{SVM}}{\emph{problem='binary'}, \emph{c=0}, \emph{gamma=0}, \emph{kernel='rbf'}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.svm\_sklearn.SVM method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.svm_sklearn.SVM.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.svm\_sklearn.SVM static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.svm_sklearn.SVM.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.svm\_sklearn.SVM static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.svm_sklearn.SVM.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.svm\_sklearn.SVM static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.svm_sklearn.SVM.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-classifiers.tree_sklearn}}\index{classifiers.tree\_sklearn (module)}\index{Tree (class in classifiers.tree\_sklearn)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.tree_sklearn.Tree}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{classifiers.tree\_sklearn.}\sphinxbfcode{Tree}}{\emph{problem='binary'}, \emph{max\_features=0.5}, \emph{max\_depth=1}, \emph{min\_samples\_split=0.5}}{}
+Bases: {\hyperref[\detokenize{index:models.Model}]{\sphinxcrossref{\sphinxcode{models.Model}}}}
+\index{eval() (classifiers.tree\_sklearn.Tree method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.tree_sklearn.Tree.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{}{}
+\end{fulllineitems}
+
+\index{generate\_arms() (classifiers.tree\_sklearn.Tree static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.tree_sklearn.Tree.generate_arms}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{generate\_arms}}{\emph{n}, \emph{path}, \emph{params}, \emph{default=False}}{}
+Function that generates a dictionary of configurations/arms.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{n} \textendash{} number of arms to generate
+
+\item {} 
+\sphinxstyleliteralstrong{path} \textendash{} path to which we store the results later
+
+\item {} 
+\sphinxstyleliteralstrong{params} \textendash{} hyperparameter to be optimized
+
+\item {} 
+\sphinxstyleliteralstrong{default} \textendash{} default arm option
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_search\_space() (classifiers.tree\_sklearn.Tree static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.tree_sklearn.Tree.get_search_space}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{get\_search\_space}}{}{}
+\end{fulllineitems}
+
+\index{run\_solver() (classifiers.tree\_sklearn.Tree static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:classifiers.tree_sklearn.Tree.run_solver}}\pysiglinewithargsret{\sphinxbfcode{static }\sphinxbfcode{run\_solver}}{\emph{iterations}, \emph{arm}, \emph{data}, \emph{rng=None}, \emph{problem='cont'}, \emph{method='5fold'}, \emph{track\_valid=array({[} 1.{]})}, \emph{track\_test=array({[} 1.{]})}, \emph{verbose=False}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{iterations} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{arm} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{data} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{rng} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{problem} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{method} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_valid} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{track\_test} \textendash{} 
+
+\item {} 
+\sphinxstyleliteralstrong{verbose} \textendash{} 
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.surrogates.gaussian_process}}\index{bo.surrogates.gaussian\_process (module)}\index{GaussianProcess (class in bo.surrogates.gaussian\_process)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.surrogates.gaussian\_process.}\sphinxbfcode{GaussianProcess}}{\emph{covfunc}, \emph{optimize=False}, \emph{usegrads=False}, \emph{mprior=0}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{fit() (bo.surrogates.gaussian\_process.GaussianProcess method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess.fit}}\pysiglinewithargsret{\sphinxbfcode{fit}}{\emph{x}, \emph{y}}{}
+Fits a Gaussian Process regressor.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{nsamples}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}) \textendash{} training instances to fit the GP
+
+\item {} 
+\sphinxstyleliteralstrong{y} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{nsamples}\sphinxstyleliteralemphasis{,}\sphinxstyleliteralemphasis{)}) \textendash{} corresponding continuous target values to x
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_cov\_params() (bo.surrogates.gaussian\_process.GaussianProcess method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess.get_cov_params}}\pysiglinewithargsret{\sphinxbfcode{get\_cov\_params}}{}{}
+Current covariance function hyperparameters.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+the dictionary containing covariance function hyperparameters
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{opt\_hyp() (bo.surrogates.gaussian\_process.GaussianProcess method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess.opt_hyp}}\pysiglinewithargsret{\sphinxbfcode{opt\_hyp}}{\emph{param\_key}, \emph{param\_bounds}, \emph{grads=None}, \emph{n\_trials=5}}{}
+Optimizes the negative marginal log-likelihood for given hyperparameters and bounds.
+This is an empirical Bayes approach (or Type II maximum-likelihood).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{param\_key} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#list}{\sphinxstyleliteralemphasis{list}}) \textendash{} list of hyperparameters to optimize
+
+\item {} 
+\sphinxstyleliteralstrong{param\_bounds} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#list}{\sphinxstyleliteralemphasis{list}}) \textendash{} list containing tuples defining bounds for each hyperparameter to optimize over
+
+\item {} 
+\sphinxstyleliteralstrong{grads} \textendash{} gradient matrix
+
+\item {} 
+\sphinxstyleliteralstrong{n\_trials} \textendash{} number of trials
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{param\_grad() (bo.surrogates.gaussian\_process.GaussianProcess method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess.param_grad}}\pysiglinewithargsret{\sphinxbfcode{param\_grad}}{\emph{k\_param}}{}
+Gradient over hyperparameters. It is recommended to use \sphinxtitleref{self.\_grad} instead.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{k\_param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#dict}{\sphinxstyleliteralemphasis{dict}}) \textendash{} dictionary with keys being hyperparameters and values their queried values
+
+\item[{Returns}] \leavevmode
+the gradient corresponding to each hyperparameters, order given by \sphinxtitleref{k\_param.keys()}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{predict() (bo.surrogates.gaussian\_process.GaussianProcess method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess.predict}}\pysiglinewithargsret{\sphinxbfcode{predict}}{\emph{x\_star}, \emph{return\_std=False}}{}
+Mean and covariances for the posterior Gaussian Process.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{nsamples}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} testing instances to predict
+
+\item {} 
+\sphinxstyleliteralstrong{return\_std} (\sphinxhref{https://docs.python.org/3/library/functions.html\#bool}{\sphinxstyleliteralemphasis{bool}}) \textendash{} whether to return the standard deviation of the posterior process
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+mean and covariance of the posterior process for testing instances
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{update() (bo.surrogates.gaussian\_process.GaussianProcess method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.surrogates.gaussian_process.GaussianProcess.update}}\pysiglinewithargsret{\sphinxbfcode{update}}{\emph{x\_new}, \emph{y\_new}}{}
+Updates the internal model with \sphinxtitleref{x\_new} and \sphinxtitleref{y\_new} instances.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x\_new} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} new training instances to update the model with
+
+\item {} 
+\sphinxstyleliteralstrong{y\_new} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{,}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} new training targets to update the model with
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.acquisition}}\index{bo.acquisition (module)}\index{Acquisition (class in bo.acquisition)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.acquisition.Acquisition}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.acquisition.}\sphinxbfcode{Acquisition}}{\emph{mode}, \emph{eps=1e-06}, \emph{**params}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{entropy() (bo.acquisition.Acquisition method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.acquisition.Acquisition.entropy}}\pysiglinewithargsret{\sphinxbfcode{entropy}}{\emph{tau}, \emph{mean}, \emph{std}, \emph{sigman}}{}
+Predictive entropy acquisition function.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{tau} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} best observed function evaluation
+
+\item {} 
+\sphinxstyleliteralstrong{mean} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point mean of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{std} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point std of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{sigman} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} noise variance
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the predictive entropy
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{eval() (bo.acquisition.Acquisition method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.acquisition.Acquisition.eval}}\pysiglinewithargsret{\sphinxbfcode{eval}}{\emph{tau}, \emph{mean}, \emph{std}}{}
+Evaluates selected acquisition function.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{tau} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} best observed function evaluation
+
+\item {} 
+\sphinxstyleliteralstrong{mean} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point mean of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{std} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point std of the posterior process
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+acquisition function value
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{expected\_improvement() (bo.acquisition.Acquisition method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.acquisition.Acquisition.expected_improvement}}\pysiglinewithargsret{\sphinxbfcode{expected\_improvement}}{\emph{tau}, \emph{mean}, \emph{std}}{}
+Expected Improvement acquisition function.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{tau} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} best observed function evaluation
+
+\item {} 
+\sphinxstyleliteralstrong{mean} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point mean of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{std} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point std of the posterior process
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the expected improvement
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{gpucb() (bo.acquisition.Acquisition method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.acquisition.Acquisition.gpucb}}\pysiglinewithargsret{\sphinxbfcode{gpucb}}{\emph{mean}, \emph{std}, \emph{beta}}{}
+Upper-confidence bound acquisition function.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{mean} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point mean of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{std} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point std of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{beta} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} constant
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the upper-confidence bound
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{probability\_improvement() (bo.acquisition.Acquisition method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.acquisition.Acquisition.probability_improvement}}\pysiglinewithargsret{\sphinxbfcode{probability\_improvement}}{\emph{tau}, \emph{mean}, \emph{std}}{}
+Probability of improvement acquisition function.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{tau} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} best observed function evaluation
+
+\item {} 
+\sphinxstyleliteralstrong{mean} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point mean of the posterior process
+
+\item {} 
+\sphinxstyleliteralstrong{std} (\sphinxhref{https://docs.python.org/3/library/functions.html\#float}{\sphinxstyleliteralemphasis{float}}) \textendash{} point std of the posterior process
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the probability of improvement
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.bo}}\index{bo.bo (module)}\index{BO (class in bo.bo)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.bo.BO}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.bo.}\sphinxbfcode{BO}}{\emph{surrogate}, \emph{acquisition}, \emph{f}, \emph{parameter\_dict}, \emph{n\_jobs=1}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{get\_result() (bo.bo.BO method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.bo.BO.get_result}}\pysiglinewithargsret{\sphinxbfcode{get\_result}}{}{}
+Prints best result in the Bayesian Optimization procedure.
+\begin{quote}\begin{description}
+\item[{Type}] \leavevmode
+OrderedDict
+
+\item[{Returns}] \leavevmode
+the point yielding best evaluation in the procedure
+
+\item[{Type}] \leavevmode
+float
+
+\item[{Returns}] \leavevmode
+the best function evaluation
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{run() (bo.bo.BO method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.bo.BO.run}}\pysiglinewithargsret{\sphinxbfcode{run}}{\emph{max\_iter=10}, \emph{init\_evals=3}, \emph{resume=False}}{}
+Runs the Bayesian Optimization procedure.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{max\_iter} (\sphinxhref{https://docs.python.org/3/library/functions.html\#int}{\sphinxstyleliteralemphasis{int}}) \textendash{} number of iterations to run, default is 10
+
+\item {} 
+\sphinxstyleliteralstrong{init\_evals} (\sphinxhref{https://docs.python.org/3/library/functions.html\#int}{\sphinxstyleliteralemphasis{int}}) \textendash{} initial function evaluations before fitting a GP, default is 3
+
+\item {} 
+\sphinxstyleliteralstrong{resume} (\sphinxhref{https://docs.python.org/3/library/functions.html\#bool}{\sphinxstyleliteralemphasis{bool}}) \textendash{} whether to resume the optimization procedure from the last evaluation, default is \sphinxtitleref{False}
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{sample\_param() (bo.bo.BO method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.bo.BO.sample_param}}\pysiglinewithargsret{\sphinxbfcode{sample\_param}}{}{}
+Randomly samples parameters over bounds.
+
+:return a random sample of specified parameters
+
+\end{fulllineitems}
+
+\index{update\_gp() (bo.bo.BO method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.bo.BO.update_gp}}\pysiglinewithargsret{\sphinxbfcode{update\_gp}}{}{}
+Updates the internal model with the next acquired point and its evaluation.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.covfunc}}\index{bo.covfunc (module)}\index{DotProd (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.DotProd}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{DotProd}}{\emph{sigmaf=1.0}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'sigman'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.DotProd method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.DotProd.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.DotProd method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.DotProd.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#str}{\sphinxstyleliteralemphasis{str}}) \textendash{} parameter to compute gradient matrix for
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the gradient matrix for parameter \sphinxtitleref{param}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{ExpSine (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.ExpSine}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{ExpSine}}{\emph{lscale=1.0}, \emph{period=1.0}, \emph{bounds=None}, \emph{parameters=\{'lscale'}, \emph{'period'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.ExpSine method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.ExpSine.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.ExpSine method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.ExpSine.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} \textendash{} 
+
+\end{itemize}
+
+\item[{Param}] \leavevmode
+instances
+
+\item[{Returns}] \leavevmode
+the gradient matrix for parameter \sphinxtitleref{param}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{GammaExponential (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.GammaExponential}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{GammaExponential}}{\emph{exp\_gamma=1}, \emph{lscale=1}, \emph{sigmaf=1}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'exp\_gamma'}, \emph{'lscale'}, \emph{'sigman'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.GammaExponential method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.GammaExponential.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.GammaExponential method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.GammaExponential.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#str}{\sphinxstyleliteralemphasis{str}}) \textendash{} parameter to compute gradient matrix for.
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the gradient matrix for parameter \sphinxtitleref{param}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{Matern (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{Matern}}{\emph{v=1}, \emph{lscale=1}, \emph{sigmaf=1}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'v'}, \emph{'lscale'}, \emph{'sigman'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.Matern method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{Matern32 (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern32}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{Matern32}}{\emph{lscale=1}, \emph{sigmaf=1}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'sigman'}, \emph{'lscale'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.Matern32 method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern32.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.Matern32 method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern32.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#str}{\sphinxstyleliteralemphasis{str}}) \textendash{} parameter to compute gradient matrix for
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the gradient matrix for parameter \sphinxtitleref{param}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{Matern52 (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern52}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{Matern52}}{\emph{lscale=1}, \emph{sigmaf=1}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'sigman'}, \emph{'lscale'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.Matern52 method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern52.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item[{Param}] \leavevmode
+instances
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.Matern52 method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.Matern52.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#str}{\sphinxstyleliteralemphasis{str}}) \textendash{} parameter to compute gradient matrix for
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+:return:the gradient matrix for parameter \sphinxtitleref{param}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{RationalQuadratic (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.RationalQuadratic}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{RationalQuadratic}}{\emph{alpha=1}, \emph{lscale=1}, \emph{sigmaf=1}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'sigman'}, \emph{'lscale'}, \emph{'alpha'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.RationalQuadratic method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.RationalQuadratic.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.RationalQuadratic method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.RationalQuadratic.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#str}{\sphinxstyleliteralemphasis{str}}) \textendash{} parameter to compute gradient matrix for
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the gradient matrix for parameter \sphinxtitleref{param}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{SquaredExponential (class in bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.SquaredExponential}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.covfunc.}\sphinxbfcode{SquaredExponential}}{\emph{lscale=1}, \emph{sigmaf=1.0}, \emph{sigman=1e-06}, \emph{bounds=None}, \emph{parameters=\{'sigman'}, \emph{'lscale'}, \emph{'sigmaf'\}}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{cov() (bo.covfunc.SquaredExponential method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.SquaredExponential.cov}}\pysiglinewithargsret{\sphinxbfcode{cov}}{\emph{x}, \emph{x\_star}}{}
+Computes covariance function values over \sphinxtitleref{x} and \sphinxtitleref{x\_star}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the computed covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{grad\_matrix() (bo.covfunc.SquaredExponential method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.SquaredExponential.grad_matrix}}\pysiglinewithargsret{\sphinxbfcode{grad\_matrix}}{\emph{x}, \emph{x\_star}, \emph{param='lscale'}}{}
+Computes gradient matrix for instances \sphinxtitleref{x}, \sphinxtitleref{x\_star} and hyperparameter \sphinxtitleref{param}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{param} (\sphinxhref{https://docs.python.org/3/library/stdtypes.html\#str}{\sphinxstyleliteralemphasis{str}}) \textendash{} parameter to compute gradient matrix for
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+gradient matrix for parameter \sphinxtitleref{param}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{kronecker\_delta() (in module bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.kronecker_delta}}\pysiglinewithargsret{\sphinxcode{bo.covfunc.}\sphinxbfcode{kronecker\_delta}}{\emph{x}, \emph{x\_star}}{}
+Computes Kronecker delta for rows in x and x\_star.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Kronecker delta between row pairs of \sphinxtitleref{x} and \sphinxtitleref{x\_star}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{l2\_norm() (in module bo.covfunc)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.covfunc.l2_norm}}\pysiglinewithargsret{\sphinxcode{bo.covfunc.}\sphinxbfcode{l2\_norm}}{\emph{x}, \emph{x\_star}}{}
+Wrapper function to compute the L2 norm.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxstyleliteralstrong{x} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape=}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{n}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\item {} 
+\sphinxstyleliteralstrong{x\_star} (\sphinxstyleliteralemphasis{np.ndarray}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{shape}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{(}\sphinxstyleliteralemphasis{m}\sphinxstyleliteralemphasis{, }\sphinxstyleliteralemphasis{nfeatures}\sphinxstyleliteralemphasis{)}\sphinxstyleliteralemphasis{)}) \textendash{} instances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+pairwise Euclidean distance between row pairs of \sphinxtitleref{x} and \sphinxtitleref{x\_star}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.logger}}\index{bo.logger (module)}\index{BColors (class in bo.logger)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors}}\pysigline{\sphinxbfcode{class }\sphinxcode{bo.logger.}\sphinxbfcode{BColors}}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{BOLD (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.BOLD}}\pysigline{\sphinxbfcode{BOLD}\sphinxbfcode{ = '\textbackslash{}x1b{[}1m'}}
+\end{fulllineitems}
+
+\index{ENDC (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.ENDC}}\pysigline{\sphinxbfcode{ENDC}\sphinxbfcode{ = '\textbackslash{}x1b{[}0m'}}
+\end{fulllineitems}
+
+\index{FAIL (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.FAIL}}\pysigline{\sphinxbfcode{FAIL}\sphinxbfcode{ = '\textbackslash{}x1b{[}91m'}}
+\end{fulllineitems}
+
+\index{HEADER (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.HEADER}}\pysigline{\sphinxbfcode{HEADER}\sphinxbfcode{ = '\textbackslash{}x1b{[}95m'}}
+\end{fulllineitems}
+
+\index{OKBLUE (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.OKBLUE}}\pysigline{\sphinxbfcode{OKBLUE}\sphinxbfcode{ = '\textbackslash{}x1b{[}94m'}}
+\end{fulllineitems}
+
+\index{OKGREEN (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.OKGREEN}}\pysigline{\sphinxbfcode{OKGREEN}\sphinxbfcode{ = '\textbackslash{}x1b{[}92m'}}
+\end{fulllineitems}
+
+\index{UNDERLINE (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.UNDERLINE}}\pysigline{\sphinxbfcode{UNDERLINE}\sphinxbfcode{ = '\textbackslash{}x1b{[}4m'}}
+\end{fulllineitems}
+
+\index{WARNING (bo.logger.BColors attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.BColors.WARNING}}\pysigline{\sphinxbfcode{WARNING}\sphinxbfcode{ = '\textbackslash{}x1b{[}93m'}}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{EventLogger (class in bo.logger)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.EventLogger}}\pysiglinewithargsret{\sphinxbfcode{class }\sphinxcode{bo.logger.}\sphinxbfcode{EventLogger}}{\emph{bo\_instance}}{}
+Bases: \sphinxhref{https://docs.python.org/3/library/functions.html\#object}{\sphinxcode{object}}
+\index{print\_current() (bo.logger.EventLogger method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.EventLogger.print_current}}\pysiglinewithargsret{\sphinxbfcode{print\_current}}{\emph{bo\_instance}}{}
+\end{fulllineitems}
+
+\index{print\_init() (bo.logger.EventLogger method)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.logger.EventLogger.print_init}}\pysiglinewithargsret{\sphinxbfcode{print\_init}}{\emph{bo\_instance}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.tpe_hyperopt}}\index{bo.tpe\_hyperopt (module)}\index{combine\_tracks() (in module bo.tpe\_hyperopt)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.tpe_hyperopt.combine_tracks}}\pysiglinewithargsret{\sphinxcode{bo.tpe\_hyperopt.}\sphinxbfcode{combine\_tracks}}{\emph{trials}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{trials} \textendash{} trials object obtained from hyperopt
+
+\item[{Returns}] \leavevmode
+the track vector of test errors
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{convert\_params() (in module bo.tpe\_hyperopt)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.tpe_hyperopt.convert_params}}\pysiglinewithargsret{\sphinxcode{bo.tpe\_hyperopt.}\sphinxbfcode{convert\_params}}{\emph{params}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxstyleliteralstrong{params} \textendash{} hyperparamter dictionary as defined in params.py
+
+\item[{Returns}] \leavevmode
+search space for hyperopt
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{\detokenize{index:module-bo.utils_bo}}\index{bo.utils\_bo (module)}\index{evaluate\_dataset() (in module bo.utils\_bo)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.utils_bo.evaluate_dataset}}\pysiglinewithargsret{\sphinxcode{bo.utils\_bo.}\sphinxbfcode{evaluate\_dataset}}{\emph{csv\_path}, \emph{target\_index}, \emph{problem}, \emph{model}, \emph{parameter\_dict}, \emph{method='holdout'}, \emph{seed=20}, \emph{max\_iter=50}}{}
+\end{fulllineitems}
+
+\index{evaluate\_random() (in module bo.utils\_bo)}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:bo.utils_bo.evaluate_random}}\pysiglinewithargsret{\sphinxcode{bo.utils\_bo.}\sphinxbfcode{evaluate\_random}}{\emph{bo\_model}, \emph{loss}, \emph{n\_eval=20}}{}
+\end{fulllineitems}
 
 
 
@@ -84,6 +2833,49 @@
 \end{itemize}
 
 
+\renewcommand{\indexname}{Python Module Index}
+\begin{sphinxtheindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+\bigletter{b}
+\item {\sphinxstyleindexentry{bo.acquisition}}\sphinxstyleindexpageref{index:\detokenize{module-bo.acquisition}}
+\item {\sphinxstyleindexentry{bo.bo}}\sphinxstyleindexpageref{index:\detokenize{module-bo.bo}}
+\item {\sphinxstyleindexentry{bo.covfunc}}\sphinxstyleindexpageref{index:\detokenize{module-bo.covfunc}}
+\item {\sphinxstyleindexentry{bo.logger}}\sphinxstyleindexpageref{index:\detokenize{module-bo.logger}}
+\item {\sphinxstyleindexentry{bo.surrogates.gaussian\_process}}\sphinxstyleindexpageref{index:\detokenize{module-bo.surrogates.gaussian_process}}
+\item {\sphinxstyleindexentry{bo.tpe\_hyperopt}}\sphinxstyleindexpageref{index:\detokenize{module-bo.tpe_hyperopt}}
+\item {\sphinxstyleindexentry{bo.utils\_bo}}\sphinxstyleindexpageref{index:\detokenize{module-bo.utils_bo}}
+\indexspace
+\bigletter{c}
+\item {\sphinxstyleindexentry{classifiers.ada\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.ada_sklearn}}
+\item {\sphinxstyleindexentry{classifiers.cnn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.cnn}}
+\item {\sphinxstyleindexentry{classifiers.gbm\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.gbm_sklearn}}
+\item {\sphinxstyleindexentry{classifiers.knn\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.knn_sklearn}}
+\item {\sphinxstyleindexentry{classifiers.logistic}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.logistic}}
+\item {\sphinxstyleindexentry{classifiers.mlp}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.mlp}}
+\item {\sphinxstyleindexentry{classifiers.mlp\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.mlp_sklearn}}
+\item {\sphinxstyleindexentry{classifiers.rf\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.rf_sklearn}}
+\item {\sphinxstyleindexentry{classifiers.svm\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.svm_sklearn}}
+\item {\sphinxstyleindexentry{classifiers.tree\_sklearn}}\sphinxstyleindexpageref{index:\detokenize{module-classifiers.tree_sklearn}}
+\indexspace
+\bigletter{h}
+\item {\sphinxstyleindexentry{heuristics.hyperloop}}\sphinxstyleindexpageref{index:\detokenize{module-heuristics.hyperloop}}
+\item {\sphinxstyleindexentry{heuristics.ttts}}\sphinxstyleindexpageref{index:\detokenize{module-heuristics.ttts}}
+\item {\sphinxstyleindexentry{ho.hct}}\sphinxstyleindexpageref{index:\detokenize{module-ho.hct}}
+\item {\sphinxstyleindexentry{ho.hoo}}\sphinxstyleindexpageref{index:\detokenize{module-ho.hoo}}
+\item {\sphinxstyleindexentry{ho.poo}}\sphinxstyleindexpageref{index:\detokenize{module-ho.poo}}
+\item {\sphinxstyleindexentry{ho.utils\_ho}}\sphinxstyleindexpageref{index:\detokenize{module-ho.utils_ho}}
+\item {\sphinxstyleindexentry{hyperband.hyperband\_finite}}\sphinxstyleindexpageref{index:\detokenize{module-hyperband.hyperband_finite}}
+\indexspace
+\bigletter{m}
+\item {\sphinxstyleindexentry{models}}\sphinxstyleindexpageref{index:\detokenize{module-models}}
+\indexspace
+\bigletter{p}
+\item {\sphinxstyleindexentry{params}}\sphinxstyleindexpageref{index:\detokenize{module-params}}
+\item {\sphinxstyleindexentry{plots}}\sphinxstyleindexpageref{index:\detokenize{module-plots}}
+\indexspace
+\bigletter{u}
+\item {\sphinxstyleindexentry{utils}}\sphinxstyleindexpageref{index:\detokenize{module-utils}}
+\end{sphinxtheindex}
 
 \renewcommand{\indexname}{Index}
 \printindex

@@ -1,0 +1,143 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>classifiers.cnn &#8212; hpo 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for classifiers.cnn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">theano</span>
+<span class="kn">import</span> <span class="nn">theano.tensor</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="kn">from</span> <span class="nn">theano.tensor.signal</span> <span class="k">import</span> <span class="n">pool</span>
+<span class="kn">from</span> <span class="nn">theano.tensor.nnet</span> <span class="k">import</span> <span class="n">conv2d</span>
+
+
+<div class="viewcode-block" id="ConvolutionPoolLayer"><a class="viewcode-back" href="../../index.html#classifiers.cnn.ConvolutionPoolLayer">[docs]</a><span class="k">class</span> <span class="nc">ConvolutionPoolLayer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">filter_shape</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">,</span> <span class="n">pool_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This layer includes one convolution layer followed by a max-pooling layer.</span>
+
+<span class="sd">        :param rng: random state</span>
+<span class="sd">        :param input_data: input image tensor</span>
+<span class="sd">        :param filter_shape: (nb of filters, nb of input feature maps, filter height, filter width)</span>
+<span class="sd">        :param image_shape: (batch size, nb of input feature maps, image height, image width)</span>
+<span class="sd">        :param pool_size: pooling/subsampling factors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">filter_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span>
+        <span class="c1"># initialize (nb of input feature maps) * (nb of filters) weight matrices</span>
+        <span class="c1"># where the bounds depend on the input and output dimensions</span>
+        <span class="n">fan_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">filter_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">fan_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">filter_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">filter_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span> <span class="o">//</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">pool_size</span><span class="p">)</span>
+        <span class="n">w_bound</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">6.</span> <span class="o">/</span> <span class="p">(</span><span class="n">fan_in</span> <span class="o">+</span> <span class="n">fan_out</span><span class="p">))</span>
+        <span class="n">w_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+                <span class="n">low</span><span class="o">=-</span><span class="n">w_bound</span><span class="p">,</span>
+                <span class="n">high</span><span class="o">=</span><span class="n">w_bound</span><span class="p">,</span>
+                <span class="n">size</span><span class="o">=</span><span class="n">filter_shape</span>
+            <span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">theano</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">floatX</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">w_values</span><span class="p">,</span> <span class="n">borrow</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># initialize (nb of filers) biases</span>
+        <span class="n">b_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">filter_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">theano</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">floatX</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">theano</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">b_values</span><span class="p">,</span> <span class="n">borrow</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># output after convolution and pooling</span>
+        <span class="c1"># convolution between input feature maps and filters</span>
+        <span class="n">convolution</span> <span class="o">=</span> <span class="n">conv2d</span><span class="p">(</span>
+            <span class="nb">input</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+            <span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">filter_shape</span><span class="o">=</span><span class="n">filter_shape</span><span class="p">,</span>
+            <span class="n">input_shape</span><span class="o">=</span><span class="n">image_shape</span>
+        <span class="p">)</span>
+        <span class="c1"># max-pooling for each feature map</span>
+        <span class="n">pooling</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">pool_2d</span><span class="p">(</span>
+            <span class="nb">input</span><span class="o">=</span><span class="n">convolution</span><span class="p">,</span>
+            <span class="n">ws</span><span class="o">=</span><span class="n">pool_size</span><span class="p">,</span>
+            <span class="n">ignore_border</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">pooling</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">dimshuffle</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">))</span>
+        <span class="c1"># parameters of the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">]</span>
+        <span class="c1"># keep track of the input data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Xuedong Shang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
