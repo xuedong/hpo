@@ -31,7 +31,7 @@ def main(model, mcmc):
 
     exp_id = 1
 
-    for seed_id in range(1):
+    for seed_id in range(mcmc):
         print('<-- Running Hyperloop -->')
         exp_name = 'hyperloop_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
