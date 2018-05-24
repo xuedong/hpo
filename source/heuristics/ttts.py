@@ -104,7 +104,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                                  rng=rng, classifier=classifier,
                                  track_valid=current_track_valid, track_test=current_track_test,
                                  verbose=verbose)
-            rewards[idx_i] += val_err
+            rewards[idx_i] = val_err
             num_pulls[idx_i] += 1
 
             if verbose:
@@ -120,7 +120,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                 model.run_solver(1, arms[arm_key], data,
                                  rng=rng, track_valid=current_track_valid,
                                  track_test=current_track_test, verbose=verbose)
-            rewards[idx_i] += avg_loss
+            rewards[idx_i] = avg_loss
             num_pulls[idx_i] += 1
 
             if verbose:
