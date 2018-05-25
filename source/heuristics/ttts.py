@@ -79,6 +79,8 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                 ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
 
         idx_i = np.argmax(ts)
+        print(idx_i)
+        # print("\n"+str(ts[idx_i])+"\n")
         if np.random.rand() > frac:
             idx_j = idx_i
             while idx_i == idx_j:
@@ -94,6 +96,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                             fail[a] += 1
                         ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
                 idx_j = np.argmax(ts)
+                print(idx_j)
             idx_i = idx_j
 
         if resource_type == 'epochs':
