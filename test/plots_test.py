@@ -38,7 +38,7 @@ if __name__ == "__main__":
     path6 = "../result/hyperloop_logistic_1"
     paths = [path1, path2, path3, path4, path5, path6]
     # plots.plot_hoo(path3, 1, 'logistic_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 9, 'logistic_', 'sgd_', 'mnist_bis', 1, 'epochs', type_plot='linear', devs=False)
+    plots.plot_all(paths, 10, 'logistic_', 'sgd_', 'mnist', 1, 'epochs', type_plot='linear', devs=False)
 
     # path1 = "../result/hyperband_mlp_0"
     # path2 = "../result/tpe_mlp_0"
