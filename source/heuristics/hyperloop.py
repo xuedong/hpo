@@ -72,7 +72,7 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
                 if s_run is None or i == s_run:
                     print('s = %d, n = %d' % (i, n))
                     arms, result, track_valid, track_test = \
-                        ttts(model, resource_type, params, n, i, big_r, director,
+                        ttts(model, resource_type, params, n, i, budget, director,
                              rng=rng, data=data, track_valid=track_valid, track_test=track_test, verbose=verbose)
                     results[(k, s)] = arms
 

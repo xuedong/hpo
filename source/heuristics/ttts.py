@@ -9,7 +9,7 @@ from six.moves import cPickle
 import utils
 
 
-def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, dist='Bernoulli',
+def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, dist='Bernoulli',
          rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
     """Top-Two Thompson Sampling.
 
@@ -18,7 +18,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
     :param params: hyperparameter search space
     :param n: number of configurations in this ttts phase
     :param i: the number of the bracket
-    :param big_r: number of resources
+    :param budget: number of resources
     :param director: where we store the results
     :param data: dataset
     :param frac: threshold in ttts
@@ -62,7 +62,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
             rewards[a] = avg_loss
 
     # best = 0
-    for _ in range(n, int(big_r)+1):
+    for _ in range(n, int(budget)+1):
         # means = rewards / num_pulls
         # best = np.random.choice(np.flatnonzero(means == means.max()))
 
@@ -79,7 +79,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                 ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
 
         idx_i = np.argmax(ts)
-        print(idx_i)
+        # print(idx_i)
         # print("\n"+str(ts[idx_i])+"\n")
         if np.random.rand() > frac:
             idx_j = idx_i
@@ -96,7 +96,7 @@ def ttts(model, resource_type, params, n, i, big_r, director, data, frac=0.5, di
                             fail[a] += 1
                         ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
                 idx_j = np.argmax(ts)
-                print(idx_j)
+                print(str(idx_j)+": "+str(ts[idx_j]))
             idx_i = idx_j
 
         if resource_type == 'epochs':

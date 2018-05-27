@@ -18,6 +18,9 @@
 
 \documentclass[runningheads,a4paper]{llncs}
 \usepackage{fullpage}
+%\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
 \usepackage{amssymb}
 \setcounter{tocdepth}{3}
 \usepackage{graphicx}
@@ -35,9 +38,18 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
-\usepackage{mathtools}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+%\theoremstyle{plain}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{definition}[theorem]{Definition}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{assumption}{Assumption}
+%\theoremstyle{remark}
+%\newtheorem{remark}{Remark}
 
 \usepackage{expl3}
 \ExplSyntaxOn
@@ -106,11 +118,17 @@ The algorithms being considered here for the moment are Hyperband~\cite{li2016},
 
 \section{Heuristics}
 
+\subsection{TTTS coupled with Hyperband}
+
 We propose one new heuristic based on TTTS for the moment. The idea is similar to Hyperband. By running several brackets of TTTS with different number of configurations $n$ and the same budget, we try to trade off between the number of configurations and the number of resources allocated to each configuration. Unlike Hyperband where the number of resources is fixed for each configuration in every bracket, here the number of resources is decided by the underlying Thompson Sampling.
 
-This heuristic requires three inputs $\beta$, $\eta$ and $R$, where $\eta$ and $R$ are the same inputs as in Hyperband: $\eta$ is the discarding proportion and $R$ is the maximum amount of resources that can be allocated to a single configuration. However, in this heuristic, they do not really make sense. The reason why they are required is just to keep the same budget as for Hyperband. The subroutine used here is TTTS where we make use of a prior distribution $\Pi_1$ over a set of parameters $\Theta$, where for each $\mathbf{\theta}\in\Theta$, $\theta_i$ caraterizes configuration $i$ for $i\in\{1\ldots n\}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. At each time step $t$, the subroutine samples $\theta$ from $\Pi_t$, then with probability $\beta$, the subroutine evaluates the configuration $I$ with the highest posterior optimal action probability. Otherwise it samples a new $\theta$ from $\Pi_t$ until we obtain a different configuration $J$ with the highest posterior optimal action probability.
+This heuristic requires three inputs $\beta$, $\eta$ and $R$, where $\eta$ and $R$ are the same inputs as in Hyperband: $\eta$ is the discarding proportion and $R$ is the maximum amount of resources that can be allocated to a single configuration. However, in this heuristic, they do not really make sense. The reason why they are required is just to keep the same budget as for Hyperband. 
 
-The pseudo-code is shown in Algorithm~\ref{heuristic1}.
+The subroutine used here is TTTS where we make use of a prior distribution $\Pi_1$ over a set of parameters $\Theta$, where for each $\mathbf{\theta}\in\Theta$, $\theta_i$ caraterizes configuration $i$ for $i\in\{1\ldots n\}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. At each time step $t$, the subroutine samples $\theta$ from $\Pi_t$, then with probability $\beta$, the subroutine evaluates the configuration $I$ with the best paramter $\theta_I = \max_{c\in C}\hat{\theta}_c$. Otherwise it samples a new $\theta$ from $\Pi_t$ until we obtain a different configuration $J\neq I$ such that $\theta_J = \max_{c\in C}\hat{\theta}_c$.
+
+\begin{remark}
+Note that this algorithm does not require computing or approximating the optimal action probabilities, which could be computationally heavy. However in practice, sometimes it could be ridiculously long to sample a $J$ that is different from $I$, especially when the best configuration is far better than the others. To avoid this issue, we can either explicitly compute the optimal action probabilities, or just play the second best one when this kind of situation occurs.
+\end{remark}
 
 \begin{algorithm}[h]
 \SetKwInOut{Input}{Input}
@@ -124,6 +142,7 @@ The pseudo-code is shown in Algorithm~\ref{heuristic1}.
     	\For{$c\in C$}{
 		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(c)\}$\;}
 	$t = n$\;
+	// Begin TTTS\;
 	\While{$t < B$}{
 		Sample $\mathbf{\hat{\theta}} \sim \Pi_t$; $I \leftarrow \argmax_{c\in C}\hat{\theta}_c$\;
 		Sample $b \sim \operatorname{Bernoulli}(\beta)$\;
@@ -131,10 +150,36 @@ The pseudo-code is shown in Algorithm~\ref{heuristic1}.
     		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(I)\}$\;}{
     		Repeat sample $\mathbf{\hat{\theta}} \sim \Pi_t$; $J \leftarrow \argmax_{c\in C}\hat{\theta}_c$ until $I\neq J$\;
 		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(J)\}$\;}
+		Update $\Pi_t$\;
 		$t = t+1$\;}
 	}
 \Return{Configuration\ with\ the\ smallest\ intermediate\ loss\ seen\ so\ far}
 \caption{Heuristic (TTTS)\label{heuristic1}}
+\end{algorithm}
+
+The pseudo-code is shown in Algorithm~\ref{heuristic1}. Let us give some more details on how to update the posterior belief (Line. 17 in Algorithm~\ref{heuristic1}). Currently, we assume a Beta prior which is usually associated with Bernoulli bandits. Here in our case, however, the reward (or more precisely, the loss) lies in $[0, 1]$, we thus need to adapt the Thompson Sampling process to the general stochastic bandits case. One way to tackle this is the binarization trick shown in Algorithm~\ref{annexe1} inspired by~\cite{agrawal2012}. 
+
+\begin{algorithm}[h]
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Init}{Initialize}
+
+\Input{$n \leftarrow |C| (\operatorname{number\ of\ arms})$, $\alpha_0$, $\beta_0$, $\beta$}
+\Init{$\forall c\in C, S_c=0 (\operatorname{number\ of\ successes}), F_c=0 (\operatorname{number\ of\ failures})$}
+\For{$t \leftarrow 1$ \KwTo $B$}{
+	$\forall c\in C$, sample $\hat{\theta}_c \sim \operatorname{Beta}(S_c+\alpha_0, F_c+\beta_0)$; $I \leftarrow \argmax_{c\in C}\hat{\theta}_c$\;
+	Sample $b \sim \operatorname{Bernoulli}(\beta)$\;
+	\eIf{$b = 1$}{
+    		Evaluate configuration $I$, and observe loss $\tilde{l}_t$\;}{
+    		Repeat $\forall c\in C$, sample $\hat{\theta}_c \sim \operatorname{Beta}(S_c+\alpha_0, F_c+\beta_0)$; $J \leftarrow \argmax_{c\in C}\hat{\theta}_c$ until $I\neq J$\;
+		Set $I \leftarrow J$\;
+		Evaluate configuration $I$, and observe loss $\tilde{l}_t$\;}
+	Sample $r_t \sim \operatorname{Bernoulli}(1-\tilde{l}_t)$\;
+	\eIf{$r_t = 1$}{
+		$S_I \leftarrow S_I + 1$\;}{
+		$F_I \leftarrow F_I + 1$\;}
+	$t = t+1$\;
+	}
+\caption{Detailed TTTS with Beta Prior for General Stochastic Bandits\label{annexe1}}
 \end{algorithm}
 
 \section{MNIST}
@@ -430,6 +475,7 @@ Fig.~\ref{ada_1} to~\ref{svm_1} display the results for Breast Cancer Dataset.
 \bibitem{bubeck2011} Bubeck, S., Munos, R., Stoltz, G., \& Szepesvári, C. (2011). X-armed bandits. Journal of Machine Learning Research, 12(May), 1655-1695.
 \bibitem{azar2014} Azar, M. G., Lazaric, A., \& Brunskill, E. (2014). Online stochastic optimization under correlated bandit feedback. In Proceedings of the 31st International Conference on Machine Learning (ICML-14) (pp. 1557-1565).
 \bibitem{russo2016} Russo, D. (2016, June). Simple bayesian algorithms for best arm identification. In Conference on Learning Theory (pp. 1417-1418).
+\bibitem{agrawal2012} Agrawal, S., \& Goyal, N. (2012, June). Analysis of thompson sampling for the multi-armed bandit problem. In Conference on Learning Theory (pp. 39-1).
 
 \end{thebibliography}
 

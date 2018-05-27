@@ -548,6 +548,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
+            print(shortest)
     for i in range(runs):
         [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
@@ -568,7 +569,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir('..')
 
     plt.grid()
-    plt.xlim((0, 400))
+    # plt.xlim((0, 400))
     plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')

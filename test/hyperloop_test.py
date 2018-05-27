@@ -11,7 +11,7 @@ import utils
 
 # import target
 import classifiers.logistic as logistic
-# import classifiers.mlp as mlp
+import classifiers.mlp as mlp
 # import hyperband.hyperband_finite as hyperband_finite
 from heuristics.hyperloop import hyperloop_finite
 
