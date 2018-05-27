@@ -83,7 +83,9 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
         # print("\n"+str(ts[idx_i])+"\n")
         if np.random.rand() > frac:
             idx_j = idx_i
-            while idx_i == idx_j:
+            threshold = 10000
+            count = 0
+            while idx_i == idx_j and count < threshold:
                 ts = np.zeros(n)
                 if dist == 'Bernoulli':
                     alpha_prior = 1
@@ -96,8 +98,12 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
                             fail[a] += 1
                         ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
                 idx_j = np.argmax(ts)
+                count += 1
                 print(str(idx_j)+": "+str(ts[idx_j]))
-            idx_i = idx_j
+            if idx_i != idx_j:
+                idx_i = idx_j
+            else:
+
 
         if resource_type == 'epochs':
             arm_key = remaining_arms[int(idx_i)][0]

@@ -170,3 +170,18 @@ def build(csv_path, target_index, header=None):
     y = data[:, target_index]
     x = np.delete(data, obj=np.array([target_index]), axis=1)
     return x, y
+
+
+def second_largest(arr):
+    count = 0
+    m1 = m2 = float('-inf')
+    length = len(arr)
+    for i in range(length):
+        count += 1
+        if arr[i] > m2:
+            if arr[i] >= m1:
+                m1, m2 = arr[i], m1
+            else:
+                m2 = arr[i]
+
+    return m2, arr.index(m2) if count >= 2 else None
