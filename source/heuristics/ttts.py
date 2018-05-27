@@ -103,7 +103,8 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
             if idx_i != idx_j:
                 idx_i = idx_j
             else:
-
+                _, idx_j = utils.second_largest(list(ts))
+                idx_i = idx_j
 
         if resource_type == 'epochs':
             arm_key = remaining_arms[int(idx_i)][0]
