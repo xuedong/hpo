@@ -24,14 +24,14 @@ def main(model, mcmc):
     rng = np.random.RandomState(12345)
     model_name = model + '_sgd_'
 
-    # test_model = mlp.MLP
-    # params = mlp.MLP.get_search_space()
-    test_model = logistic.LogisticRegression
-    params = logistic.LogisticRegression.get_search_space()
+    test_model = mlp.MLP
+    params = mlp.MLP.get_search_space()
+    # test_model = logistic.LogisticRegression
+    # params = logistic.LogisticRegression.get_search_space()
 
-    exp_id = 1
+    exp_id = 0
 
-    for seed_id in range(9, mcmc):
+    for seed_id in range(mcmc):
         print('<-- Running Hyperloop -->')
         exp_name = 'hyperloop_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
@@ -44,7 +44,7 @@ def main(model, mcmc):
 
         start_time = timeit.default_timer()
 
-        hyperloop_finite(test_model, 'epochs', params, 1, 100, 360, director, data, eta=4, verbose=True)
+        hyperloop_finite(test_model, 'epochs', params, 1, 100, 360, director, data, eta=4, verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4, s_run=1,
@@ -63,5 +63,5 @@ def main(model, mcmc):
 
 
 if __name__ == "__main__":
-    main('logistic', 10)
+    main('mlp', 5)
     # main('mlp')

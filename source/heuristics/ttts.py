@@ -99,7 +99,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
                         ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
                 idx_j = np.argmax(ts)
                 count += 1
-                print(str(idx_j)+": "+str(ts[idx_j]))
+                # print(str(idx_j)+": "+str(ts[idx_j]))
             if idx_i != idx_j:
                 idx_i = idx_j
             else:
