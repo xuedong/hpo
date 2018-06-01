@@ -278,7 +278,7 @@ All plots here (from Fig.~\ref{logistic_1} to Fig.~\ref{mlp_0}) are averaged on 
     \label{mlp_0}
 \end{figure}
 
-\paragraph{\textbf{Discussion}} In the current setting, Hyperband seems to be a plausible choice since it may explore more configurations compared to other algorithms.
+\paragraph{\textbf{Discussion}} In the current setting, Hyperband seems to be a plausible choice since it may explore more configurations compared to other algorithms. And comparing Hyperband and the heuristic, we can see that they almost performs as well as each other. There are two major observations here. First, the heuristic seems to be converging more smoothly than Hyperband, this is because Hyperband focuses on evaluating one of the configurations after its round-robin tour among all the configurations in the bracket, which leads to a straight drop of the output loss. The second observation is that the heuristic seems to have a slightly better output at the end. This could be due to the fact that TTTS is likely to evaluate the possible best configurations more times than Sequential Halving.
 
 
 \section{UCI Datasets}
