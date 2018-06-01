@@ -37,7 +37,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
     exp_id = 0
 
-    for seed_id in range(4, mcmc):
+    for seed_id in range(5, mcmc):
         print('<-- Running Hyperband -->')
         exp_name = 'hyperband_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
@@ -207,5 +207,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('mlp', 5, 0.66, 1., 0.1, 0.05, 16, 100)
+    main('mlp', 8, 0.66, 1., 0.1, 0.05, 16, 100)
     # main('mlp')

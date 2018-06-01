@@ -63,5 +63,5 @@ def main(model, mcmc):
 
 
 if __name__ == "__main__":
-    main('mlp', 5)
+    main('mlp', 10)
     # main('mlp')
