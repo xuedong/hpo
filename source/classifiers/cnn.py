@@ -109,7 +109,7 @@ class CNN(Model):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname,
                    'learning_rate': 0.001, 'batch_size': 100, 'n_hidden': 500,
-                   'l1_reg': 0., 'l2_reg': 1., 'results': []}
+                   'k1': 5, 'k2': 10, 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
@@ -122,11 +122,11 @@ class CNN(Model):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname}
-            hps = ['learning_rate', 'batch_size', 'l2_reg']
+            hps = ['learning_rate', 'batch_size', 'k1', 'k2']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
                 arm[hp] = val[0]
-            arm['l1_reg'] = 0.
+            # arm['l1_reg'] = 0.
             arm['n_hidden'] = 500
             arm['results'] = []
             arms[i] = arm
