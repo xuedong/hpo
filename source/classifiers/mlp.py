@@ -128,14 +128,14 @@ class MLP(Model):
                    track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """
 
-        :param epochs:
-        :param arm:
-        :param data:
-        :param rng:
-        :param classifier:
-        :param track_valid:
-        :param track_test:
-        :param verbose:
+        :param epochs: number of epochs
+        :param arm: hyperparameter configuration encoded as a dictionary
+        :param data: dataset to use
+        :param rng: not used here
+        :param classifier: initial model, set as None by default
+        :param track_valid: vector where we store the best validation errors
+        :param track_test: vector where we store the test errors
+        :param verbose: verbose option
         :return:
         """
         train_input, train_target = data[0]

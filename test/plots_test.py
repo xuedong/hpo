@@ -48,7 +48,7 @@ if __name__ == "__main__":
     path6 = "../result/hyperloop_mlp_0"
     paths = [path1, path2, path3, path4, path5, path6]
     # plots.plot_hoo(path3, 1, 'mlp_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 5, 'mlp_', 'sgd_', 'mnist_bis', 0, 'epochs', type_plot='linear', devs=False)
+    plots.plot_all(paths, 8, 'mlp_', 'sgd_', 'mnist_bis', 0, 'epochs', type_plot='linear', devs=False)
 
     # names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
     # for name in names:
