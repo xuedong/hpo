@@ -15,7 +15,7 @@ from theano.tensor.nnet import conv2d
 from models import Model
 from params import Param
 from classifiers.logistic import LogisticRegression
-from classifiers.mlp import MLP
+from classifiers.mlp import *
 
 
 class ConvolutionPoolLayer(object):
@@ -69,25 +69,59 @@ class ConvolutionPoolLayer(object):
 
 
 class CNN(Model):
-    def __init__(self, input_data, n_in, n_hidden, n_out, rng=np.random.RandomState(1234)):
-        """Single layer mlp.
-
-        :param rng: random state
-        :param input_data: typically a minibatch of input
-        :param n_in: number of input units
-        :param n_hidden: number of hidden units
-        :param n_out: number of output units
+    def __init__(self, input_data, batch_size, k1, k2, n_hidden, rng=np.random.RandomState(1234)):
         """
-        self.hidden_layer = HiddenLayer(rng=rng, input_data=input_data, n=n_in, m=n_hidden)
-        self.logistic_layer = LogisticRegression(input_data=self.hidden_layer.output, n=n_hidden, m=n_out)
-        # regularization
-        self.l1 = abs(self.hidden_layer.w).sum() + abs(self.logistic_layer.w).sum()
-        self.l2 = (self.hidden_layer.w ** 2).sum() + (self.logistic_layer.w ** 2).sum()
-        # Loss functions
+
+        :param input_data:
+        :param batch_size:
+        :param k1:
+        :param k2:
+        :param n_hidden:
+        :param rng:
+        """
+        # construct the first convolution-pooling layer
+        convolutional_layer1_input = input_data.reshape((batch_size, 1, 28, 28))
+        self.convolutional_layer1 = ConvolutionPoolLayer(
+            rng=rng,
+            input_data=convolutional_layer1_input,
+            filter_shape=(k1, 1, 5, 5),
+            image_shape=(batch_size, 1, 28, 28),
+            pool_size=(2, 2)
+        )
+
+        # construct the second convolution-pooling layer
+        self.convolutional_layer2 = ConvolutionPoolLayer(
+            rng=rng,
+            input_data=self.convolutional_layer1.output,
+            filter_shape=(k2, k1, 5, 5),
+            image_shape=(batch_size, k1, 12, 12),
+            pool_size=(2, 2)
+        )
+
+        # construct the fully-connected hidden layer
+        hidden_layer_input = self.convolutional_layer2.output.flatten(2)
+        self.hidden_layer = HiddenLayer(
+            rng=rng,
+            input_data=hidden_layer_input,
+            n=k2 * 4 * 4,
+            m=n_hidden,
+            activation=ts.tanh
+        )
+
+        # construct the output layer
+        self.logistic_layer = LogisticRegression(
+            input_data=self.hidden_layer.output,
+            n=n_hidden,
+            m=10
+        )
+
+        # loss functions
         self.neg_log_likelihood = self.logistic_layer.neg_log_likelihood
         self.zero_one = self.logistic_layer.zero_one
+
         # parameters of the model
-        self.params = self.hidden_layer.params + self.logistic_layer.params
+        self.params = self.convolutional_layer1.params + self.convolutional_layer2.params + self.hidden_layer.params + self.logistic_layer.params
+
         # keep track of the input
         self.input_data = input_data
 
@@ -128,6 +162,8 @@ class CNN(Model):
                 arm[hp] = val[0]
             # arm['l1_reg'] = 0.
             arm['n_hidden'] = 500
+            arm['k1'] = 5
+            arm['k2'] = 10
             arm['results'] = []
             arms[i] = arm
 
