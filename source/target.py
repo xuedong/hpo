@@ -19,6 +19,7 @@ from hyperopt import STATUS_OK
 import source.utils as utils
 import source.classifiers.logistic as logistic
 import source.classifiers.mlp as mlp
+import source.classifiers.cnn as cnn
 
 # from sklearn.metrics import log_loss, mean_squared_error
 # from sklearn.model_selection import train_test_split, KFold
@@ -351,11 +352,11 @@ class TheanoHCTCNN(object):
                'results': []}
         if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
+                cnn.CNN.run_solver(self.epochs, arm, self.data, verbose=True)
         else:
             classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
             train_loss, best_valid_loss, test_score, track_valid, track_test = \
-                mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
+                cnn.CNN.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
 
         with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([best_valid_loss, test_score], file)
@@ -381,7 +382,7 @@ class TheanoHOOCNN(object):
                'results': []}
 
         train_loss, best_valid_loss, test_score, track_valid, track_test = \
-            mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
+            cnn.CNN.run_solver(self.epochs, arm, self.data, verbose=True)
 
         with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([track_valid, track_test], file)
