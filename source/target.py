@@ -337,6 +337,60 @@ class TheanoHOOMLP(object):
         return best_valid_loss
 
 
+class TheanoHCTCNN(object):
+    def __init__(self, epochs, data, director):
+        self.epochs = epochs
+        self.data = data
+        self.director = director
+        self.change_status = False
+
+    def f(self, hps):
+        k1 = np.floor(np.random.rand(1) * (hps[2] - 5) + 5).astype(int)[0]
+        arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]),
+               'batch_size': int(hps[1]), 'n_hidden': 500, 'k1': k1, 'k2': int(hps[2]),
+               'results': []}
+        if not os.path.exists(self.director + '/best_model.pkl') or self.change_status:
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
+        else:
+            classifier = cPickle.load(open(self.director + '/best_model.pkl', 'rb'))
+            train_loss, best_valid_loss, test_score, track_valid, track_test = \
+                mlp.MLP.run_solver(self.epochs, arm, self.data, classifier=classifier, verbose=True)
+
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([best_valid_loss, test_score], file)
+
+        return best_valid_loss
+
+    def set_status(self, flag):
+        self.change_status = flag
+        # print(self.change_status)
+
+
+class TheanoHOOCNN(object):
+    def __init__(self, epochs, data, director):
+        self.epochs = epochs
+        self.data = data
+        self.director = director
+        self.change_status = False
+
+    def f(self, hps):
+        k1 = np.floor(np.random.rand(1) * (hps[2] - 5) + 5).astype(int)[0]
+        arm = {'dir': self.director, 'learning_rate': np.exp(hps[0]),
+               'batch_size': int(hps[1]), 'n_hidden': 500, 'k1': k1, 'k2': int(hps[2]),
+               'results': []}
+
+        train_loss, best_valid_loss, test_score, track_valid, track_test = \
+            mlp.MLP.run_solver(self.epochs, arm, self.data, verbose=True)
+
+        with open(self.director + '/tracks.pkl', 'wb') as file:
+            cPickle.dump([track_valid, track_test], file)
+        # print(track_valid)
+        # print(track_test)
+
+        return best_valid_loss
+
+
 # Hyperopt functions
 
 class HyperLogistic(object):
@@ -406,7 +460,7 @@ class HyperCNN(object):
         k1 = np.floor(np.random.rand(1) * (k2 - 5) + 5).astype(int)[0]
         arm = {'dir': self.director,
                'learning_rate': learning_rate, 'batch_size': int(batch_size),
-               'n_hidden': 500, 'k1': k1, 'k2': k2,
+               'n_hidden': 500, 'k1': k1, 'k2': int(k2),
                'results': []}
         train_loss, best_valid_loss, test_score, track_valid, track_test = \
             self.model.run_solver(self.epochs, arm, self.data, verbose=True)
