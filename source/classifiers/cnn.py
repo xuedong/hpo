@@ -173,7 +173,7 @@ class CNN(Model):
 
     @staticmethod
     def run_solver(epochs, arm, data, rng=None, classifier=None,
-        track_valid = np.array([1.]), track_test = np.array([1.]), verbose = False):
+                   track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """LeNet with 2 convolution-pooling layers, 1 fully-connected layer and 1 logistic layer.
 
         :param epochs: number of epochs
@@ -190,82 +190,51 @@ class CNN(Model):
         valid_input, valid_target = data[1]
         test_input, test_target = data[2]
 
-        n_batches_train = train_input.get_value(borrow=True).shape[0] // batch_size
-        n_batches_valid = valid_input.get_value(borrow=True).shape[0] // batch_size
-        n_batches_test = test_input.get_value(borrow=True).shape[0] // batch_size
+        n_batches_train = train_input.get_value(borrow=True).shape[0] // arm['batch_size']
+        n_batches_valid = valid_input.get_value(borrow=True).shape[0] // arm['batch_size']
+        n_batches_test = test_input.get_value(borrow=True).shape[0] // arm['batch_size']
 
         print('Building model...')
 
         # symbolic variables
         index = ts.lscalar()
-        x = ts.matrix('x')
+        # x = ts.matrix('x')
         y = ts.ivector('y')
 
-        # construct the first convolution-pooling layer
-        layer1_input = x.reshape((batch_size, 1, 28, 28))
-        layer1 = cnn.ConvolutionPoolLayer(
-            rng=rng,
-            input_data=layer1_input,
-            filter_shape=(kernels[0], 1, 5, 5),
-            image_shape=(batch_size, 1, 28, 28),
-            pool_size=(2, 2)
-        )
-
-        # construct the second convolution-pooling layer
-        layer2 = cnn.ConvolutionPoolLayer(
-            rng=rng,
-            input_data=layer1.output,
-            filter_shape=(kernels[1], kernels[0], 5, 5),
-            image_shape=(batch_size, kernels[0], 12, 12),
-            pool_size=(2, 2)
-        )
-
-        # construct the fully-connected hidden layer
-        layer3_input = layer2.output.flatten(2)
-        layer3 = mlp.HiddenLayer(
-            rng=rng,
-            input_data=layer3_input,
-            n=kernels[1] * 4 * 4,
-            m=n_hidden,
-            activation=ts.tanh
-        )
-
-        # construct the output layer
-        layer4 = logistic.LogisticRegression(
-            input_data=layer3.output,
-            n=n_hidden,
-            m=10
-        )
-
-        # compute the cost
-        cost = layer4.neg_log_likelihood(y)
+        # construct the classifier
+        if not classifier:
+            x = ts.matrix('x')
+            classifier = CNN(input_data=x, batch_size=arm['batch_size'], k1=arm['k1'], k2=arm['k2'],
+                             n_hidden=arm['n_hidden'], rng=rng)
+        else:
+            x = classifier.input_data
+        cost = classifier.neg_log_likelihood(y)
 
         # construct a Theano function that computes the errors made
         # by the model a minibatch
         test_model = theano.function(
             inputs=[index],
-            outputs=layer4.zero_one(y),
+            outputs=classifier.zero_one(y),
             givens={
-                x: test_input[index * batch_size: (index + 1) * batch_size],
-                y: test_target[index * batch_size: (index + 1) * batch_size]
+                x: test_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+                y: test_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
             }
         )
         valid_model = theano.function(
             inputs=[index],
             outputs=layer4.zero_one(y),
             givens={
-                x: valid_input[index * batch_size: (index + 1) * batch_size],
-                y: valid_target[index * batch_size: (index + 1) * batch_size]
+                x: valid_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+                y: valid_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
             }
         )
 
         # construct a Theano function that updates the parameters of
         # the training model using stochastic gradient descent
-        params = layer4.params + layer3.params + layer2.params + layer1.params
-        g_params = [ts.grad(cost=cost, wrt=param) for param in params]
+        g_params = [ts.grad(cost=cost, wrt=param) for param in classifier.params]
         updates = [
-            (param, param - learning_rate * g_param)
-            for param, g_param in zip(params, g_params)
+            (param, param - arm['learning_rate'] * g_param)
+            for param, g_param in zip(classifier.params, g_params)
         ]
 
         train_model = theano.function(
@@ -273,8 +242,8 @@ class CNN(Model):
             outputs=cost,
             updates=updates,
             givens={
-                x: train_input[index * batch_size: (index + 1) * batch_size],
-                y: train_target[index * batch_size: (index + 1) * batch_size]
+                x: train_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
+                y: train_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
             }
         )
 
