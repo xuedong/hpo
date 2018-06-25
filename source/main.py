@@ -53,7 +53,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
         start_time = timeit.default_timer()
 
-        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 1, 360, director, data, eta=4,
+        hyperband_finite.hyperband_finite(test_model, 'epochs', params, 1, 10, 360, director, data, eta=4,
                                           verbose=True)
         # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4, s_run=0,
         #                                   verbose=False)
@@ -223,5 +223,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('cnn', 10, 0.66, 1., 0.1, 0.05, 1, 1)
+    main('cnn', 5, 0.66, 1., 0.1, 0.05, 4, 10)
     # main('mlp', 8, 0.66, 1., 0.1, 0.05, 16, 100)

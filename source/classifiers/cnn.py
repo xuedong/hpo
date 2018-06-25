@@ -69,7 +69,7 @@ class ConvolutionPoolLayer(object):
 
 
 class CNN(Model):
-    def __init__(self, input_data, batch_size, k1, k2, n_hidden, rng=np.random.RandomState(1234)):
+    def __init__(self, input_data, batch_size, k1, k2, n_hidden, rng=np.random.RandomState(12345)):
         """
 
         :param input_data:
@@ -170,7 +170,7 @@ class CNN(Model):
         return arms
 
     @staticmethod
-    def run_solver(epochs, arm, data, rng=None, classifier=None,
+    def run_solver(epochs, arm, data, rng=np.random.RandomState(12345), classifier=None,
                    track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """LeNet with 2 convolution-pooling layers, 1 fully-connected layer and 1 logistic layer.
 
