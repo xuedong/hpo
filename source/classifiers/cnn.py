@@ -156,14 +156,12 @@ class CNN(Model):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname}
-            hps = ['learning_rate', 'batch_size', 'k1', 'k2']
+            hps = ['learning_rate', 'batch_size', 'k2']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
                 arm[hp] = val[0]
-            # arm['l1_reg'] = 0.
+            arm['k1'] = np.floor(np.random.rand(1) * (arm['k2'] - 5) + 5).astype(int)[0]
             arm['n_hidden'] = 500
-            arm['k1'] = 5
-            arm['k2'] = 10
             arm['results'] = []
             arms[i] = arm
 
@@ -319,8 +317,8 @@ class CNN(Model):
                         )
 
                         # save the best model
-                        # with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
-                        #     cPickle.dump(classifier, file)
+                        with open(arm['dir'] + '/best_model.pkl', 'wb') as file:
+                            cPickle.dump(classifier, file)
 
                 # if patience <= iteration:
                 #     done = True
@@ -357,7 +355,7 @@ class CNN(Model):
             'learning_rate': Param('learning_rate', np.log(1 * 10 ** (-3)), np.log(1 * 10 ** (-1)), dist='uniform',
                                    scale='log'),
             'batch_size': Param('batch_size', 1, 1000, dist='uniform', scale='linear', interval=1),
-            'l2_reg': Param('l2_reg', np.log(1 * 10 ** (-4)), np.log(1 * 10 ** (-2)), dist='uniform', scale='log')
+            'k2': Param('k1', 10, 60, dist='uniform', scale='linear', interval=1)
         }
 
         return params
