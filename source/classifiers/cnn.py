@@ -222,7 +222,7 @@ class CNN(Model):
         )
         valid_model = theano.function(
             inputs=[index],
-            outputs=layer4.zero_one(y),
+            outputs=classifier.zero_one(y),
             givens={
                 x: valid_input[index * arm['batch_size']: (index + 1) * arm['batch_size']],
                 y: valid_target[index * arm['batch_size']: (index + 1) * arm['batch_size']]
@@ -255,11 +255,23 @@ class CNN(Model):
         threshold = 0.995
         valid_freq = min(n_batches_train, patience // 2)
 
-        best_valid_loss = np.inf
+        best_valid_loss = 1.
         best_iter = 0
-        test_score = 0.
-        start_time = timeit.default_timer()
+        test_score = 1.
+        train_loss = 0.
 
+        if track_valid.size == 0:
+            current_best_valid = 1.
+            current_test = 1.
+            current_track_valid = np.array([1.])
+            current_track_test = np.array([1.])
+        else:
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            current_track_valid = np.copy(track_valid)
+            current_track_test = np.copy(track_test)
+
+        start_time = timeit.default_timer()
         done = False
         epoch = 0
         while (epoch < epochs) and not done:
@@ -310,9 +322,18 @@ class CNN(Model):
                         # with open('../log/best_model_mlp_sgd.pkl', 'wb') as file:
                         #     cPickle.dump(classifier, file)
 
-                if patience <= iteration:
-                    done = True
-                    break
+                # if patience <= iteration:
+                #     done = True
+                #     break
+
+            if best_valid_loss < current_best_valid:
+                current_best_valid = best_valid_loss
+                current_test = test_score
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
+            else:
+                current_track_valid = np.append(current_track_valid, current_best_valid)
+                current_track_test = np.append(current_track_test, current_test)
 
         end_time = timeit.default_timer()
         print(
@@ -328,7 +349,7 @@ class CNN(Model):
                os.path.split(__file__)[1] +
                ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)
 
-        return ()
+        return train_loss, best_valid_loss, test_score, current_track_valid, current_track_test
 
     @staticmethod
     def get_search_space():
