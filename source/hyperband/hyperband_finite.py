@@ -104,7 +104,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
 
 
 def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
-                     rng=np.random.RandomState(1234), eta=4., budget=0, n_hyperbands=1,
+                     rng=np.random.RandomState(12345), eta=4., budget=0, n_hyperbands=1,
                      s_run=None, doubling=False, verbose=False):
     """Hyperband with finite horizon.
 

@@ -463,7 +463,7 @@ class HyperCNN(object):
                'n_hidden': 500, 'k1': k1, 'k2': int(k2),
                'results': []}
         train_loss, best_valid_loss, test_score, track_valid, track_test = \
-            self.model.run_solver(self.epochs, arm, self.data, verbose=True)
+            self.model.run_solver(self.epochs, arm, self.data, rng=np.random.RandomState(12345), verbose=True)
         return {
             'loss': best_valid_loss,
             'status': STATUS_OK,
