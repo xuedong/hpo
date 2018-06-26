@@ -14,8 +14,8 @@ from hyperopt import fmin
 from hyperopt import Trials
 
 import target
-# import classifiers.logistic as logistic
-# import classifiers.mlp as mlp
+import classifiers.logistic as logistic
+import classifiers.mlp as mlp
 import classifiers.cnn as cnn
 import hyperband.hyperband_finite as hyperband_finite
 import bo.tpe_hyperopt as tpe_hyperopt
@@ -223,5 +223,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('cnn', 1, 0.66, 1., 0.1, 0.05, 12, 15)
+    main('cnn', 1, 0.66, 1., 0.1, 0.05, 9, 20)
     # main('mlp', 8, 0.66, 1., 0.1, 0.05, 16, 100)
