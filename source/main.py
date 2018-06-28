@@ -223,5 +223,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('cnn', 1, 0.66, 1., 0.1, 0.05, 9, 20)
+    main('cnn', 2, 0.66, 1., 0.1, 0.05, 9, 20)
     # main('mlp', 8, 0.66, 1., 0.1, 0.05, 16, 100)
