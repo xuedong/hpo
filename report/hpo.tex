@@ -1,109 +1,66 @@
+\documentclass[twoside,11pt]{article}
+\usepackage[T1]{fontenc}
 
-%%%%%%%%%%%%%%%%%%%%%%% file typeinst.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+% Any additional packages needed should be included after jmlr2e.
+% Note that jmlr2e.sty includes epsfig, amssymb, natbib and graphicx,
+% and defines many common macros, such as 'proof' and 'example'.
 %
-% This is the LaTeX source for the instructions to authors using
-% the LaTeX document class 'llncs.cls' for contributions to
-% the Lecture Notes in Computer Sciences series.
-% http://www.springer.com/lncs       Springer Heidelberg 2006/05/04
-%
-% It may be used as a template for your own input - copy it
-% to a new file with a new name and use it as the basis
-% for your article.
-%
-% NB: the document class 'llncs' has its own and detailed documentation, see
-% ftp://ftp.springer.de/data/pubftp/pub/tex/latex/llncs/latex2e/llncsdoc.pdf
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% It also sets the bibliographystyle to plainnat; for more information on
+% natbib citation styles, see the natbib documentation, a copy of which
+% is archived at http://www.jmlr.org/format/natbib.pdf
 
-
-\documentclass[runningheads,a4paper]{llncs}
-\usepackage{fullpage}
-%\usepackage{amsthm}
-\usepackage{amsfonts}
+\usepackage{jmlr2e}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{amssymb}
-\setcounter{tocdepth}{3}
-\usepackage{graphicx}
-\usepackage[ruled,linesnumbered,lined,commentsnumbered]{algorithm2e}
-
-\usepackage{url}
-\newcommand{\keywords}[1]{\par\addvspace\baselineskip
-\noindent\keywordname\enspace\ignorespaces#1}
-
 \usepackage{mathtools}
-\usepackage{dsfont}
 \usepackage{booktabs}
 \usepackage{bbold}
+\usepackage{thm-restate}
+%\usepackage{bbold}
+\usepackage[ruled,linesnumbered,lined,commentsnumbered]{algorithm2e}
+\usepackage[colorinlistoftodos, textwidth=22mm, shadow]{todonotes}
+\definecolor{blued}{RGB}{70,197,221}
+\definecolor{pearOne}{HTML}{2C3E50}
+%A9CF54
+\definecolor{pearTwo}{HTML}{A9CF54}
+\definecolor{pearTwoT}{HTML}{C2895B}
+\definecolor{pearThree}{HTML}{FF69B4}
+\colorlet{titleTh}{pearOne}
+\colorlet{bull}{pearTwo}
+\definecolor{pearcomp}{HTML}{B97E29}
+\definecolor{pearFour}{HTML}{588F27}
+\definecolor{pearFith}{HTML}{ECF0F1}
+\definecolor{pearDark}{HTML}{2980B9}
+\definecolor{pearDarker}{HTML}{F330DB}
+\hypersetup{
+	colorlinks,
+	citecolor=pearDark,
+	linkcolor=pearThree,
+	urlcolor=pearDarker}
 
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\argmax}{arg\,max}
+% Definitions of handy macros can go here
 
-\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
-\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand{\dataset}{{\cal D}}
+\newcommand{\fracpartial}[2]{\frac{\partial #1}{\partial  #2}}
 
-%\theoremstyle{plain}
-%\newtheorem{theorem}{Theorem}
-%\newtheorem{definition}[theorem]{Definition}
-%\newtheorem{lemma}[theorem]{Lemma}
-%\newtheorem{proposition}[theorem]{Proposition}
-%\newtheorem{corollary}[theorem]{Corollary}
-%\newtheorem{assumption}{Assumption}
-%\theoremstyle{remark}
-%\newtheorem{remark}{Remark}
+%\DeclareMathOperator*{\argmin}{arg\,min}
+%\DeclareMathOperator*{\argmax}{arg\,max}
+%\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 
-\usepackage{expl3}
-\ExplSyntaxOn
-\newcommand\latinabbrev[1]{
-  \peek_meaning:NTF . {% Same as \@ifnextchar
-    #1\@}%
-  { \peek_catcode:NTF a {% Check whether next char has same catcode as \'a, i.e., is a letter
-      #1.\@ }%
-    {#1.\@}}}
-\ExplSyntaxOff
+\input{macros}
 
-%Omit final dot from each def.
-\def\eg{\latinabbrev{e.g}}
-\def\etal{\latinabbrev{et al}}
-\def\etc{\latinabbrev{etc}}
-\def\ie{\latinabbrev{i.e}}
-\def\aka{\latinabbrev{a.k.a}}
-
-\newcommand{\Epsilon}{E}
+\newtheorem{assumption}{Assumption}
+\firstpageno{1}
 
 \begin{document}
 
-\mainmatter  % start of an individual contribution
+\title{\large Hyper-parameter optimization}
 
-% first the title is needed
-\title{Experimental Report on Hyper-parameter Optimization}
+\author{\name Xuedong Shang \email xuedong.shang@inria.fr}
 
-% a short form should be given in case it is too long for the running head
-\titlerunning{HPO Report}
+\editor{}
 
-% the name(s) of the author(s) follow(s) next
-%
-% NB: Chinese authors should write their first names(s) in front of
-% their surnames. This ensures that the names appear correctly in
-% the running heads and the author index.
-%
-\author{\textbf{Xuedong Shang}}
-%
-\authorrunning{Xuedong Shang}
-% (feature abused for this document to repeat the title also on left hand pages)
-
-% the affiliations are given next; don't give your e-mail address
-% unless you accept that it will be published
-%\institute{Universit\'e de Rennes 1, Parcours MRI \\ \email{xuedong.shang@ens-rennes.fr}}
-
-%
-% NB: a more complex sample for affiliations and the mapping to the
-% corresponding authors can be found in the file "llncs.dem"
-% (search for the string "\mainmatter" where a contribution starts).
-% "llncs.dem" accompanies the document class "llncs.cls".
-%
-
-\toctitle{}
-\tocauthor{Xuedong Shang}
 \maketitle
 
 
@@ -114,17 +71,39 @@
 
 \section{Introduction}
 
-The algorithms being considered here for the moment are Hyperband~\cite{li2016}, a Bayesian-based approach TPE~\cite{bergstra2011}, two hierarchical approaches HOO~\cite{bubeck2011}, HCT~\cite{azar2014}, a baseline method random search, plus one new hyperband-liked heuristic on top of Top-Two Thompson Sampling (TTTS)~\cite{russo2016}. Current datasets used are MNIST dataset and some datasets from UCI machine learning dataset archive.
+Modern machine learning algorithms often contain many nuisance parameters that cannot be learned through the learning process, but instead, need to be manually specified. It is thus appealing to design algorithms that require fewer such so-called \emph{hyper-parameters} (not always feasible though).
 
-\section{Heuristics}
+An alternative is to perform the \emph{hyper-parameter optimization} (HPO) that can be viewed as a \emph{black-box/global optimization} problem where function evaluations are supposed to be very expensive. Here a typical function evaluation involves running the primary machine learning algorithm to completion on a large and high-dimensional dataset, which often takes a considerable amount of time or resources. This limits vastly the number of evaluations that could be carried out, which makes it desirable to design efficient high-level algorithms that automate this tuning procedure.
 
-\subsection{TTTS coupled with Hyperband}
+\paragraph{Related literature}
 
-We propose one new heuristic based on TTTS for the moment. The idea is similar to Hyperband. By running several brackets of TTTS with different number of configurations $n$ and the same budget, we try to trade off between the number of configurations and the number of resources allocated to each configuration. Unlike Hyperband where the number of resources is fixed for each configuration in every bracket, here the number of resources is decided by the underlying Thompson Sampling.
+Several naïve but traditional ways of performing the hyper-parameter search exist, such as \Grid\ and \Random. 
 
-This heuristic requires three inputs $\beta$, $\eta$ and $R$, where $\eta$ and $R$ are the same inputs as in Hyperband: $\eta$ is the discarding proportion and $R$ is the maximum amount of resources that can be allocated to a single configuration. However, in this heuristic, they do not really make sense. The reason why they are required is just to keep the same budget as for Hyperband. 
+\Grid\ is an old-fashioned but commonly used method in a lot of research papers before 2010s~\citep{lecun1998gradient}, as well as in many machine learning softwares such as \LIBSVM~\citep{chang2011libsvm} and \Scikit~\citep{pedregosa2011sklearn}. It simply carries out an \emph{exhaustive} searching of parameters through a manually specified \emph{finite} subset of the hyper-parameter search space. \Grid\ clearly suffers from the \emph{curse of dimensionality}, which makes it undesirable in real applications.
 
-The subroutine used here is TTTS where we make use of a prior distribution $\Pi_1$ over a set of parameters $\Theta$, where for each $\mathbf{\theta}\in\Theta$, $\theta_i$ caraterizes configuration $i$ for $i\in\{1\ldots n\}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. At each time step $t$, the subroutine samples $\theta$ from $\Pi_t$, then with probability $\beta$, the subroutine evaluates the configuration $I$ with the best paramter $\theta_I = \max_{c\in C}\hat{\theta}_c$. Otherwise it samples a new $\theta$ from $\Pi_t$ until we obtain a different configuration $J\neq I$ such that $\theta_J = \max_{c\in C}\hat{\theta}_c$.
+\Random\ overcomes this problem by randomly picking hyper-paramter configurations from the search space, and can be easily generalized to continuous space as well. It is shown to outperform \Grid\ especially in the case that the \emph{intrinsic dimensionality} of the optimization problem is low~\citep{bergstra2012random}. Hence we use \Random\ as a baseline method here in this section. Note that both methods are \emph{embarrasingly parallel}, which can be a very strong point in some situations.
+
+Recent trending solutions for HPO are mostly Bayesian-based~\citep{bergstra2011tpe,hutter2011smac,snoek2012spearmint,snoek2015}. \emph{Bayesian optimization} (BO) depends on a prior belief, typically a Gaussian process (GP), on the target function that we can update to a posterior distribution over the function space where lies the target function given a sequence of observations. It then decides where to sample next with the help of an \emph{utility/acquisition function} by maximizing/minimizing the utilitly w.r.t.\ the posterior distribution. Typical acquisition functions include \EI, \PI~\citep{mockus1978} and \GPUCB~\citep{srinivas2010gpucb} (see~\citealt{brochu2010bayesian,shahriari2016loop} for a survey). Note that classic BO methods with GP prior and typical acquisition functions can be applied straightforwardly to hyper-parameter tuning (\citealt{snoek2012spearmint} provides a Python package called \Spearmint\ to perform the task), some variants like \TPE~\citep{bergstra2011tpe} and \SMAC~\citep{hutter2011smac} are more commonly used though.
+
+\begin{remark}
+	One may notice that a new optimization task emerges in a Bayesian optimization procedure, that is to optimize the acquisition function. It may seem to be a bit artificial, but this acquisition function is usually much more regular compared to the target function, thus easier to optimize.
+\end{remark}
+
+Bayesian optimization focuses on adaptively choosing different parameter configurations based on previous observations, but always run the primary machine learning classifier/regressor into completion given a set of hyper-parameters. In a bandit point of view, this setting can be considered as a \emph{stochastic infinitely-armed bandit} (SIAB) problem.
+
+Another take on this problem is to adaptively allocate \emph{resources} to more promising configurations. Resources here can be time, dataset subsampling, feature subsampling, etc. In such a setting, the classifier is not always trained into completion given a parameter configuration, but rather is stopped early if it is shown to be bad so that we can allocate more resources to other configurations. This idea of early stopping is proposed by~\cite{li2016}, which states the HPO problem as a \emph{non-stochastic infinitely-armed bandit} (NIAB) problem.
+
+In this report, we treat both the two settings mentioned previously. Before that, we need to mention that totally different types of approaches also exist, for example \emph{evolutionary optimization} (EO). EO follows a process inspired by the biological concept of \emph{evolution}, which repeatedly replaces the worst-performing hyper-parameter configurations from a randomly initialized population of solutions.
+
+Finally, hierarchical bandit algorithms like \HOO~\citep{bubeck2010x}, \HCT~\citep{azar2014online} could be potential candidates for HPO as well. And to the best of our knowledge, these methods have never been investigated in the HPO literature.
+
+\section{\Hyperband coupled with a \TS-like algorithm}
+
+We propose a new heuristic based on the Top-Two Thompson Sampling (\TTTS, see~\citealt{russo2016ttts}. The idea is similar to \Hyperband. By running several brackets of \TTTS with different number of configurations $n$ and the same budget, we try to trade off between the number of configurations and the number of resources allocated to each configuration. Unlike \Hyperband where the number of resources is fixed for each configuration in every bracket, here the number of resources is decided by the underlying \TS.
+
+This heuristic requires three inputs $\beta$, $\gamma$, $B$, and $s_{\operatorname{max}}$:  (1) $\gamma$ characterizes how fast does the number of configurations we want to evaluate in each bracket shrink, (2) $B$ is the total budget, and (3) $s_{\operatorname{max}}$ represents the index of the largest bracket (containing the largest number of configurations).
+
+The subroutine used here is \TTTS where we make use of a prior distribution $\Pi_1$ over a set of parameters $\Theta$, where for each $\mathbf{\theta}\in\Theta$, $\theta_i$ caraterizes configuration $i$ for $i\in\{1\ldots n\}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. At each time step $t$, the subroutine samples $\theta$ from $\Pi_t$, then with probability $\beta$, the subroutine evaluates the configuration $I$ with the best paramter $\theta_I = \max_{c\in C}\hat{\theta}_c$. Otherwise it samples a new $\theta$ from $\Pi_t$ until we obtain a different configuration $J\neq I$ such that $\theta_J = \max_{c\in C}\hat{\theta}_c$.
 
 \begin{remark}
 Note that this algorithm does not require computing or approximating the optimal action probabilities, which could be computationally heavy. However in practice, sometimes it could be ridiculously long to sample a $J$ that is different from $I$, especially when the best configuration is far better than the others. To avoid this issue, we can either explicitly compute the optimal action probabilities, or just play the second best one when this kind of situation occurs.
@@ -134,16 +113,16 @@ Note that this algorithm does not require computing or approximating the optimal
 \SetKwInOut{Input}{Input}
 \SetKwInOut{Init}{Initialize}
 
-\Input{$\beta$; $\eta$; $R$}
-\Init{$s_{\operatorname{max}} = \floor{\operatorname{log}_{\eta}(R)}$; $B=(s_{\operatorname{max}}+1)R$; $L=\emptyset$; $t = 0$}
+\Input{$\beta$; $\gamma$; $B$; $s_{\operatorname{max}}$}
+\Init{$\texttt{budget}=\floor{B/s_{\operatorname{max}}}$; $L=\emptyset$; $t = 0$}
 \For{$s \leftarrow s_{\operatorname{max}}$ \KwTo $0$}{
-	$n = \ceil{\frac{B}{R}\frac{\eta^s}{(s+1)}}$\; 
+	$n = \ceil{\frac{s_{\operatorname{max}}+1}{s+1}\gamma^s}$\; 
 	$C = \operatorname{get\_hyperparameter\_configurations(n)}$\;
     	\For{$c\in C$}{
 		$L = L\cup \{\operatorname{run\_then\_return\_val\_loss}(c)\}$\;}
 	$t = n$\;
-	// Begin TTTS\;
-	\While{$t < B$}{
+	// Begin \TTTS\;
+	\While{$t < \texttt{budget}$}{
 		Sample $\mathbf{\hat{\theta}} \sim \Pi_t$; $I \leftarrow \argmax_{c\in C}\hat{\theta}_c$\;
 		Sample $b \sim \operatorname{Bernoulli}(\beta)$\;
 		\eIf{$b = 1$}{
@@ -154,7 +133,7 @@ Note that this algorithm does not require computing or approximating the optimal
 		$t = t+1$\;}
 	}
 \Return{Configuration\ with\ the\ smallest\ intermediate\ loss\ seen\ so\ far}
-\caption{Heuristic (TTTS)\label{heuristic1}}
+\caption{Heuristic (based on \TTTS)\label{heuristic1}}
 \end{algorithm}
 
 The pseudo-code is shown in Algorithm~\ref{heuristic1}. Let us give some more details on how to update the posterior belief (Line. 17 in Algorithm~\ref{heuristic1}). Currently, we assume a Beta prior which is usually associated with Bernoulli bandits. Here in our case, however, the reward (or more precisely, the loss) lies in $[0, 1]$, we thus need to adapt the Thompson Sampling process to the general stochastic bandits case. One way to tackle this is the binarization trick shown in Algorithm~\ref{annexe1} inspired by~\cite{agrawal2012}. 
@@ -179,16 +158,16 @@ The pseudo-code is shown in Algorithm~\ref{heuristic1}. Let us give some more de
 		$F_I \leftarrow F_I + 1$\;}
 	$t = t+1$\;
 	}
-\caption{Detailed TTTS with Beta Prior for General Stochastic Bandits\label{annexe1}}
+\caption{Detailed \TTTS with Beta prior for general stochastic bandits\label{annexe1}}
 \end{algorithm}
 
-\section{MNIST}
+\section{Hyper-parameter tuning as NIAB problem}
 
-We consider here Logistic Regression, Multi-Layer Perceptron (MLP) and Convolutional Neural Networks (CNN) as classifiers to be hyper-optimized. This part of code (code for classifers with eventual usage of GPU) is based on code available at \url{http://deeplearning.net/}. 
+We consider in this section the non-stochastic setting where several classifiers such as logistic regression, Multi-Layer Perceptron (\MLP) and Convolutional Neural Networks (\CNN) are trained on the \MNIST dataset using mini-batch \emph{stochastic gradient descent} (\SGD). This part of code (code for classifers with eventual usage of GPU) is based on code available at \url{http://deeplearning.net/}. 
 
-\paragraph{\textbf{Dataset}} The MNIST dataset is pre-split into three parts: training set $D_{\operatorname{train}}$, validation set $D_{\operatorname{valid}}$ and test set $D_{\operatorname{test}}$.
+\paragraph{\textbf{Dataset}} The \MNIST dataset is pre-split into three parts: training set $D_{\operatorname{train}}$, validation set $D_{\operatorname{valid}}$ and test set $D_{\operatorname{test}}$.
 
-\paragraph{\textbf{Hyper-parameters}} The hyper-parameters to be optimized are listed below in Table \ref{logistic_sgd}, \ref{mlp_sgd} and \ref{cnn_sgd}. For logistic regression, the hyper-parameters to be considered are learning rate and mini-batch size (since we are doing mini-batch SGD). For MLP, we take into account an additional hyper-parameter which is the $l_2$ regularization factor. For CNN (or LeNet), we take into account the number of kernels used in the two convolutional-pooling layers.
+\paragraph{\textbf{Hyper-parameters}} The hyper-parameters to be optimized are listed below in Table \ref{logistic_sgd}, \ref{mlp_sgd} and \ref{cnn_sgd}. For logistic regression, the hyper-parameters to be considered are learning rate and mini-batch size (since we are doing mini-batch \SGD). For \MLP, we take into account an additional hyper-parameter which is the $l_2$ regularization factor. For \CNN, we take into account the number of kernels used in the two convolutional-pooling layers.
 
 \begin{table}[ht]
 \centering
@@ -198,7 +177,7 @@ We consider here Logistic Regression, Multi-Layer Perceptron (MLP) and Convoluti
 $\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
 $\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\ \bottomrule
 \end{tabular}
-\caption{Hyper-parameters to be optimized for logistic regression with SGD.}
+\caption{Hyper-parameters to be optimized for logistic regression with \SGD.}
 \label{logistic_sgd}
 \end{table}
 
@@ -211,7 +190,7 @@ $\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3
 $\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\ 
 $\operatorname{l_2\_reg}$		& $\mathbb{R}^+$ & $\left[ 10^{-4}, 10^{-2} \right]$ (log-scaled) \\ \bottomrule
 \end{tabular}
-\caption{Hyper-parameters to be optimized for MLP with SGD.}
+\caption{Hyper-parameters to be optimized for \MLP with \SGD.}
 \label{mlp_sgd}
 \end{table}
 
@@ -225,11 +204,11 @@ $\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]
 $\operatorname{k_2}$           & $\mathbb{N}^+$ & $\left[10,  60 \right]$         \\
 $\operatorname{k_1}$           & $\mathbb{N}^+$ & $\left[5,  k_2 \right]$         \\ \bottomrule
 \end{tabular}
-\caption{Hyper-parameters to be optimized for CNN with SGD.}
+\caption{Hyper-parameters to be optimized for \CNN with \SGD.}
 \label{cnn_sgd}
 \end{table}
 
-\paragraph{\textbf{Resource Allocation}} The type of resource considered here is the number of epochs, where one epoch means a pass of training through the whole training set using SGD. Note that this is similar to the original Hyperband paper where one unit of resources corresponds to 100 mini-batch iterations for example. One epoch may contain a various number of mini-batch iterations depending on the mini-batch size.
+\paragraph{\textbf{Resource Allocation}} The type of resource considered here is the number of epochs, where one epoch means a pass of training through the whole training set using \SGD. Note that this is similar to the original Hyperband paper where one unit of resources corresponds to 100 mini-batch iterations for example. One epoch may contain a various number of mini-batch iterations depending on the mini-batch size.
 
 \paragraph{\textbf{Experimental Design}} In this section, we focus on neural network-typed classifiers, we will thus be maximizing the likelihood of the training set $D_{\operatorname{train}}$ under the model parameterized by $\theta$ (in this section, $\theta$ corresponds to $(W, b)$ where $W$ is the weight matrix and $b$ is the bias vector):
 \[
@@ -245,7 +224,7 @@ At each time step $t$, we give one unit of resources (one epoch of training here
 \ell_t(\hat{\theta}_t, D_{\operatorname{valid}}) = \frac{1}{|D_{\operatorname{valid}}|} \sum_{i=1}^{|D_{\operatorname{valid}}|} \mathbb{1}_{\{\hat{y}_{\operatorname{pred},t}^{(i)} \neq y^{(i)}\}},
 \]
 \[
-\ell_t(\hat{\theta}_t, D_{\operatorname{test}}) = \frac{1}{|D_{\operatorname{valid}}|} \sum_{i=1}^{|D_{\operatorname{valid}}|} \mathbb{1}_{\{\tilde{y}_{\operatorname{pred},t}^{(i)} \neq y^{(i)}\}}.
+\ell_t(\hat{\theta}_t, D_{\operatorname{test}}) = \frac{1}{|D_{\operatorname{test}}|} \sum_{i=1}^{|D_{\operatorname{test}}|} \mathbb{1}_{\{\tilde{y}_{\operatorname{pred},t}^{(i)} \neq y^{(i)}\}}.
 \]
 
 During the experiment, we keep track of the best validation error and its associated test error. At each time step $t$, if the new validation error is smaller than the current best validation error, then we update the best validation error, and report the new test error. Otherwise we just report the test error associated with the previous best validation error.
@@ -260,30 +239,30 @@ All plots here (from Fig.~\ref{logistic_1} to Fig.~\ref{mlp_0}) are averaged on 
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{img/mnist/logistic_1.pdf}
-    \caption{Performance comparison of different hyper-parameter optimization algorithms on Logistic Regression, trained on MNIST Dataset.}
+    \caption{Comparing different hyper-parameter optimization algorithms on Logistic Regression, trained on \MNIST Dataset.}
     \label{logistic_1}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{img/mnist/logistic_1_bis.pdf}
-    \caption{Performance comparison of Hyperband and the heuristic on Logistic Regression, trained on MNIST Dataset.}
+    \caption{Comparing \Hyperband and the heuristic on Logistic Regression, trained on \MNIST Dataset.}
     \label{logistic_1_bis}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{img/mnist/mlp_0_bis.pdf}
-    \caption{Performance comparison of different hyper-parameter optimization algorithms on MLP, trained on MNIST Dataset.}
+    \caption{Comparing different hyper-parameter optimization algorithms on \MLP, trained on \MNIST Dataset.}
     \label{mlp_0}
 \end{figure}
 
-\paragraph{\textbf{Discussion}} In the current setting, Hyperband seems to be a plausible choice since it may explore more configurations compared to other algorithms. And comparing Hyperband and the heuristic, we can see that they almost performs as well as each other. There are two major observations here. First, the heuristic seems to be converging more smoothly than Hyperband, this is because Hyperband focuses on evaluating one of the configurations after its round-robin tour among all the configurations in the bracket, which leads to a straight drop of the output loss. The second observation is that the heuristic seems to have a slightly better output at the end. This could be due to the fact that TTTS is likely to evaluate the possible best configurations more times than Sequential Halving.
+\paragraph{\textbf{Discussion}} In the current setting, Hyperband seems to be a plausible choice since it may explore more configurations compared to other algorithms. And comparing Hyperband and the heuristic, we can see that they almost performs as well as each other. There are two major observations here. First, the heuristic seems to be converging more smoothly than Hyperband, this is because Hyperband focuses on evaluating one of the configurations after its round-robin tour among all the configurations in the bracket, which leads to a straight drop of the output loss. The second observation is that the heuristic seems to have a slightly better output at the end. This could be due to the fact that\TTTS is likely to evaluate the possible best configurations more times than Sequential Halving.
 
 
-\section{UCI Datasets}
+\section{Hyper-parameter tuning as SIAB problem}
 
-We consider here Adaptive Boosting (AdaBoost), Gradient Boosting Machine (GBM), k-Nearest Neighbors (KNN), Multi-Layer Perceptron (MLP), Support Vector Machine (SVM), Decision Tree and Random Forest from Scikit-learn.
+We consider here Adaptive Boosting (AdaBoost), Gradient Boosting Machine (GBM), k-Nearest Neighbors (KNN), Multi-Layer Perceptron (\MLP), Support Vector Machine (SVM), Decision Tree and Random Forest from Scikit-learn.
 
 \paragraph{\textbf{Dataset}} Several datasets on UCI dataset archive (e.g. Wine, Breast Cancer, etc) are being used. They are all pre-split into a training set $D_{\operatorname{train}}$ and a test set $D_{\operatorname{test}}$.
 
@@ -334,7 +313,7 @@ $k$                & Integer       & $\left\lbrace 10, \dots,50 \right\rbrace$
 \texttt{hidden\_layer\_size} & Integer          & $\left[5, 50\right]$  \\
 \texttt{alpha}               & $\mathbb{R}^{+}$ & $\left[0, 0.9\right]$
 \end{tabular}
-\caption{Hyper-parameters to be optimized for MLP models.}
+\caption{Hyper-parameters to be optimized for \MLP models.}
 \label{mlpparam}
 \end{table}
 
@@ -425,7 +404,7 @@ Note that under this experimental environment, 'keep training' does not make sen
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{img/uci/sk_mlp_0.pdf}
-    \caption{Performance comparison of different hyper-parameter optimization algorithms on MLP, trained on Wine Dataset.}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on \MLP, trained on Wine Dataset.}
     \label{sk_mlp_0}
 \end{figure}
 
@@ -462,7 +441,7 @@ Fig.~\ref{ada_1} to~\ref{svm_1} display the results for Breast Cancer Dataset.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{img/uci/sk_mlp_1.pdf}
-    \caption{Performance comparison of different hyper-parameter optimization algorithms on MLP, trained on Breast Cancer Dataset.}
+    \caption{Performance comparison of different hyper-parameter optimization algorithms on \MLP, trained on Breast Cancer Dataset.}
     \label{sk_mlp_1}
 \end{figure}
 
@@ -475,16 +454,9 @@ Fig.~\ref{ada_1} to~\ref{svm_1} display the results for Breast Cancer Dataset.
 
 \paragraph{\textbf{Discussion}} In this setting, Hyperband seems to loose its advantage of exploring more configurations. It appears to me that there is no reason for HOO, TPE and Random Search to evaluate one point several times as does Hyperband.
 
-\begin{thebibliography}{4}
-
-\bibitem{li2016} Li, L., Jamieson, K., DeSalvo, G., Rostamizadeh, A., \& Talwalkar, A. (2016). Hyperband: A novel bandit-based approach to hyperparameter optimization. arXiv preprint arXiv:1603.06560.
-\bibitem{bergstra2011} Bergstra, J. S., Bardenet, R., Bengio, Y., \& Kégl, B. (2011). Algorithms for hyper-parameter optimization. In Advances in neural information processing systems (pp. 2546-2554).
-\bibitem{bubeck2011} Bubeck, S., Munos, R., Stoltz, G., \& Szepesvári, C. (2011). X-armed bandits. Journal of Machine Learning Research, 12(May), 1655-1695.
-\bibitem{azar2014} Azar, M. G., Lazaric, A., \& Brunskill, E. (2014). Online stochastic optimization under correlated bandit feedback. In Proceedings of the 31st International Conference on Machine Learning (ICML-14) (pp. 1557-1565).
-\bibitem{russo2016} Russo, D. (2016, June). Simple bayesian algorithms for best arm identification. In Conference on Learning Theory (pp. 1417-1418).
-\bibitem{agrawal2012} Agrawal, S., \& Goyal, N. (2012, June). Analysis of thompson sampling for the multi-armed bandit problem. In Conference on Learning Theory (pp. 39-1).
-
-\end{thebibliography}
+\newpage
+\vskip 0.2in
+\bibliography{Major}
 
 
 %\section*{Appendix}

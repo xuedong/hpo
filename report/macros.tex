@@ -1,0 +1,332 @@
+%%% todos
+%\usepackage[colorinlistoftodos, textwidth=30mm, shadow, textsize=small]{todonotes}
+%\definecolor{babyblue}{rgb}{0.54, 0.81, 0.94}
+%\definecolor{citrine}{rgb}{0.89, 0.82, 0.04}
+%\definecolor{misocolor}{rgb}{0.16,0.27,0.86}
+%\newcommand{\todom}[1]{\todo[color=misocolor!30]{#1}\xspace}
+%\newcommand{\todomi}[1]{\todo[inline,color=misocolor!30]{#1}}
+
+\definecolor{graphicbackground}{rgb}{0.96,0.96,0.8}
+\definecolor{rouge1}{RGB}{226,0,38}  % red P
+\definecolor{orange1}{RGB}{243,154,38}  % orange P
+\definecolor{jaune}{RGB}{254,205,27}  % jaune P
+\definecolor{blanc}{RGB}{255,255,255} % blanc P
+\definecolor{rouge2}{RGB}{230,68,57}  % red S
+\definecolor{orange2}{RGB}{236,117,40}  % orange S
+\definecolor{taupe}{RGB}{134,113,127} % taupe S
+\definecolor{gris}{RGB}{91,94,111} % gris S
+\definecolor{bleu1}{RGB}{38,109,131} % bleu S
+\definecolor{bleu2}{RGB}{28,50,114} % bleu S
+\definecolor{vert1}{RGB}{133,146,66} % vert S
+\definecolor{vert3}{RGB}{20,200,66} % vert S
+\definecolor{vert2}{RGB}{157,193,7} % vert S
+\definecolor{darkyellow}{RGB}{233,165,0}  % orange S
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.6,0.6,0.6}
+\definecolor{babyblue}{rgb}{0.54, 0.81, 0.94}
+\definecolor{citrine}{rgb}{0.89, 0.82, 0.04}
+\definecolor{misogreen}{rgb}{0.25,0.6,0.0}
+
+\newcommand{\rcol}[1]{\textcolor{red}{\textit{#1}}}
+\newcommand{\defcol}[1]{\textcolor{vert3}{\textbf{#1}}}
+\newcommand{\yellcol}[1]{\textcolor{babyblue}{\textbf{#1}}}
+\newcommand{\gcol}[1]{\textcolor{vert3}{\textbf{#1}}}
+
+\newcommand{\emphcol}[1]{\textcolor{vert3}{\textbf{#1}}}
+
+\newcommand{\grcol}[1]{\textcolor{gray}{#1}}
+\newcommand{\notecol}[1]{\textcolor{gray}{#1}}
+
+\newcommand{\bcol}[1]{\textcolor{blue}{\textit{#1}}}
+\newcommand{\ycol}[1]{\textcolor{darkyellow}{\textit{#1}}}
+\newcommand{\rcolb}[1]{\textcolor{red}{\textit{\textbf{#1}}}}
+\newcommand{\gcolb}[1]{\textcolor{vert3}{\textit{\textbf{#1}}}}
+\newcommand{\bcolb}[1]{\textcolor{blue}{\textit{\textbf{#1}}}}
+\newcommand{\ycolb}[1]{\textcolor{darkyellow}{\textit{\textbf{#1}}}}
+\newcommand{\mcolA}[1]{{\color{bleu1} #1}}
+\newcommand{\mcolB}[1]{{\color{darkyellow} #1}}
+\newcommand{\mcolC}[1]{{\color{misogreen} #1}}
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\arginf}{arg\,inf}
+\DeclareMathOperator*{\sgn}{sgn}
+%\DeclareMathOperator{\regret}{regret}
+\DeclareMathOperator{\polylog}{polylog}
+\DeclareMathOperator{\logloglog}{logloglog}
+\DeclareMathOperator{\polyloglog}{polyloglog}
+
+
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand*\Diff[1]{\mathop{}\!\mathrm{d^#1}}
+\renewcommand{\d}[1]{\ensuremath{\operatorname{d}\!{#1}}}
+
+\newcommand{\set}[1]{\left\{#1\right\}}
+%\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+%\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+
+%\newcommand{\ceil}[1]{\lceil#1\rceil}
+
+\newcommand{\II}[1]{\mathds{1}_{\left\{#1\right\}}}
+\newcommand{\I}{{\mathds{1}}}
+
+
+%arrows
+\newcommand{\ra}{\rightarrow}
+
+%distributions
+\newcommand{\Bernoulli}{\mathrm{Bernoulli}}
+
+
+\newcommand{\specialcell}[2][c]{%
+ \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+%\newtheorem{assumption}{Assumption}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{definition}{Definition}
+%\newtheorem{corollary}{Corollary}
+%\newtheorem{remark}{Remark}
+
+
+% \newcommand{\R}{I\!\! R}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\realset}{\mathbb{R}}
+
+\newcommand{\NN}{{\mathbb N}}
+\newcommand{\1}{\mathds{1}}
+\newcommand{\bOne}{{\bf 1}}
+\newcommand{\bZero}{{\bf 0}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\EE}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\EEt}[1]{\mathbb{E}_t\left[#1\right]}
+\newcommand{\EEs}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\EEc}[2]{\mathbb{E}\left[#1\left|#2\right.\right]}
+\newcommand{\EEcc}[2]{\mathbb{E}\left[\left.#1\right|#2\right]}
+\newcommand{\EEcct}[2]{\mathbb{E}_t\left[\left.#1\right|#2\right]}
+\newcommand{\PP}[1]{\mathbb{P}\left[#1\right]}
+\newcommand{\PPt}[1]{\mathbb{P}_t\left[#1\right]}
+ \newcommand{\PPc}[2]{\mathbb{P}\left[#1\left|#2\right.\right]}
+\newcommand{\PPcc}[2]{\mathbb{P}\left[\left.#1\right|#2\right]}
+\newcommand{\PPct}[2]{\mathbb{P}_t\left[#1\left|#2\right.\right]}
+\newcommand{\PPcct}[2]{\mathbb{P}_t\left[\left.#1\right|#2\right]}
+%parens
+\newcommand{\pa}[1]{\left(#1\right)}
+\newcommand{\sqpa}[1]{\left[#1\right]}
+\newcommand{\ac}[1]{\left\{#1\right\}}
+\newcommand{\ev}[1]{\left\{#1\right\}}
+\newcommand{\card}[1]{\left|#1\right|}
+
+
+\newcommand{\normtwo}[1]{\|#1\|_2}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\onenorm}[1]{\norm{#1}_1}
+\newcommand{\infnorm}[1]{\norm{#1}_\infty}
+\newcommand{\norminf}[1]{\infnorm{#1}}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\newcommand{\CommaBin}{\mathbin{\raisebox{0.5ex}{,}}}
+\newcommand*{\MyDef}{\mathrm{\tiny def}}
+\newcommand*{\eqdefU}{\ensuremath{\mathop{\overset{\MyDef}{=}}}}% Unscaled version
+%\newcommand*{\eqdef}{\mathop{\overset{\MyDef}{\resizebox{\widthof{\eqdefU}}{\heightof{=}}{=}}}}
+\newcommand*{\eqdef}{\triangleq}
+%\newcommand{\eqdef}{\stackrel{{\rm def}}{=}}
+%\newcommand{\eqdef}{\stackrel{{\rm \tiny def}}{=}}
+\newcommand{\transpose}{^\mathsf{\scriptscriptstyle T}}
+
+%Calligraphic Shorthands
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\calL}{\cL}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\tcO}{\widetilde{\cO}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\tOO}{\wt{\OO}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\Sw}{\mathcal{S}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\T}{\cT}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\X}{\cX}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cZ}{\mathcal{Z}}
+
+%Bolds Shorthands
+\newcommand{\ba}{{\bf a}}
+\newcommand{\bA}{{\bf A}}
+\newcommand{\bb}{{\bf b}}
+\newcommand{\bB}{{\bf B}}
+\newcommand{\bc}{{\bf c}}
+\newcommand{\bC}{{\bf C}}
+\newcommand{\bD}{{\bf D}}
+\newcommand{\bg}{{\bf g}}
+\newcommand{\bG}{{\bf G}}
+\newcommand{\bI}{{\bf I}}
+\newcommand{\bM}{{\bf M}}
+\newcommand{\bO}{\boldsymbol{O}}
+\newcommand{\bp}{\boldsymbol{p}}
+\newcommand{\bP}{{\bf P}}
+\newcommand{\br}{{\bf r}}
+\newcommand{\bR}{{\bf R}}
+\newcommand{\bQ}{{\bf Q}}
+\newcommand{\be}{{\bf e}}
+\newcommand{\bff}{{\bf f}}
+\newcommand{\bi}{{\bf i}}
+\newcommand{\bk}{{\bf k}}
+\newcommand{\bK}{{\bf K}}
+\newcommand{\bL}{{\bf L}}
+\newcommand{\bs}{{\bf s}}
+\newcommand{\bq}{{\bf q}}
+\newcommand{\bu}{{\bf u}}
+\newcommand{\bU}{{\bf U}}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\bV}{{\bf V}}
+\newcommand{\bw}{{\bf w}}
+\newcommand{\bW}{{\bf W}}
+\newcommand{\by}{{\bf y}}
+\newcommand{\bx}{{\bf x}}
+\newcommand{\bX}{{\bf X}}
+\newcommand{\bZ}{{\bf Z}}
+
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\hat}{\widehat}
+\renewcommand{\tilde}{\widetilde}
+\renewcommand{\bar}{\overline}
+
+\newcommand{\balpha}{{\boldsymbol \alpha}}
+\newcommand{\talpha}{\widetilde{\alpha}}
+\newcommand{\btheta}{{\boldsymbol \theta}}
+\newcommand{\tTheta}{{\widetilde\Theta}}
+\newcommand{\bdelta}{{\boldsymbol \delta}}
+\newcommand{\bDelta}{{\boldsymbol \Delta}}
+\newcommand{\bLambda}{{\boldsymbol \Lambda}}
+\newcommand{\bSigma}{{\boldsymbol \Sigma}}
+\newcommand{\bmu}{{\boldsymbol \mu}}
+\newcommand{\bxi}{{\boldsymbol \xi}}
+%\newcommand{\bell}{\boldsymbol \ell}
+
+\newcommand{\nothere}[1]{}
+\newcommand{\moveb}{\\ \bigskip}
+\newcommand{\movebb}{\\[-0.25em]}
+\newcommand{\moves}{\\ \smallskip}
+\newcommand{\movess}{\\[-0.5em]}
+\newcommand{\movesss}{\smallskip}
+
+% bandits
+\newcommand{\hloss}{\hat\ell}
+\newcommand{\bloss}{\boldsymbol  \ell}
+\newcommand{\hbl}{\hat{\bloss}}
+\newcommand{\hbL}{\wh{\bL}}
+\newcommand{\wh}{\widehat}
+\newcommand{\ti}{_{t,i}}
+\newcommand{\wt}{\widetilde}
+
+
+
+%% from single papers, but merged here
+% algo names
+\usepackage{xspace}
+\renewcommand{\ttdefault}{lmtt}
+%stochastic bandits
+\newcommand{\UCB}{\texttt{UCB}\xspace}
+\newcommand{\UCBOne}{\texttt{UCB1}\xspace}
+\newcommand{\UCBTwo}{\texttt{UCB2}\xspace}
+\newcommand{\KLUCB}{\texttt{KL-UCB}\xspace}
+%adversarial bandits
+\newcommand{\MOSS}{\texttt{MOSS}\xspace}
+\newcommand{\EXP}{\texttt{Exp3}\xspace}
+%best arm identification
+\newcommand{\Racing}{\texttt{Racing}\xspace}
+\newcommand{\LUCB}{\texttt{LUCB}\xspace}
+\newcommand{\KLRacing}{\texttt{KL-Racing}\xspace}
+\newcommand{\KLLUCB}{\texttt{KL-LUCB}\xspace}
+\newcommand{\Track}{\texttt{Track-and-Stop}\xspace}
+\newcommand{\UCBE}{\texttt{UCB-E}\xspace}
+\newcommand{\SR}{\texttt{SuccessiveReject}\xspace}
+\newcommand{\SHA}{\texttt{SequentialHalving}\xspace}
+\newcommand{\UGapE}{\texttt{UGapE}\xspace}
+\newcommand{\TTTS}{\texttt{TTTS}\xspace}
+\newcommand{\TTPS}{\texttt{TTPS}\xspace}
+\newcommand{\TTVS}{\texttt{TTVS}\xspace}
+%contextual bandits
+\newcommand{\LinUCB}{\texttt{LinUCB}\xspace}
+\newcommand{\LOVECON}{\texttt{ILOVETOCONBANDITS}\xspace}
+\newcommand{\EpochGreedy}{\texttt{Epoch-Greedy}\xspace}
+%bayesian optimization
+\newcommand{\GPUCB}{\texttt{GP-UCB}\xspace}
+\newcommand{\TS}{\texttt{ThompsonSampling}\xspace}
+\newcommand{\EI}{\texttt{EI}\xspace}
+\newcommand{\PI}{\texttt{PI}\xspace}
+%continuous bandits
+\newcommand{\StoSOO}{\texttt{StoSOO}\xspace}
+\newcommand{\POO}{\texttt{POO}\xspace}
+\newcommand{\DOO}{\texttt{DOO}\xspace}
+\newcommand{\SOO}{\texttt{SOO}\xspace}
+\newcommand{\Zooming}{\texttt{Zooming}\xspace}
+\newcommand{\UCT}{\texttt{UCT}\xspace}
+\newcommand{\HCT}{\texttt{HCT}\xspace}
+\newcommand{\SHOO}{\POO}
+\newcommand{\HOO}{\texttt{HOO}\xspace}
+\newcommand{\ATB}{\texttt{ATB}\xspace}
+\newcommand{\TZ}{\texttt{TaxonomyZoom}\xspace}
+%global optimization
+\newcommand{\Direct}{\texttt{DiRect}\xspace}
+%local optimization
+\newcommand{\SGD}{\texttt{SGD}\xspace}
+%infinitely many-armed bandits
+\newcommand{\failure}{\texttt{1-failure}\xspace}
+\newcommand{\rate}{\texttt{$\alpha$-rate}\xspace}
+\newcommand{\run}{\texttt{m-run}\xspace}
+\newcommand{\learning}{\texttt{m-learning}\xspace}
+\newcommand{\SiRI}{\texttt{\textcolor[rgb]{0.5,0.2,0}{SiRI}}\xspace}
+%hyper-parameter optimization
+\newcommand{\Hyperband}{\texttt{Hyperband}\xspace}
+\newcommand{\TPE}{\texttt{TPE}\xspace}
+\newcommand{\Random}{\texttt{RandomSearch}\xspace}
+\newcommand{\Grid}{\texttt{GridSearch}\xspace}
+\newcommand{\SMAC}{\texttt{SMAC}\xspace}
+\newcommand{\BOHB}{\texttt{BOHB}\xspace}
+%deep learning
+\newcommand{\CNN}{\texttt{CNN}\xspace}
+%classic machine learning
+\newcommand{\MLP}{\texttt{MLP}\xspace}
+\newcommand{\SVM}{\texttt{SVM}\xspace}
+
+
+%% dataset names
+\newcommand{\MNIST}{\texttt{MNIST}\xspace}
+\newcommand{\CIFARten}{\texttt{CIFAR-10}\xspace}
+\newcommand{\UCI}{\texttt{UCI}\xspace}
+
+
+%% library names
+\newcommand{\LIBSVM}{\texttt{LIBSVM}\xspace}
+\newcommand{\Scikit}{\texttt{scikit-learn}\xspace}
+\newcommand{\TensorFlow}{\texttt{TensorFlow}\xspace}
+\newcommand{\Theano}{\texttt{Theano}\xspace}
+\newcommand{\PyTorch}{\texttt{PyTorch}\xspace}
+\newcommand{\Spearmint}{\texttt{Spearmint}\xspace}
