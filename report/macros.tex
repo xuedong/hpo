@@ -76,6 +76,19 @@
 
 %arrows
 \newcommand{\ra}{\rightarrow}
+\newcommand{\lra}{\longrightarrow}
+\newcommand{\mt}{\mapsto}
+\newcommand{\lmt}{\longmapsto}
+
+%function
+\newcommand{\func}[5]{
+	\[
+		\begin{array}{l|rcl}
+			#1: & #2 & \longrightarrow & #3 \\
+				& #4 & \longmapsto & #5 
+		\end{array}
+	\]
+}
 
 %distributions
 \newcommand{\Bernoulli}{\mathrm{Bernoulli}}
@@ -223,8 +236,11 @@
 \newcommand{\tTheta}{{\widetilde\Theta}}
 \newcommand{\bdelta}{{\boldsymbol \delta}}
 \newcommand{\bDelta}{{\boldsymbol \Delta}}
+\newcommand{\blambda}{{\boldsymbol \lambda}}
 \newcommand{\bLambda}{{\boldsymbol \Lambda}}
+\newcommand{\bsigma}{{\boldsymbol \sigma}}
 \newcommand{\bSigma}{{\boldsymbol \Sigma}}
+\newcommand{\bphi}{{\boldsymbol \phi}}
 \newcommand{\bmu}{{\boldsymbol \mu}}
 \newcommand{\bxi}{{\boldsymbol \xi}}
 %\newcommand{\bell}{\boldsymbol \ell}
@@ -315,6 +331,11 @@
 %classic machine learning
 \newcommand{\MLP}{\texttt{MLP}\xspace}
 \newcommand{\SVM}{\texttt{SVM}\xspace}
+\newcommand{\Ada}{\texttt{AdaBoost}\xspace}
+\newcommand{\KNN}{\texttt{KNN}\xspace}
+\newcommand{\GBM}{\texttt{GBM}\xspace}
+\newcommand{\Tree}{\texttt{DecisionTree}\xspace}
+\newcommand{\RF}{\texttt{RandomForest}\xspace}
 
 
 %% dataset names

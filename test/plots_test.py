@@ -40,15 +40,15 @@ if __name__ == "__main__":
     # # plots.plot_hoo(path3, 1, 'logistic_', 'sgd_', 'mnist', 0)
     # plots.plot_all(paths, 10, 'logistic_', 'sgd_', 'mnist', 1, 'epochs', type_plot='linear', devs=False)
 
-    path1 = "../result/hyperband_cnn_1"
-    path2 = "../result/tpe_cnn_1"
-    path3 = "../result/hoo_cnn_1"
-    path4 = "../result/hct_cnn_1"
-    path5 = "../result/random_cnn_1"
-    path6 = "../result/hyperloop_cnn_1"
-    paths = [path1, path2, path3, path4, path5]
-    # plots.plot_hoo(path3, 1, 'mlp_', 'sgd_', 'mnist', 0)
-    plots.plot_all(paths, 1, 'cnn_', 'sgd_', 'mnist', 1, 'epochs', type_plot='linear', devs=False)
+    # path1 = "../result/hyperband_cnn_1"
+    # path2 = "../result/tpe_cnn_1"
+    # path3 = "../result/hoo_cnn_1"
+    # path4 = "../result/hct_cnn_1"
+    # path5 = "../result/random_cnn_1"
+    # path6 = "../result/hyperloop_cnn_1"
+    # paths = [path1, path2, path3, path4, path5]
+    # # plots.plot_hoo(path3, 1, 'mlp_', 'sgd_', 'mnist', 0)
+    # plots.plot_all(paths, 1, 'cnn_', 'sgd_', 'mnist', 1, 'epochs', type_plot='linear', devs=False)
 
     # names = ['ada_', 'gbm_', 'knn_', 'rf_', 'sk_mlp_', 'svm_', 'tree_']
     # for name in names:
