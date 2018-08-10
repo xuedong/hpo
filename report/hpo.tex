@@ -18,7 +18,8 @@
 \usepackage{bbold}
 \usepackage{thm-restate}
 \usepackage{caption}
-\usepackage{subfig}
+\usepackage{subcaption}
+%\usepackage{subfig}
 %\usepackage{bbold}
 \usepackage[ruled,linesnumbered,lined,commentsnumbered]{algorithm2e}
 \usepackage[colorinlistoftodos, textwidth=22mm, shadow]{todonotes}
@@ -57,7 +58,7 @@
 
 \begin{document}
 
-\title{\large Hyper-parameter optimization as a bandit problem}
+\title{\large Best arm identification for hyper-parameter optimization}
 
 \author{\name Authors \email EMAIL}
 
@@ -122,21 +123,88 @@ In the context of hyper-parameter tuning, a typical outer objective is to minimi
 	\cH(\btheta,\blambda) \eqdef \frac{1}{|\cD_{\operatorname{valid}}|} \sum_{i=1}^{|\cD_{\operatorname{valid}}|} \ell_2(g_{\btheta}(\bx_i),\by_i)\footnote{The loss function $\ell_2$ can be different from the loss function $\ell_1$ depending on the learning task.}.
 \]
 
-To further understand this formalism, we take a simple example by assuming an unique maximizer of the inner objective, say for a given $\blambda$, there exists an unique $\btheta_{\blambda} = \argmin_{\btheta\in\R^d} \cL_{\blambda}(\btheta)$, then $f(\blambda) = \cH(\btheta_{\blambda},\blambda)$, thus the goal of HPO is to find $\blambda^{\star} \eqdef \argmin_{\blambda\in\Omega} \cH(\btheta_{\blambda},\blambda)$. 
+In this report, we consider a simplified formalism by assuming an unique maximizer of the inner objective, say for a given $\blambda$, there exists an unique $\btheta_{\blambda} = \argmin_{\btheta\in\R^d} \cL_{\blambda}(\btheta)$, then $f(\blambda) = \cH(\btheta_{\blambda},\blambda)$, thus the goal of HPO is to find $\blambda^{\star} \eqdef \argmin_{\blambda\in\Omega} \cH(\btheta_{\blambda},\blambda)$. 
 
 We specify these inner and outer objectives when treating real HPO tasks in Section~\ref{sec:result}.
 
-\section{\Hyperband coupled with a \TS-like algorithm}\label{sec:algo}
+\section{\Hyperband coupled with top-two algorithms}\label{sec:algo}
 
-We propose a heuristic based on the Top-Two Thompson Sampling (\TTTS, see~\citealt{russo2016ttts}). The idea is similar to \Hyperband. By running several brackets of \TTTS with different number of configurations $n$ and the same budget, we trade off between the number of configurations and the number of resources allocated to each configuration. Unlike \Hyperband where the number of resources is fixed for each configuration in every bracket, here the number of resources is decided by the underlying \TS.
+We propose a heuristic based on \Hyperband and top-two variants of \TS (\TTTS, see~\citealt{russo2016ttts}) or \EI algorithm (\TTEI, see~\citealt{qin2017ttei}). \Hyperband is a bandit-based algorithm for HPO problem on top of a \emph{fixed-budget best arm identification} (BAI) algorithm, namely \SHA~\citep{karnin2013sha}. Similar to \Hyperband, the heuristic runs several brackets of \TTTS (or \TTEI) with different number of configurations $n$ and the same budget, we trade off between the number of configurations and the number of resources allocated to each configuration. Unlike \Hyperband where the number of resources is fixed for each configuration in every bracket, here the number of resources is decided by the underlying subroutine.
 
-This heuristic requires four inputs $\beta$, $\gamma$, $B$, and $s_{\operatorname{max}}$: (1) $\beta$ is required by the underlying \TTTS procedure, (2) $\gamma$ characterizes how fast does the number of configurations we want to evaluate in each bracket shrink, (3) $B$ is the total budget, and (4) $s_{\operatorname{max}}$ represents the index of the largest bracket (containing the largest number of configurations). Thus, in each bracket $s$, we dispose $n = \ceil{\gamma^s(s_{\operatorname{max}}+1)/(s+1)}$ configurations and an identical dedicated budget $T=\floor{B/s_{\operatorname{max}}}$.
+The idea of using top-two algrithms is motivated by their being \emph{anytime} for best arm identification. We first show some comparisons of different BAI algorithms, then we briefly introduce the top-two algorithms before presenting the heuristic in detail.
 
-The underlying procedure \TTTS makes use of a prior distribution $\Pi_1$ over a set of parameters $\Phi$, where for each $\bphi=\{\phi_{\blambda}:\blambda\in\Omega\}\in\Phi$, the hyper-parameter configuration $\blambda$ is characterized by $\phi_{\blambda}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. At each time step $t$, the subroutine samples $\bphi$ from $\Pi_t$, then with probability $\beta$, the subroutine trains the model with the configuration $\blambda_I$ that is associated to the best paramter $\phi_{\blambda_I} = \max_{\blambda\in\Omega}\hat{\phi}_{\blambda}$. Otherwise it samples a new $\bphi$ from $\Pi_t$ until we obtain a different configuration $J\neq I$ such that $\blambda_J = \argmax_{\blambda\in\Omega}\hat{\phi}_{\blambda}$.
+\subsection{Best of best arm identification}
 
-\begin{remark}
-Note that this algorithm does not require computing or approximating the optimal action probabilities, which could be computationally heavy. However in practice, sometimes it could be ridiculously long to sample a $J$ that is different from $I$, especially when the best configuration is far better than the others. To avoid this issue, we can either explicitly compute the optimal action probabilities, or just play the second best one when this kind of situation occurs.
-\end{remark}
+We consider here some fixed-budget and anytime best arm identification algorithms, including \Uniform~\citep{bubeck2009pure}, \UCBE and \SR~\citep{audibert2010budget}, fixed-budget version of \UGapE~\citep{gabillon2012ugape},  \SHA, \TS with a \emph{most played arm} strategy of recommendation, \TTTS, \ATLUCB~\citep{jun2016atlucb}.
+
+We use 7 problem instances proposed by~\cite{audibert2010budget}, all settings consider only Bernoulli distributions, and we compare their trending \emph{simple regret} averaged on 1000 trials. The results are shown in Fig.~\ref{fig:bai}.
+
+\begin{itemize}
+	\item Setting 1: $\mathbf{\mu_1}=0.5, \mathbf{\mu_{2:20}}=0.4, \operatorname{budget}=2000$
+	\item Setting 2: $\mathbf{\mu_1}=0.5, \mathbf{\mu_{2:6}}=0.42, \mathbf{\mu_{7:20}}=0.38, \operatorname{budget}=2000$
+	\item Setting 3: $\mathbf{\mu}=[0.5, 0.3631, 0.449347, 0.48125839], \operatorname{budget}=2000$
+	\item Setting 4: $\mathbf{\mu}=[0.5, 0.42, 0.4, 0.4, 0.35, 0.35], \operatorname{budget}=600$
+	\item Setting 5: $\mathbf{\mu_1}=0.5, \mathbf{\mu_i}=\mathbf{\mu_1}-0.025i, \forall i\in\{2\ldots15\}, \operatorname{budget}=4000$
+	\item Setting 6: $\mathbf{\mu_1}=0.5, \mathbf{\mu_2}=0.48, \mathbf{\mu_{3:20}}=0.37, \operatorname{budget}=6000$
+	\item Setting 7: $\mathbf{\mu_1}=0.5, \mathbf{\mu_{2:6}}=0.45, \mathbf{\mu_{7:20}}=0.43, \mathbf{\mu_{7:20}}=0.38, \operatorname{budget}=6000$
+	\item Setting 8: $\mathbf{\mu_1}=0.5, \mathbf{\mu_{2:6}}=0.45, \mathbf{\mu_{7:20}}=0.43, \mathbf{\mu_{7:20}}=0.38, \operatorname{budget}=12000$
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting1.png}
+    \caption{Problem 1}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting2.png}
+    \caption{Problem 2}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting3.png}
+    \caption{Problem 3}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting4.png}
+    \caption{Problem 4}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting5.png}
+    \caption{Problem 5}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting6.png}
+    \caption{Problem 6}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting7.png}
+    \caption{Problem 7}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.2\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/bai/setting8.png}
+    \caption{Problem 8}
+  \end{subfigure}
+  \caption{Comparing different fixed-budget and anytime BAI algorithms.}
+  \label{fig:bai}
+\end{figure}
+
+In these experiments, \TTTS are always beating or performing as well as its competitors.
+
+\subsection{Top-two algorithms}
+
+We briefly describe the top-two algorithms in the context of hyper-parameter tuning, where we consider each configuration of hyper-parameters as an arm. Top-two algorithms, as other Bayesian optimization approaches, make use of a prior distribution $\Pi_1$ over a set of parameters $\Phi$, where for each $\bphi=\{\phi_{\blambda}:\blambda\in\Omega\}\in\Phi$, the hyper-parameter configuration $\blambda$ is characterized by $\phi_{\blambda}$. Based on a sequence of observations, we can update our beliefs to attain a posterior distribution $\Pi_t$. The posterior distribution can be computed by conjugacy when using common probability distributions for the prior. For example, \TTTS uses correlated \emph{one-dimensional exponential family} priors, and \TTEI uses uncorrelated Gaussian priors. 
+
+At each time step $t$, top-two algorithms sample $\bphi$ from $\Pi_t$. With probability $\beta$, \TTTS evaluates the arm $\blambda_I$ such that $\phi_{\blambda_I} = \max_{\blambda\in\Omega}\hat{\phi}_{\blambda}$. Otherwise it samples a new $\bphi$ from $\Pi_t$ until we obtain a different $J\neq I$ such that $\blambda_J = \argmax_{\blambda\in\Omega}\hat{\phi}_{\blambda}$.
+
+\TTEI follows the same idea, but is slightly modified. With porbability $\beta$, \TTEI evaluates the arm $\blambda_I$ with the biggest \emph{expected improvement} value~\citep{mockus1978}. Then with probability $1-\beta$, \TTEI evaluates the arm $\blambda_J$ with the biggest \emph{relative} expected improvement value w.r.t. $\blambda_I$.
+
+%\begin{remark}
+%Note that this algorithm does not require computing or approximating the optimal action probabilities, which could be computationally heavy. However in practice, sometimes it could be ridiculously long to sample a $J$ that is different from $I$, especially when the best configuration is far better than the others. To avoid this issue, we can either explicitly compute the optimal action probabilities, or just play the second best one when this kind of situation occurs.
+%\end{remark}
+
+\subsection{Description of the heuristic}
+
+The heuristic we propose requires four inputs $\beta$, $\gamma$, $B$, and $s_{\operatorname{max}}$: (1) $\beta$ is required by the underlying \TTTS procedure, (2) $\gamma$ characterizes how fast does the number of configurations we want to evaluate in each bracket shrink, (3) $B$ is the total budget, and (4) $s_{\operatorname{max}}$ represents the index of the largest bracket (containing the largest number of configurations). Thus, in each bracket $s$, we dispose $n = \ceil{\gamma^s(s_{\operatorname{max}}+1)/(s+1)}$ configurations and an identical dedicated budget $T=\floor{B/s_{\operatorname{max}}}$, and we run \TTTS over these configurations. Each evaluation consists of training the classifier with one unit of resources w.r.t. a certain set of hyper-parameters.
 
 \begin{algorithm}[h]
 \SetKwInOut{Input}{Input}
@@ -188,6 +256,12 @@ The pseudo-code is shown in Algorithm~\ref{heuristic1}. An important component t
 \caption{Detailed \TTTS with Beta prior for general stochastic bandits\label{annexe1}}
 \end{algorithm}
 
+\section{Theorectical perspectives}
+
+\subsection{Sample proportion convergence}
+
+
+
 \section{Experimental results}\label{sec:result}
 
 We present some experiments for both non-stochastic and stochastic setting. For the non-stochastic setting, we assess different HPO algorithms by training classifiers for which the inner objective is evaluated via \emph{stochastic gradient descent} (\SGD) on the \MNIST dataset\footnote{\url{http://yann.lecun.com/exdb/mnist/}}. For the stochastic setting, we consider different classical machine learning models (such as \SVM, \KNN, etc) that are trained on different datasets from \UCI machine learning repository\footnote{\url{https://archive.ics.uci.edu/ml/datasets.html}}.
@@ -198,45 +272,25 @@ We first consider HPO as a NIAB problem, which means with each unit of resources
 
 In this part, we train logistic regression, multi-layer perceptron (\MLP) and convolutional neural networks (\CNN) on the \MNIST dataset using mini-batch  \SGD as inner optimization method\footnote{This part of code (code for classifers with eventual usage of GPU) is based on code available at \url{http://deeplearning.net/}}. The type of resources considered is \emph{epoch} that consists of one full training cycle on the whole training set. Note that this is similar to the \Hyperband paper where one unit of resources corresponds to 100 mini-batch iterations for example. One epoch may contain a various number of mini-batch iterations depending on the mini-batch size.
 
-The dataset is pre-split into three parts: training set $\cD_{\operatorname{train}}$, validation set $\cD_{\operatorname{valid}}$ and test set $\cD_{\operatorname{test}}$. Hyper-parameters to be taken into account for each classifier are listed below in Table \ref{logistic_sgd}, \ref{mlp_sgd} and \ref{cnn_sgd}. For logistic regression, the hyper-parameters to be considered are learning rate and mini-batch size (since we are doing mini-batch \SGD). For \MLP, we take into account an additional hyper-parameter which is the $l_2$ regularization factor. For \CNN, we take into account the number of kernels used in the two convolutional-pooling layers.
+The dataset is pre-split into three parts: training set $\cD_{\operatorname{train}}$, validation set $\cD_{\operatorname{valid}}$ and test set $\cD_{\operatorname{test}}$. Hyper-parameters to be taken into account for each classifier are listed below in Table \ref{hyper_mnist}. For logistic regression, the hyper-parameters to be considered are learning rate and mini-batch size (since we are doing mini-batch \SGD). For \MLP, we take into account an additional hyper-parameter which is the $l_2$ regularization factor. For \CNN, we take into account the number of kernels used in the two convolutional-pooling layers.
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{@{}lll@{}}
+\begin{tabular}{@{}l|lll@{}}
 \toprule
-\textbf{Hyper-parameter} & \textbf{Type}                      & \textbf{Bounds}               \\ \midrule
-$\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
-$\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\ \bottomrule
+\textbf{Classifier} & \textbf{Hyper-parameter} & \textbf{Type}                      & \textbf{Bounds}               \\ \midrule
+\texttt{logistic regression} & $\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
+& $\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\ \midrule
+& $\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
+\MLP & $\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\
+& $\operatorname{l_2\_reg}$		& $\mathbb{R}^+$ & $\left[ 10^{-4}, 10^{-2} \right]$ (log-scaled) \\ \midrule
+& $\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
+\CNN & $\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\
+& $\operatorname{k_2}$           & $\mathbb{N}^+$ & $\left[10,  60 \right]$         \\
+& $\operatorname{k_1}$           & $\mathbb{N}^+$ & $\left[5,  k_2 \right]$         \\ \bottomrule
 \end{tabular}
-\caption{Hyper-parameters to be optimized for logistic regression with \SGD.}
-\label{logistic_sgd}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Hyper-parameter} & \textbf{Type}                      & \textbf{Bounds}               \\ \midrule
-$\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
-$\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\
-$\operatorname{l_2\_reg}$		& $\mathbb{R}^+$ & $\left[ 10^{-4}, 10^{-2} \right]$ (log-scaled) \\ \bottomrule
-\end{tabular}
-\caption{Hyper-parameters to be optimized for \MLP with \SGD.}
-\label{mlp_sgd}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Hyper-parameter} & \textbf{Type}                      & \textbf{Bounds}               \\ \midrule
-$\operatorname{learning\_rate}$                & $\mathbb{R}^+$ & $\left[ 10^{-3}, 10^{-1} \right]$ (log-scaled) \\
-$\operatorname{batch\_size}$           & $\mathbb{N}^+$ & $\left[1, 1000 \right]$         \\
-$\operatorname{k_2}$           & $\mathbb{N}^+$ & $\left[10,  60 \right]$         \\
-$\operatorname{k_1}$           & $\mathbb{N}^+$ & $\left[5,  k_2 \right]$         \\ \bottomrule
-\end{tabular}
-\caption{Hyper-parameters to be optimized for \CNN with \SGD.}
-\label{cnn_sgd}
+\caption{Hyper-parameters to be optimized.}
+\label{hyper_mnist}
 \end{table}
 
 \paragraph{Inner and outer objectives} In this part, we focus on neural network-typed classifiers, for which we want to maximize the likelihood of the training set $\cD_{\operatorname{train}}$ under a model parameterized by $\btheta = (\bW, \bb)$ with respect to a set of hyper-parameters $\blambda$, where $\bW$ corresponds to the weight matrix and $\bb$ is the bias vector:
@@ -255,21 +309,26 @@ At each time step, we allocate one unit of resources (one epoch) to the classifi
 
 \paragraph{Results}
 
-During the experiment, we keep track of the best validation error and its associated test error $\frac{1}{|D_{\operatorname{test}}|} \sum_{i=1}^{|D_{\operatorname{test}}|} \mathbb{1}_{\{\tilde{y}_i \neq y_i\}}$. At each time step, if the new validation error is smaller than the current best validation error, then we update the best validation error, and report the new test error. Otherwise we just report the test error associated with the previous best validation error. All plots here (from Fig.~\ref{fig:logistic} to Fig.~\ref{fig:mlp}) are averaged on 10 trials of experiments.
+During the experiment, we keep track of the best validation error and its associated test error $\frac{1}{|\cD_{\operatorname{test}}|} \sum_{i=1}^{|\cD_{\operatorname{test}}|} \mathbb{1}_{\{\tilde{y}_i \neq y_i\}}$. At each time step, if the new validation error is smaller than the current best validation error, then we update the best validation error, and report the new test error. Otherwise we just report the test error associated with the previous best validation error. All plots here (from Fig.~\ref{fig:logistic} to Fig.~\ref{fig:mlp}) are averaged on 10 trials of experiments.
 
 \begin{figure}%
     \centering
-    \subfloat[All methods]{{\includegraphics[width=5cm]{img/mnist/logistic_1.pdf} }}%
-    \qquad
-    \subfloat[\Hyperband and the heuristic]{{\includegraphics[width=5cm]{img/mnist/logistic_1_bis.pdf} }}%
-    \caption{Comparing different hyper-parameter optimization algorithms on Logistic Regression, trained on \MNIST Dataset.}%
+    \begin{subfigure}[t]{0.3\textwidth}
+    	\centering\includegraphics[width=\textwidth]{img/mnist/logistic_1.pdf}%
+	\caption{All methods}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.3\textwidth}
+    	\centering\includegraphics[width=\textwidth]{img/mnist/logistic_1_bis.pdf}%
+   	\caption{\Hyperband and the heuristic}%
+    \end{subfigure}
+    \caption{Comparing different hyper-parameter optimization algorithms on logistic regression, trained on \MNIST dataset.}
     \label{fig:logistic}%
 \end{figure}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{img/mnist/mlp_0_bis.pdf}
-    \caption{Comparing different hyper-parameter optimization algorithms on \MLP, trained on \MNIST Dataset.}
+    \caption{Comparing different hyper-parameter optimization algorithms on \MLP, trained on \MNIST dataset.}
     \label{fig:mlp}
 \end{figure}
 
@@ -278,157 +337,128 @@ During the experiment, we keep track of the best validation error and its associ
 
 \subsection{Hyper-parameter tuning as SIAB problem}
 
-We consider here Adaptive Boosting (AdaBoost), Gradient Boosting Machine (GBM), k-Nearest Neighbors (KNN), Multi-Layer Perceptron (\MLP), Support Vector Machine (SVM), Decision Tree and Random Forest from Scikit-learn.
-
-\paragraph{\textbf{Dataset}} Several datasets on UCI dataset archive (e.g. Wine, Breast Cancer, etc) are being used. They are all pre-split into a training set $D_{\operatorname{train}}$ and a test set $D_{\operatorname{test}}$.
-
-\paragraph{\textbf{Hyper-parameters}} The hyper-parameters to be optimized are listed below in Table \ref{adaparam}, \ref{gbmparam},  \ref{knnparam}, \ref{mlpparam}, \ref{svmparam}, \ref{treeparam} and \ref{rfparam}.
+Now we consider the setting where each evaluation of a set of hyper-parameters consists of a complete training over the training set. We use adaptive boosting (\Ada), gradient boosting machine (\GBM), k-nearest neighbors (\KNN), \MLP, support vector machine (\SVM) from \Scikit, and we evaluate them on several datasets from \UCI dataset archive (e.g. Wine, Breast Cancer, etc). They are all pre-split into a training set $\cD_{\operatorname{train}}$ and a test set $\cD_{\operatorname{test}}$. Hyper-parameters to be optimized are listed below in Table \ref{hyper_uci}.
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{@{}lll@{}}
+\begin{tabular}{@{}l|lll@{}}
 \toprule
-\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
-\texttt{learning\_rate}      & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{-1}\right]$                         \\
-\texttt{n\_estimators}       & Integer        & $\left\lbrace 5,\dots, 200 \right\rbrace$
+\textbf{Classifier} & \textbf{Hyper-parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+\Ada & \texttt{learning\_rate}      & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{-1}\right]$                         \\
+& \texttt{n\_estimators}       & Integer        & $\left\lbrace 5,\dots, 200 \right\rbrace$ \\ \midrule
+& \texttt{learning\_rate}      & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{-2}\right]$                         \\
+\GBM & \texttt{n\_estimators}       & Integer        & $\left\lbrace 10,\dots, 100 \right\rbrace$ \\
+& \texttt{max\_depth}          & Integer        & $\left\lbrace 2, \dots, 100 \right\rbrace$ \\
+& \texttt{min\_samples\_split}  & Integer        & $\left\lbrace 2, \dots, 100 \right\rbrace$ \\ \midrule
+\KNN & $k$                & Integer       & $\left\lbrace 10, \dots,50 \right\rbrace$ \\ \midrule
+\MLP & \texttt{hidden\_layer\_size} & Integer          & $\left[5, 50\right]$  \\
+& \texttt{alpha}               & $\mathbb{R}^{+}$ & $\left[0, 0.9\right]$ \\ \midrule
+\SVM & $C$                & $\mathbb{R}^+$ & $\left[ 10^{-5}, 10^{5} \right]$ (log-scaled) \\
+& $\gamma$           & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{5} \right]$  (log-scaled)  \\ \bottomrule
 \end{tabular}
-\caption{Hyper-parameters to be optimized for AdaBoost models.}
-\label{adaparam}
+\caption{Hyper-parameters to be optimized.}
+\label{hyper_uci}
 \end{table}
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
-\texttt{learning\_rate}      & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{-2}\right]$                         \\
-\texttt{n\_estimators}       & Integer        & $\left\lbrace 10,\dots, 100 \right\rbrace$ \\
-\texttt{max\_depth}          & Integer        & $\left\lbrace 2, \dots, 100 \right\rbrace$ \\
-\texttt{min\_samples\_split}  & Integer        & $\left\lbrace 2, \dots, 100 \right\rbrace$
-\end{tabular}
-\caption{Hyper-parameters to be optimized for GBM models.}
-\label{gbmparam}
-\end{table}
+%\begin{table}[ht]
+%\centering
+%\begin{tabular}{@{}lll@{}}
+%\toprule
+%\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+%\texttt{max\_features}      & $\mathbb{R}^+$ & $\left[0.01, 0.99\right]$   \\
+%\texttt{max\_depth}          & Integer        & $\left\lbrace 4, \dots, 30 \right\rbrace$ \\
+%\texttt{min\_samples\_split}  & $\mathbb{R}^+$  & $\left[0.01, 0.99\right]$
+%\end{tabular}
+%\caption{Hyper-parameters to be optimized for Decision Tree models.}
+%\label{treeparam}
+%\end{table}
+%
+%\begin{table}[ht]
+%\centering
+%\begin{tabular}{@{}lll@{}}
+%\toprule
+%\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
+%\texttt{max\_features}      & $\mathbb{R}^+$ & $\left[0.1, 0.5\right]$   \\
+%\texttt{n\_estimators}          & Integer        & $\left\lbrace 10, \dots, 50 \right\rbrace$ \\
+%\texttt{min\_samples\_split}  & $\mathbb{R}^+$  & $\left[0.1, 0.5\right]$
+%\end{tabular}
+%\caption{Hyper-parameters to be optimized for Random Forest models.}
+%\label{rfparam}
+%\end{table}
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Parameter} & \textbf{Type} & \textbf{Bounds}                           \\ \midrule
-$k$                & Integer       & $\left\lbrace 10, \dots,50 \right\rbrace$
-\end{tabular}
-\caption{Hyper-parameters to be optimized for KNN models.}
-\label{knnparam}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{lll}
-\hline
-\textbf{Parameter}             & \textbf{Type}    & \textbf{Bounds}       \\ \hline
-\texttt{hidden\_layer\_size} & Integer          & $\left[5, 50\right]$  \\
-\texttt{alpha}               & $\mathbb{R}^{+}$ & $\left[0, 0.9\right]$
-\end{tabular}
-\caption{Hyper-parameters to be optimized for \MLP models.}
-\label{mlpparam}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Parameter} & \textbf{Type}                      & \textbf{Bounds}               \\ \midrule
-$C$                & $\mathbb{R}^+$ & $\left[ 10^{-5}, 10^{5} \right]$ (log-scaled) \\
-$\gamma$           & $\mathbb{R}^+$ & $\left[10^{-5}, 10^{5} \right]$  (log-scaled)       \\ \bottomrule
-\end{tabular}
-\caption{Hyper-parameters to be optimized for SVM models.}
-\label{svmparam}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
-\texttt{max\_features}      & $\mathbb{R}^+$ & $\left[0.01, 0.99\right]$   \\
-\texttt{max\_depth}          & Integer        & $\left\lbrace 4, \dots, 30 \right\rbrace$ \\
-\texttt{min\_samples\_split}  & $\mathbb{R}^+$  & $\left[0.01, 0.99\right]$
-\end{tabular}
-\caption{Hyper-parameters to be optimized for Decision Tree models.}
-\label{treeparam}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Parameter}             & \textbf{Type}  & \textbf{Bounds}                          \\ \midrule
-\texttt{max\_features}      & $\mathbb{R}^+$ & $\left[0.1, 0.5\right]$   \\
-\texttt{n\_estimators}          & Integer        & $\left\lbrace 10, \dots, 50 \right\rbrace$ \\
-\texttt{min\_samples\_split}  & $\mathbb{R}^+$  & $\left[0.1, 0.5\right]$
-\end{tabular}
-\caption{Hyper-parameters to be optimized for Random Forest models.}
-\label{rfparam}
-\end{table}
-
-\paragraph{\textbf{Resource Allocation}} One unit of resources in this setting is one iteration of training, which means one complete training of each classifier/regressor over the whole training set.
-
-\paragraph{\textbf{Experimental Design}} In this section we use the logarithmic loss, also known as cross-entropy for classification problem, defined by:
+In this part, we define different inner objective for classification and regression problems. We use the logarithmic loss, also known as cross-entropy for classification problems:
 \[
-\ell(\theta, D) = - \frac{1}{|D|} \sum_{i=1}^{|D|} \sum_{j=1}^m y^{(i)}_{j}\log(\hat{p}^{(i)}_{j}),
+\cL_{\blambda}(\btheta) \eqdef - \frac{1}{|\cD_{\operatorname{train}}|} \sum_{i=1}^{|\cD_{\operatorname{train}}|} \sum_{j=1}^m y^{(j)}_{i}\log(\hat{p}^{(j)}_{i}),
 \]
-where $\hat{p}_{ij}$ is the predicted probability of a sample $i$ belonging to class $j$, and $m$ is the number of classes considered. And for regression problems, the loss that we use is the typical mean squared error, defined by:
+where $\hat{p}^{(j)}_{i}$ is the predicted probability of a sample $i$ belonging to class $j$, and $m$ is the number of classes considered. For regression problems, we use the typical mean squared error:
 \[
-\ell(\theta, D) = - \frac{1}{|D|} \sum_{i=1}^{|D|} \left(y^{(i)} - \hat{y}^{(i)}_{\operatorname{pred}}\right)^2.
+\cL_{\blambda}(\btheta) \eqdef - \frac{1}{|\cD_{\operatorname{train}}|} \sum_{i=1}^{|\cD_{\operatorname{train}}|} \left(y_i - \hat{y}_i\right)^2.
 \]
 
-And for this part of experiments, we choose to perform a shuffled $k=5$ cross-validation scheme on $D_{\operatorname{train}}$ at each time step $t$. In practice, this means that we fit $5$ models with the same architecture to different train/validation splits and average the loss results in each. More precisely, for every cross-validation split
-$\mathtt{cv}_j,j=1\ldots5$, we get a loss $\ell_{j,t}(\hat{\theta}_{j,t}, D_{\operatorname{valid},j,t}) = \dfrac{1}{n} \sum^{n}_{i=1} \left(y^{(i)}_{j} - \hat{y}^{(i)}_{\operatorname{pred},j,t}\right)^2$, where $n=|D_{\operatorname{valid}}|$ (here we take MSE as an example, it's the same for log-loss). Thus the validation loss at time $t$ is
+Regarding the outer objective, we choose to perform a shuffled $k=5$ cross-validation scheme on $\cD_{\operatorname{train}}$ at each time step. In practice, this means that we fit 5 models with the same architecture to different train/validation splits and average the loss results in each. More precisely, for every cross-validation split $\mathtt{cv}_j,j=1\ldots5$, we get a loss $\dfrac{1}{n} \sum^{n}_{i=1} \left(y^{(j)}_{i} - \hat{y}^{(j)}_i\right)^2$, where $n$ is the number of data points in the validation set (here we take MSE as an example, it's the same for log-loss). The outer objective is thus
 \[
-\frac{1}{5}\sum_{j=1}^{5}\ell_{j,t}(\hat{\theta}_{j,t}, D_{\operatorname{valid},j,t}) = \frac{1}{5n}\sum_{j=1}^{5} \sum_{i=1}^n \left(y^{(i)}_{j} - \hat{y}^{(i)}_{\operatorname{pred},j,t}\right)^2.
-\]
-Just like in the previous section, we can then compute and report the test error on the holdout test set $D_{\operatorname{test}}$:
-\[
-\ell_{t}(\hat{\theta}_t, D_{\operatorname{test}}) = \frac{1}{|D_{\operatorname{test}}|} \sum_{i=1}^{|D_{\operatorname{test}}|} \left(y^{(i)} - \tilde{y}^{(i)}_{\operatorname{pred},t}\right)^2.
+\cH(\blambda,\btheta) \eqdef \frac{1}{5n}\sum_{j=1}^{5} \sum_{i=1}^n \left(y^{(j)}_{i} - \hat{y}^{(j)}_i\right)^2.
 \]
 
-Note that under this experimental environment, 'keep training' does not make sense anymore. Thus for HOO, TPE and Random Search, we only need to evaluate each configuration once, contrarily to what we did in the previous setting. While for Hyperband, we still need to evaluate each configuration for a certain times based on $R$ and $s_{\max}$.
+Note that under the current setting, \Hyperband needs to be adapted. Assuming that each complete training of a classifier w.r.t. some hyper-parameter configuration is an i.i.d. sample, the elimination phase of the underlying \SHA is carried out according to the averaged loss of previous samplings.
 
-\paragraph{\textbf{Comparison}} Each plot here is averaged on 20 runs of experiments. Fig.~\ref{fig:wine} displays the results for the Wine dataset, and Fig.~\ref{fig:breast_cancer} displays the results for the Brest Cancer dataset.
+\paragraph{Results}
 
-\begin{figure}%
-    \centering
-    \subfloat[\Ada]{{\includegraphics[width=5cm]{img/uci/ada_0.pdf} }}%
-    \qquad
-    \subfloat[\GBM]{{\includegraphics[width=5cm]{img/uci/gbm_0.pdf} }}%
-    \qquad
-    \subfloat[\KNN]{{\includegraphics[width=5cm]{img/uci/knn_0.pdf} }}%
-    \qquad
-    \subfloat[\MLP]{{\includegraphics[width=5cm]{img/uci/sk_mlp_0.pdf} }}%
-    \qquad
-    \subfloat[\SVM]{{\includegraphics[width=5cm]{img/uci/svm_0.pdf} }}%
-    \qquad
-    \caption{Comparing different hyper-parameter optimization algorithms on different classifiers, trained on Wine dataset.}%
-    \label{fig:wine}%
+Like in the previous part, we also report the test error $\frac{1}{|\cD_{\operatorname{test}}|} \sum_{i=1}^{|\cD_{\operatorname{test}}|} \left(y^{(i)} - \tilde{y}^{(i)}_{\operatorname{pred},t}\right)^2$ on the holdout test set $\cD_{\operatorname{test}}$ here.
+
+Under this experimental environment, "keep training" does not make sense anymore. Thus for \HOO, \TPE and \Random, we only need to evaluate each configuration once, contrarily to what we did in the previous setting. While for \Hyperband, we still need to evaluate each configuration for a certain times based on $R$ and $s_{\max}$. Each plot here is averaged on 20 runs of experiments. Fig.~\ref{fig:wine} displays the results for the Wine dataset, and Fig.~\ref{fig:breast_cancer} displays the results for the Brest Cancer dataset.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/ada_0.pdf}
+    \caption{\Ada}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/gbm_0.pdf}
+    \caption{\GBM}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/knn_0.pdf}
+    \caption{\KNN}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/sk_mlp_0.pdf}
+    \caption{\MLP}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/svm_0.pdf}
+    \caption{\SVM}
+  \end{subfigure}
+  \caption{Comparing different hyper-parameter optimization algorithms on different classifiers, trained on Wine dataset.}
+  \label{fig:wine}
 \end{figure}
 
-\begin{figure}%
-    \centering
-    \subfloat[\Ada]{{\includegraphics[width=5cm]{img/uci/ada_1.pdf} }}%
-    \qquad
-    \subfloat[\GBM]{{\includegraphics[width=5cm]{img/uci/gbm_1.pdf} }}%
-    \qquad
-    \subfloat[\KNN]{{\includegraphics[width=5cm]{img/uci/knn_1.pdf} }}%
-    \qquad
-    \subfloat[\MLP]{{\includegraphics[width=5cm]{img/uci/sk_mlp_1.pdf} }}%
-    \qquad
-    \subfloat[\SVM]{{\includegraphics[width=5cm]{img/uci/svm_1.pdf} }}%
-    \qquad
-    \caption{Comparing different hyper-parameter optimization algorithms on different classifiers, trained on Breast Cancer dataset.}%
-    \label{fig:breast_cancer}%
+\begin{figure}
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/ada_1.pdf}
+    \caption{\Ada}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/gbm_1.pdf}
+    \caption{\GBM}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/knn_1.pdf}
+    \caption{\KNN}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/sk_mlp_1.pdf}
+    \caption{\MLP}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=\textwidth]{img/uci/svm_1.pdf}
+    \caption{\SVM}
+  \end{subfigure}
+  \caption{Comparing different hyper-parameter optimization algorithms on different classifiers, trained on Breast Cancer dataset.}
+  \label{fig:breast_cancer}
 \end{figure}
-
-\paragraph{\textbf{Discussion}} In this setting, Hyperband seems to loose its advantage of exploring more configurations. It appears to me that there is no reason for HOO, TPE and Random Search to evaluate one point several times as does Hyperband.
 
 \newpage
 \vskip 0.2in
