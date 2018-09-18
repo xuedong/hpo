@@ -14,6 +14,7 @@ from six.moves import cPickle
 import ho.hoo as hoo
 import ho.poo as poo
 import ho.hct as hct
+import ho.pct as pct
 
 
 def std_box(target, fmax, nsplits, sigma, support, support_type):
@@ -90,7 +91,7 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
     y_cum = [0. for _ in range(horizon)]
     y_sim = [0. for _ in range(horizon)]
     x_sel = [None for _ in range(horizon)]
-    htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, sigma, bbox)
+    htree = hoo.HOO(bbox.support, bbox.support_type, None, 0, rho, nu, sigma, bbox)
     cum = 0.
 
     for i in range(horizon):
@@ -109,7 +110,7 @@ def regret_hoo(bbox, rho, nu, alpha, sigma, horizon, update):
 
 def loss_hoo(bbox, rho, nu, alpha, sigma, horizon, update, director, keep=False):
     losses = [0. for _ in range(horizon)]
-    htree = hoo.HTree(bbox.support, bbox.support_type, None, 0, rho, nu, sigma, bbox)
+    htree = hoo.HOO(bbox.support, bbox.support_type, None, 0, rho, nu, sigma, bbox)
     best = 1.
     test = 1.
 
@@ -156,7 +157,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
     y_cum = [0. for _ in range(horizon)]
     y_sim = [0. for _ in range(horizon)]
     x_sel = [None for _ in range(horizon)]
-    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
+    hctree = hct.HCT(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
     cum = 0.
 
     for i in range(1, horizon+1):
@@ -177,7 +178,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
 
 def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, director, keep=False):
     losses = [0. for _ in range(horizon)]
-    hctree = hct.HCTree(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
+    hctree = hct.HCT(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
     best = 1.
     test = 1.
 
@@ -216,12 +217,12 @@ def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, director, keep=Fa
     return losses
 
 
-def regret_poo(bbox, rhos, nu, alpha, horizon, epoch):
+def regret_poo(bbox, rhos, nu, alpha, sigma, horizon, epoch):
     y_cum = [[0. for _ in range(horizon)] for _ in range(epoch)]
     y_sim = [[0. for _ in range(horizon)] for _ in range(epoch)]
     x_sel = [[None for _ in range(horizon)] for _ in range(epoch)]
     for i in range(epoch):
-        ptree = poo.PTree(bbox.support, bbox.support_type, None, 0, rhos, nu, bbox)
+        ptree = poo.POO(bbox.support, bbox.support_type, None, 0, rhos, sigma, nu, bbox)
         count = 0
         length = len(rhos)
         cum = [0.] * length
@@ -246,10 +247,10 @@ def regret_poo(bbox, rhos, nu, alpha, horizon, epoch):
     return y_cum, y_sim, x_sel
 
 
-def loss_poo(bbox, rhos, nu, alpha, horizon, epoch):
+def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, epoch):
     losses = [[0. for _ in range(horizon)] for _ in range(epoch)]
     for i in range(epoch):
-        ptree = poo.PTree(bbox.support, bbox.support_type, None, 0, rhos, nu, bbox)
+        ptree = poo.POO(bbox.support, bbox.support_type, None, 0, rhos, sigma, nu, bbox)
         count = 0
         length = len(rhos)
         cum = [0.] * length
@@ -269,6 +270,46 @@ def loss_poo(bbox, rhos, nu, alpha, horizon, epoch):
                     losses[i][count - 1] = -1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
 
     return losses
+
+
+def regret_pct(bbox, rhos, nu, c, c1, delta, horizon, epoch):
+    y_cum = [[0. for _ in range(horizon)] for _ in range(epoch)]
+    y_sim = [[0. for _ in range(horizon)] for _ in range(epoch)]
+    x_sel = [[None for _ in range(horizon)] for _ in range(epoch)]
+    for i in range(epoch):
+        print(str(i) + "/" + str(epoch))
+        tree = pct.PCT(bbox.support, bbox.support_type, None, 0, rhos, 1, nu, bbox)
+        count = 0
+        length = len(rhos)
+        cum = [0.] * length
+        emp = [0.] * length
+        smp = [0] * length
+
+        while count < horizon:
+            if count > 0:
+                tplus = int(2 ** (math.ceil(math.log(count))))
+            else:
+                tplus = 1
+            dvalue = min(c1 * delta / tplus, 0.5)
+            if count == tplus:
+                tree.update_all(c, dvalue)
+            count += 1
+
+            for k in range(length):
+                x, noisy, _ = tree.sample(k, c, dvalue)
+                cum[k] += bbox.fmax - bbox.f_mean(x)
+                # count += existed
+                emp[k] += noisy
+                smp[k] += 1
+
+                if count <= horizon:
+                    best_k = max(range(length), key=lambda y: (-float("inf") if smp[k] == 0 else emp[y]/smp[k]))
+                    y_cum[i][count-1] = 1 if smp[best_k] == 0 else cum[best_k]/float(smp[best_k])
+                    x_sel[i][count-1] = x
+                    z = x_sel[i][0:count][np.random.choice(len(x_sel[i][0:count]))]
+                    y_sim[i][count-1] = bbox.fmax - bbox.f_mean(z)
+
+    return y_cum, y_sim, x_sel
 
 
 # Plot regret curve

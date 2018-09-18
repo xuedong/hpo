@@ -5,7 +5,7 @@ import numpy as np
 import math
 
 
-class HCTree:
+class HCT(object):
     def __init__(self, support, support_type, father, depth, rho, nu, tvalue, tau, sigma, box):
         self.bvalue = float('inf')
         self.uvalue = float('inf')
@@ -31,8 +31,8 @@ class HCTree:
         # print(supports)
 
         tau = c**2 * math.log(1./dvalue) * self.rho**(-2*(self.depth+1))/(self.nu**2)
-        self.children = [HCTree(supports[i], supports_type[i],
-                                self, self.depth + 1, self.rho, self.nu, 0, tau, self.sigma, self.box)
+        self.children = [HCT(supports[i], supports_type[i],
+                             self, self.depth + 1, self.rho, self.nu, 0, tau, self.sigma, self.box)
                          for i in range(len(supports))]
         # print(self.depth)
 

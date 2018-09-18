@@ -27,9 +27,9 @@ from source.classifiers.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 288
+    horizon = 20
     iterations = 1
-    mcmc = 20
+    mcmc = 1
     rho = 0.66
     nu = 1.
     sigma = 0.1
@@ -38,16 +38,16 @@ if __name__ == '__main__':
     c = 2 * math.sqrt(1. / (1 - 0.66))
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
 
-    # models = [Ada]
-    # model_names = ['ada_']
-    # targets = [target.SklearnAda]
-    # targets_tpe = [target.HyperAda]
-    # params_ho = [d_ada]
-    models = [SVM, Ada, GBM, KNN, MLP]
-    model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_']
-    targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN, target.SklearnMLP]
-    targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN, target.HyperSKMLP]
-    params_ho = [d_svm, d_ada, d_gbm, d_knn, d_mlp]
+    models = [GBM]
+    model_names = ['gbm_']
+    targets = [target.SklearnGBM]
+    targets_tpe = [target.HyperGBM]
+    params_ho = [d_gbm]
+    # models = [SVM, Ada, GBM, KNN, MLP]
+    # model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_']
+    # targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN, target.SklearnMLP]
+    # targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN, target.HyperSKMLP]
+    # params_ho = [d_svm, d_ada, d_gbm, d_knn, d_mlp]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         params = model.get_search_space()
         for seed_id in range(mcmc):
             print('<-- Running Hyperloop -->')
-            exp_name = 'hyperloop_' + model_names[i] + '1/'
+            exp_name = 'hyperloop_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
-            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 32, 360, director, data,
+            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
                                        eta=4, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
             # s_run=0, verbose=False)
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running Hyperband -->')
-            exp_name = 'hyperband_' + model_names[i] + '1/'
+            exp_name = 'hyperband_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -124,7 +124,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running TPE -->')
-            exp_name = 'tpe_' + model_names[i] + '1/'
+            exp_name = 'tpe_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -157,7 +157,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HOO -->')
-            exp_name = 'hoo_' + model_names[i] + '1/'
+            exp_name = 'hoo_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -186,7 +186,7 @@ if __name__ == '__main__':
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HCT -->')
-            exp_name = 'hct_' + model_names[i] + '1/'
+            exp_name = 'hct_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
@@ -211,7 +211,7 @@ if __name__ == '__main__':
             end_time = timeit.default_timer()
 
             print('<-- Running Random Search -->', )
-            exp_name = 'random_' + model_names[i] + '1/'
+            exp_name = 'random_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
