@@ -10,8 +10,8 @@ import math
 import ho.hoo as hoo
 
 
-class PTree:
-    def __init__(self, support, support_type, father, depth, rhos, nu, box):
+class POO(object):
+    def __init__(self, support, support_type, father, depth, rhos, sigma, nu, box):
         self.bvalues = np.array([float("inf")] * len(rhos))
         self.uvalues = np.array([float("inf")] * len(rhos))
         self.tvalues = np.array([0] * len(rhos))
@@ -23,15 +23,17 @@ class PTree:
         self.father = father
         self.depth = depth
         self.rhos = rhos
+        self.sigma = sigma
         self.nu = nu
         self.box = box
         self.children = []
-        self.hoos = [hoo.HTree(support, support_type, father, depth, rhos[k], nu, box) for k in range(len(rhos))]
+        self.hoos = [hoo.HOO(support, support_type, father, depth, rhos[k], sigma, nu, box) for k in range(len(rhos))]
 
     def add_children(self):
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
 
-        self.children = [PTree(supports[i], supports_type[i], self, self.depth + 1, self.rhos, self.nu, self.box)
+        self.children = [POO(supports[i], supports_type[i], self, self.depth + 1,
+                             self.rhos, self.sigma, self.nu, self.box)
                          for i in range(len(supports))]
 
     def explore(self, k):
@@ -43,8 +45,8 @@ class PTree:
         else:
             return max(self.children, key=lambda x: x.bvalues[k]).explore(k)
 
-    def explore_bis(self, k):
-        return self.hoos[k].explore()
+    # def explore_bis(self, k):
+    #     return self.hoos[k].explore()
 
     def update_node(self, alpha, k):
         if self.tvalues[k] == 0:
@@ -56,8 +58,8 @@ class PTree:
 
             self.uvalues[k] = mean + hoeffding + variation
 
-    def update_node_bis(self, alpha, k):
-        self.hoos[k].update_node(alpha)
+    # def update_node_bis(self, alpha, k):
+    #     self.hoos[k].update_node(alpha)
 
     def update_path(self, reward, alpha, k):
         self.rewards[k] += reward
@@ -72,8 +74,8 @@ class PTree:
         if self.father is not None:
             self.father.update_path(reward, alpha, k)
 
-    def update_path_bis(self, reward, alpha, k):
-        self.hoos[k].update_path(reward, alpha)
+    # def update_path_bis(self, reward, alpha, k):
+    #     self.hoos[k].update_path(reward, alpha)
 
     def update_all(self, alpha):
         for k in range(len(self.rhos)):
@@ -87,9 +89,9 @@ class PTree:
             for k in range(len(self.rhos)):
                 self.bvalues[k] = min(self.uvalues[k], max([child.bvalues[k] for child in self.children]))
 
-    def update_all_bis(self, alpha):
-        for k in range(len(self.rhos)):
-            self.hoos[k].update(alpha)
+    # def update_all_bis(self, alpha):
+    #     for k in range(len(self.rhos)):
+    #         self.hoos[k].update(alpha)
 
     def sample(self, alpha, k):
         leaf = self.explore(k)
@@ -104,5 +106,5 @@ class PTree:
 
         return leaf.evaluated, leaf.noisy, existed
 
-    def sample_bis(self, alpha, k):
-        return self.hoos[k].sample(alpha)
+    # def sample_bis(self, alpha, k):
+    #     return self.hoos[k].sample(alpha)

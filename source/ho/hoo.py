@@ -8,8 +8,8 @@ import numpy as np
 import math
 
 
-class HTree:
-    def __init__(self, support, support_type, father, depth, rho, nu, sigma, box):
+class HOO(object):
+    def __init__(self, support, support_type, father, depth, rho, sigma, nu, box):
         self.bvalue = float('inf')
         self.uvalue = float('inf')
         self.tvalue = 0
@@ -30,8 +30,8 @@ class HTree:
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
         # print(supports)
 
-        self.children = [HTree(supports[i], supports_type[i], self, self.depth + 1,
-                               self.rho, self.nu, self.sigma, self.box)
+        self.children = [HOO(supports[i], supports_type[i], self, self.depth + 1,
+                             self.rho, self.nu, self.sigma, self.box)
                          for i in range(len(supports))]
         # print(self.depth)
 
