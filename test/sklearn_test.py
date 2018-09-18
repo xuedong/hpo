@@ -27,7 +27,7 @@ from source.classifiers.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 20
+    horizon = 40
     iterations = 1
     mcmc = 1
     rho = 0.66
@@ -63,98 +63,98 @@ if __name__ == '__main__':
         test_model = model()
         params = model.get_search_space()
         for seed_id in range(mcmc):
-            print('<-- Running Hyperloop -->')
-            exp_name = 'hyperloop_' + model_names[i] + '2/'
-            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(director):
-                os.makedirs(director)
-            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            sys.stdout = logger.Logger(log_dir, 'hyperloop')
+            # print('<-- Running Hyperloop -->')
+            # exp_name = 'hyperloop_' + model_names[i] + '2/'
+            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(director):
+            #     os.makedirs(director)
+            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(log_dir):
+            #     os.makedirs(log_dir)
+            # sys.stdout = logger.Logger(log_dir, 'hyperloop')
+            #
+            # start_time = timeit.default_timer()
+            #
+            # hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
+            #                            eta=4, verbose=True)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
+            # # s_run=0, verbose=False)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+            # # s_run=1, verbose=True)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+            # # s_run=2, verbose=True)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+            # # s_run=3, verbose=True)
+            # # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
+            #
+            # end_time = timeit.default_timer()
+            #
+            # print(('The code for the trial number ' +
+            #        str(seed_id) +
+            #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-            start_time = timeit.default_timer()
-
-            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
-                                       eta=4, verbose=True)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
-            # s_run=0, verbose=False)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-            # s_run=1, verbose=True)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-            # s_run=2, verbose=True)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-            # s_run=3, verbose=True)
-            # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
-
-            end_time = timeit.default_timer()
-
-            print(('The code for the trial number ' +
-                   str(seed_id) +
-                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
-
-            print('<-- Running Hyperband -->')
-            exp_name = 'hyperband_' + model_names[i] + '2/'
-            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(director):
-                os.makedirs(director)
-            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            sys.stdout = logger.Logger(log_dir, 'hyperband')
-
-            start_time = timeit.default_timer()
-
-            hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 32, 360, director, data,
-                                              eta=4, verbose=True)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
-            # s_run=0, verbose=False)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-            # s_run=1, verbose=True)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-            # s_run=2, verbose=True)
-            # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
-            # s_run=3, verbose=True)
-            # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
-
-            end_time = timeit.default_timer()
-
-            print(('The code for the trial number ' +
-                   str(seed_id) +
-                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
-
-            print('<-- Running TPE -->')
-            exp_name = 'tpe_' + model_names[i] + '2/'
-            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(director):
-                os.makedirs(director)
-            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            sys.stdout = logger.Logger(log_dir, 'tpe')
-
-            start_time = timeit.default_timer()
-
-            trials = Trials()
-
-            # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
-            f_target_tpe = targets_tpe[i](test_model, iterations, director, data)
-            objective = f_target_tpe.objective
-
-            best = fmin(objective,
-                        space=tpe_hyperopt.convert_params(params),
-                        algo=tpe.suggest,
-                        max_evals=horizon,
-                        trials=trials)
-
-            with open(director + '/results.pkl', 'wb') as file:
-                cPickle.dump([trials, best], file)
-
-            end_time = timeit.default_timer()
-
-            print(('The code for the trial number ' +
-                   str(seed_id) +
-                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+            # print('<-- Running Hyperband -->')
+            # exp_name = 'hyperband_' + model_names[i] + '2/'
+            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(director):
+            #     os.makedirs(director)
+            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(log_dir):
+            #     os.makedirs(log_dir)
+            # sys.stdout = logger.Logger(log_dir, 'hyperband')
+            #
+            # start_time = timeit.default_timer()
+            #
+            # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
+            #                                   eta=4, verbose=True)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
+            # # s_run=0, verbose=False)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+            # # s_run=1, verbose=True)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+            # # s_run=2, verbose=True)
+            # # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
+            # # s_run=3, verbose=True)
+            # # hyperband_finite.hyperband_finite(model, 'epoch', params, 1, 81, 360, director, data, eta=4, s_run=4)
+            #
+            # end_time = timeit.default_timer()
+            #
+            # print(('The code for the trial number ' +
+            #        str(seed_id) +
+            #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+            #
+            # print('<-- Running TPE -->')
+            # exp_name = 'tpe_' + model_names[i] + '2/'
+            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(director):
+            #     os.makedirs(director)
+            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(log_dir):
+            #     os.makedirs(log_dir)
+            # sys.stdout = logger.Logger(log_dir, 'tpe')
+            #
+            # start_time = timeit.default_timer()
+            #
+            # trials = Trials()
+            #
+            # # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
+            # f_target_tpe = targets_tpe[i](test_model, iterations, director, data)
+            # objective = f_target_tpe.objective
+            #
+            # best = fmin(objective,
+            #             space=tpe_hyperopt.convert_params(params),
+            #             algo=tpe.suggest,
+            #             max_evals=horizon,
+            #             trials=trials)
+            #
+            # with open(director + '/results.pkl', 'wb') as file:
+            #     cPickle.dump([trials, best], file)
+            #
+            # end_time = timeit.default_timer()
+            #
+            # print(('The code for the trial number ' +
+            #        str(seed_id) +
+            #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             print('<-- Running HOO -->')
             exp_name = 'hoo_' + model_names[i] + '2/'

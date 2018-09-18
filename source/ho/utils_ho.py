@@ -247,27 +247,59 @@ def regret_poo(bbox, rhos, nu, alpha, sigma, horizon, epoch):
     return y_cum, y_sim, x_sel
 
 
-def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, epoch):
-    losses = [[0. for _ in range(horizon)] for _ in range(epoch)]
-    for i in range(epoch):
-        ptree = poo.POO(bbox.support, bbox.support_type, None, 0, rhos, sigma, nu, bbox)
-        count = 0
-        length = len(rhos)
-        cum = [0.] * length
-        emp = [0.] * length
-        smp = [0] * length
+def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
+    losses = [0. for _ in range(horizon)]
+    ptree = poo.POO(bbox.support, bbox.support_type, None, 0, rhos, sigma, nu, bbox)
+    count = 0
+    length = len(rhos)
+    cum = [0.] * length
+    emp = [0.] * length
+    smp = [0] * length
+    best = 1.
+    test = 1.
 
-        while count < horizon:
-            for k in range(length):
-                x, noisy, existed = ptree.sample(alpha, k)
-                cum[k] += bbox.f_mean(x)
-                count += existed
-                emp[k] += noisy
-                smp[k] += 1
+    # bar = progressbar.ProgressBar()
 
-                if existed and count <= horizon:
-                    best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
-                    losses[i][count - 1] = -1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+    track_valid = np.array([1.])
+    track_test = np.array([1.])
+    while count < horizon:
+        current = -1
+        for k in range(length):
+            x, reward, noisy, existed = ptree.sample(alpha, k)
+            cum[k] += reward
+            count += existed
+            emp[k] += noisy
+            smp[k] += 1
+
+            if existed and count <= horizon:
+                best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
+                current = -1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+
+        if not keep:
+            [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            if -current < best:
+                best = -current
+                test = test_score
+                losses[count-1] = test
+            else:
+                losses[count-1] = test
+        else:
+            [current_track_valid, current_track_test] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            # print(current_track_test)
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            for j in range(1, len(current_track_valid)):
+                if current_track_valid[j] < current_best_valid:
+                    current_best_valid = current_track_valid[j]
+                    current_test = current_track_test[j]
+                    track_valid = np.append(track_valid, current_best_valid)
+                    track_test = np.append(track_test, current_test)
+                else:
+                    track_valid = np.append(track_valid, current_best_valid)
+                    track_test = np.append(track_test, current_test)
+
+    if keep:
+        losses = track_test[1:]
 
     return losses
 

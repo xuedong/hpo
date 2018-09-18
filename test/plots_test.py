@@ -55,8 +55,10 @@ if __name__ == "__main__":
     #     path = "../result/hyperband_" + name + "0"
     #     plots.plot_hyperband_only(path, 1, name, '', 'wine', 0)
 
-    # path = "../result/hct_ada_0"
-    # plots.plot_hct(path, 1, 'ada_', '', 'wine', 0)
+    path = "../result/hct_gbm_2"
+    plots.plot_hct(path, 1, 'gbm_', '', 'breast_cancer', 2)
+    path = "../result/hoo_gbm_2"
+    plots.plot_hoo(path, 1, 'gbm_', '', 'breast_cancer', 2)
 
     # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
     # for name in names:

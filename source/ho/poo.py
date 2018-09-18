@@ -100,11 +100,12 @@ class POO(object):
         if leaf.noisy is None:
             x = self.box.rand(leaf.support, leaf.support_type)
             leaf.evaluated = x
-            leaf.noisy = self.box.f_noised(x)
+            leaf.mean_reward = self.box.f_mean(x)
+            leaf.noisy = leaf.mean_reward + self.sigma * np.random.normal(0, self.sigma)
             existed = True
         leaf.update_path(leaf.noisy, alpha, k)
 
-        return leaf.evaluated, leaf.noisy, existed
+        return leaf.evaluated, leaf.mean_reward, leaf.noisy, existed
 
     # def sample_bis(self, alpha, k):
     #     return self.hoos[k].sample(alpha)
