@@ -408,6 +408,57 @@ def plot_hct(path, runs, classifier_name, optimizer_name, dataset_name, idx):
     plt.close(fig)
 
 
+def plot_pct(path, runs, classifier_name, optimizer_name, dataset_name, idx):
+    """
+
+    :param path: path to which the result image is stored
+    :param runs: number of runs
+    :param classifier_name: name of the classifier
+    :param optimizer_name: name of the optimizer
+    :param dataset_name: name of the dataset
+    :param idx: id of the experiment
+    :return:
+    """
+    os.chdir(path)
+    fig = plt.figure()
+    shortest = sys.maxsize
+
+    losses = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(loss) < shortest:
+            shortest = len(loss)
+    for i in range(runs):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        losses[i] = loss[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest+1)
+    y = np.mean(losses, axis=0)
+    y = np.append([1.], y)
+    # if devs:
+    #     err = np.std(tracks, axis=0)
+    #     lower = y - err
+    #     higher = y + err
+    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
+    plt.plot(x, y, label=r"POO(HCT)")
+
+    plt.grid()
+    # plt.ylim((0, 1))
+    plt.legend(loc=0)
+    plt.ylabel('Test Error')
+    plt.xlabel('Number of Evaluations')
+    save_path = os.path.join(os.path.abspath('../../'), 'img/{}'.format('pct_' + classifier_name + str(idx)))
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    plt.savefig(os.path.join(os.path.abspath('../../'), 'img/{}/{}.pdf'.format('pct_' + classifier_name +
+                                                                               str(idx), dataset_name)))
+
+    os.chdir('..')
+
+    plt.close(fig)
+
+
 def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem):
     x = np.arange(1, len(random) + 1)
     fig = plt.figure()

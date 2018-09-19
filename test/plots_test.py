@@ -57,8 +57,8 @@ if __name__ == "__main__":
 
     # path = "../result/hct_gbm_2"
     # plots.plot_hct(path, 1, 'gbm_', '', 'breast_cancer', 2)
-    path = "../result/poo_gbm_2"
-    plots.plot_poo(path, 1, 'gbm_', '', 'breast_cancer', 2)
+    path = "../result/pct_gbm_2"
+    plots.plot_pct(path, 1, 'gbm_', '', 'breast_cancer', 2)
 
     # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
     # for name in names:

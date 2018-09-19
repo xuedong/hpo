@@ -6,10 +6,10 @@ import math
 
 
 class HCT(object):
-    def __init__(self, support, support_type, father, depth, rho, nu, tvalue, tau, sigma, box):
+    def __init__(self, support, support_type, father, depth, rho, nu, tau, sigma, box):
         self.bvalue = float('inf')
         self.uvalue = float('inf')
-        self.tvalue = tvalue
+        self.tvalue = 0
         self.tau = tau
         self.reward = 0.
         self.mean_reward = None
@@ -32,7 +32,7 @@ class HCT(object):
 
         tau = c**2 * math.log(1./dvalue) * self.rho**(-2*(self.depth+1))/(self.nu**2)
         self.children = [HCT(supports[i], supports_type[i],
-                             self, self.depth + 1, self.rho, self.nu, 0, tau, self.sigma, self.box)
+                             self, self.depth + 1, self.rho, self.nu, tau, self.sigma, self.box)
                          for i in range(len(supports))]
         # print(self.depth)
 

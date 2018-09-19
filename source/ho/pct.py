@@ -4,9 +4,11 @@ import random
 import numpy as np
 import math
 
+# import source.ho.hct as hct
+
 
 class PCT(object):
-    def __init__(self, support, support_type, father, depth, rhos, tau, nu, box):
+    def __init__(self, support, support_type, father, depth, rhos, taus, sigma, nu, box):
         self.bvalues = np.array([float("inf")] * len(rhos))
         self.uvalues = np.array([float("inf")] * len(rhos))
         self.tvalues = np.array([0] * len(rhos))
@@ -18,25 +20,30 @@ class PCT(object):
         self.father = father
         self.depth = depth
         self.rhos = rhos
+        self.taus = taus
+        self.sigma = sigma
         self.nu = nu
         self.box = box
         self.children = []
         # self.hcts = [hct.HCT(support, support_type, father, depth, rhos[k], tau, nu, box)
         #              for k in range(len(rhos))]
 
-    def add_children(self, k, c, dvalue):
+    def add_children(self, c, dvalue):
         supports, supports_type = self.box.split(self.support, self.support_type, self.box.nsplits)
 
-        tau = c ** 2 * math.log(1. / dvalue) * self.rhos[k] ** (-2 * (self.depth + 1)) / (self.nu ** 2)
-        self.children = [PCT(supports[i], supports_type[i], self, self.depth + 1, self.rhos,
-                             tau, self.nu, self.box)
+        taus = np.array([c ** 2 * math.log(1. / dvalue) * self.rhos[k] ** (-2 * (self.depth + 1)) / (self.nu ** 2)
+                         for k in range(len(self.rhos))])
+        # print(taus)
+        self.children = [PCT(supports[i], supports_type[i], self, self.depth + 1, self.rhos, taus, self.sigma,
+                             self.nu, self.box)
                          for i in range(len(supports))]
 
     def explore(self, k, c, dvalue):
-        if self.tvalues[k] == 0:
+        # print(self.taus)
+        if self.tvalues[k] < self.taus[k]:
             return self
         elif not self.children:
-            self.add_children(k, c, dvalue)
+            self.add_children(c, dvalue)
             return random.choice(self.children)
         else:
             return max(self.children, key=lambda x: x.bvalues[k]).explore(k, c, dvalue)
@@ -84,8 +91,9 @@ class PCT(object):
         if leaf.noisy is None:
             x = self.box.center(leaf.support, leaf.support_type)
             leaf.evaluated = x
-            leaf.noisy = self.box.f_noised(x)
+            leaf.mean_reward = self.box.f_mean(x)
+            leaf.noisy = leaf.mean_reward + self.sigma * np.random.normal(0, self.sigma)
             existed = True
         leaf.update_path(leaf.noisy, k, c, dvalue)
 
-        return leaf.evaluated, leaf.noisy, existed
+        return leaf.evaluated, leaf.mean_reward, leaf.noisy, existed

@@ -157,7 +157,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
     y_cum = [0. for _ in range(horizon)]
     y_sim = [0. for _ in range(horizon)]
     x_sel = [None for _ in range(horizon)]
-    hctree = hct.HCT(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
+    hctree = hct.HCT(bbox.support, bbox.support_type, None, 0, rho, nu, 1, sigma, bbox)
     cum = 0.
 
     for i in range(1, horizon+1):
@@ -178,7 +178,7 @@ def regret_hct(bbox, rho, nu, c, c1, delta, sigma, horizon):
 
 def loss_hct(bbox: Box, rho, nu, c, c1, delta, sigma, horizon, director, keep=False):
     losses = [0. for _ in range(horizon)]
-    hctree = hct.HCT(bbox.support, bbox.support_type, None, 0, rho, nu, 1, 1, sigma, bbox)
+    hctree = hct.HCT(bbox.support, bbox.support_type, None, 0, rho, nu, 1, sigma, bbox)
     best = 1.
     test = 1.
 
@@ -263,7 +263,7 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
     track_valid = np.array([1.])
     track_test = np.array([1.])
     while count < horizon:
-        current = -1
+        current = 1
         for k in range(length):
             x, reward, noisy, existed = ptree.sample(alpha, k)
             cum[k] += reward
@@ -273,7 +273,7 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
 
             if existed and count <= horizon:
                 best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
-                current = -1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+                current = 1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
 
         if not keep:
             [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
@@ -310,7 +310,7 @@ def regret_pct(bbox, rhos, nu, c, c1, delta, horizon, epoch):
     x_sel = [[None for _ in range(horizon)] for _ in range(epoch)]
     for i in range(epoch):
         print(str(i) + "/" + str(epoch))
-        tree = pct.PCT(bbox.support, bbox.support_type, None, 0, rhos, 1, nu, bbox)
+        tree = pct.PCT(bbox.support, bbox.support_type, None, 0, rhos, np.array([1] * len(rhos)), 1, nu, bbox)
         count = 0
         length = len(rhos)
         cum = [0.] * length
@@ -342,6 +342,72 @@ def regret_pct(bbox, rhos, nu, c, c1, delta, horizon, epoch):
                     y_sim[i][count-1] = bbox.fmax - bbox.f_mean(z)
 
     return y_cum, y_sim, x_sel
+
+
+def loss_pct(bbox, rhos, nu, c, c1, delta, horizon, director, keep=False):
+    losses = [0. for _ in range(horizon)]
+    ptree = pct.PCT(bbox.support, bbox.support_type, None, 0, rhos, np.array([1.] * len(rhos)), 1, nu, bbox)
+    count = 0
+    length = len(rhos)
+    cum = [0.] * length
+    emp = [0.] * length
+    smp = [0] * length
+    best = 1.
+    test = 1.
+
+    # bar = progressbar.ProgressBar()
+
+    track_valid = np.array([1.])
+    track_test = np.array([1.])
+    while count < horizon:
+        if count > 0:
+            tplus = int(2 ** (math.ceil(math.log(count))))
+        else:
+            tplus = 1
+        dvalue = min(c1 * delta / tplus, 0.5)
+        if count == tplus:
+            ptree.update_all(c, dvalue)
+        count += 1
+
+        current = 1
+        for k in range(length):
+            x, reward, noisy, existed = ptree.sample(k, c, dvalue)
+            cum[k] += reward
+            # count += existed
+            emp[k] += noisy
+            smp[k] += 1
+
+            if existed and count <= horizon:
+                best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
+                current = 1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+
+        if not keep:
+            [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            if -current < best:
+                best = -current
+                test = test_score
+                losses[count-1] = test
+            else:
+                losses[count-1] = test
+        else:
+            [current_track_valid, current_track_test] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            # print(current_track_test)
+            current_best_valid = track_valid[-1]
+            current_test = track_test[-1]
+            for j in range(1, len(current_track_valid)):
+                if current_track_valid[j] < current_best_valid:
+                    current_best_valid = current_track_valid[j]
+                    current_test = current_track_test[j]
+                    track_valid = np.append(track_valid, current_best_valid)
+                    track_test = np.append(track_test, current_test)
+                else:
+                    track_valid = np.append(track_valid, current_best_valid)
+                    track_test = np.append(track_test, current_test)
+
+    if keep:
+        losses = track_test[1:]
+
+    return losses
 
 
 # Plot regret curve
