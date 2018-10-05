@@ -369,7 +369,7 @@ def loss_pct(bbox, rhos, nu, c, c1, delta, horizon, director, keep=False):
             ptree.update_all(c, dvalue)
         count += 1
 
-        current = 1
+        current = -1
         for k in range(length):
             x, reward, noisy, existed = ptree.sample(k, c, dvalue)
             cum[k] += reward
@@ -379,7 +379,8 @@ def loss_pct(bbox, rhos, nu, c, c1, delta, horizon, director, keep=False):
 
             if existed and count <= horizon:
                 best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
-                current = 1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+                current = -1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+        print(current)
 
         if not keep:
             [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))

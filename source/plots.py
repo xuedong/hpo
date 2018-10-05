@@ -553,7 +553,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     os.chdir('..')
 
-    # HOO
+    # POO
     os.chdir(paths[2])
     shortest = sys.maxsize
 
@@ -576,13 +576,13 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"HOO")
+        plt.plot(x, y, label=r"POO(HOO)")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"HOO")
+        plt.loglog(x, y, label=r"POO(HOO)")
 
     os.chdir('..')
 
-    # HCT
+    # PCT
     os.chdir(paths[3])
     shortest = sys.maxsize
 
@@ -605,9 +605,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"HCT")
+        plt.plot(x, y, label=r"POO(HCT)")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"HCT")
+        plt.loglog(x, y, label=r"POO(HCT)")
 
     os.chdir('..')
 
@@ -672,7 +672,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     plt.grid()
     # plt.xlim((0, 400))
-    plt.ylim((0, 0.2))
+    # plt.ylim((0, 0.2))
     plt.legend(loc=0)
     plt.ylabel('Test Error')
     if resource_type == 'epochs':

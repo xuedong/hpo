@@ -57,19 +57,20 @@ if __name__ == "__main__":
 
     # path = "../result/hct_gbm_2"
     # plots.plot_hct(path, 1, 'gbm_', '', 'breast_cancer', 2)
-    path = "../result/pct_gbm_2"
-    plots.plot_pct(path, 1, 'gbm_', '', 'breast_cancer', 2)
+    # path = "../result/pct_gbm_2"
+    # plots.plot_pct(path, 4, 'gbm_', '', 'breast_cancer', 2)
 
     # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
-    # for name in names:
-    #     path0 = "../result/hyperband_" + name + "1"
-    #     path1 = "../result/tpe_" + name + "1"
-    #     path2 = "../result/hoo_" + name + "1"
-    #     path3 = "../result/hct_" + name + "1"
-    #     path4 = "../result/random_" + name + "1"
-    #     path5 = "../result/hyperloop_" + name + "1"
-    #     paths = [path0, path1, path2, path3, path4, path5]
-    #     plots.plot_all(paths, 20, name, '', 'breast_cancer', 1, 'iterations', type_plot='linear', devs=False)
+    names = ['gbm_']
+    for name in names:
+        path0 = "../result/hyperband_" + name + "2"
+        path1 = "../result/tpe_" + name + "2"
+        path2 = "../result/poo_" + name + "2"
+        path3 = "../result/pct_" + name + "2"
+        path4 = "../result/random_" + name + "2"
+        # path5 = "../result/hyperloop_" + name + "1"
+        paths = [path0, path1, path2, path3, path4]
+        plots.plot_all(paths, 4, name, '', 'breast_cancer', 2, 'iterations', type_plot='linear', devs=False)
 
     # path = "../result/hyperloop_mlp_1/"
     # plots.plot_hyperloop_only(path, 4, 'mlp_', 'sgd_', 'mnist', 1)
