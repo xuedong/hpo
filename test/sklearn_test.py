@@ -17,11 +17,11 @@ import source.heuristics.hyperloop as hyperloop
 import bo.tpe_hyperopt as tpe_hyperopt
 import baseline.random_search as random_search
 import ho.utils_ho as utils_ho
-from source.classifiers.svm_sklearn import *
-from source.classifiers.ada_sklearn import *
-from source.classifiers.gbm_sklearn import *
-from source.classifiers.knn_sklearn import *
-from source.classifiers.mlp_sklearn import *
+from source.classifiers.sklearn.svm_sklearn import *
+from source.classifiers.sklearn.ada_sklearn import *
+from source.classifiers.sklearn.gbm_sklearn import *
+from source.classifiers.sklearn.knn_sklearn import *
+from source.classifiers.sklearn.mlp_sklearn import *
 # from source.classifiers.rf_sklearn import *
 # from source.classifiers.tree_sklearn import *
 

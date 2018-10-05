@@ -14,9 +14,9 @@ from hyperopt import fmin
 from hyperopt import Trials
 
 import target
-import classifiers.logistic as logistic
-import classifiers.mlp as mlp
-import classifiers.cnn as cnn
+import classifiers.theano.logistic as logistic
+import classifiers.theano.mlp as mlp
+import classifiers.theano.cnn as cnn
 import hyperband.hyperband_finite as hyperband_finite
 import bo.tpe_hyperopt as tpe_hyperopt
 import baseline.random_search as random_search
