@@ -17,9 +17,9 @@ from six.moves import cPickle
 from hyperopt import STATUS_OK
 
 import source.utils as utils
-import source.classifiers.logistic as logistic
-import source.classifiers.mlp as mlp
-import source.classifiers.cnn as cnn
+import source.classifiers.theano.logistic as logistic
+import source.classifiers.theano.mlp as mlp
+import source.classifiers.theano.cnn as cnn
 
 # from sklearn.metrics import log_loss, mean_squared_error
 # from sklearn.model_selection import train_test_split, KFold

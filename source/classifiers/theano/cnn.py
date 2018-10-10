@@ -12,10 +12,10 @@ import theano.tensor as ts
 from theano.tensor.signal import pool
 from theano.tensor.nnet import conv2d
 
-from models import Model
-from params import Param
-from classifiers.logistic import LogisticRegression
-from classifiers.mlp import *
+from source.models import Model
+from source.params import Param
+from source.classifiers.theano.logistic import LogisticRegression
+from source.classifiers.theano.mlp import *
 
 
 class ConvolutionPoolLayer(object):

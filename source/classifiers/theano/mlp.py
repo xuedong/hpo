@@ -12,7 +12,7 @@ import theano.tensor as ts
 
 from models import Model
 from params import Param
-from classifiers.logistic import LogisticRegression
+from classifiers.theano.logistic import LogisticRegression
 
 
 class HiddenLayer(object):

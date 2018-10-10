@@ -14,13 +14,13 @@ from hyperopt import fmin
 from hyperopt import Trials
 
 import target
-import classifiers.theano.logistic as logistic
-import classifiers.theano.mlp as mlp
-import classifiers.theano.cnn as cnn
-import hyperband.hyperband_finite as hyperband_finite
-import bo.tpe_hyperopt as tpe_hyperopt
-import baseline.random_search as random_search
-import ho.utils_ho as utils_ho
+# import source.classifiers.theano.logistic as logistic
+# import source.classifiers.theano.mlp as mlp
+import source.classifiers.theano.cnn as cnn
+import source.hyperband.hyperband_finite as hyperband_finite
+import source.bo.tpe_hyperopt as tpe_hyperopt
+import source.baseline.random_search as random_search
+import source.ho.utils_ho as utils_ho
 
 
 def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
@@ -40,7 +40,7 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
     exp_id = 1
 
-    for seed_id in range(1, mcmc):
+    for seed_id in range(mcmc):
         print('<-- Running Hyperband -->')
         exp_name = 'hyperband_' + model + '_' + str(exp_id) + '/'
         director = output_dir + '../result/' + exp_name + model_name + str(seed_id)
@@ -223,5 +223,5 @@ def main(model, mcmc, rho, nu, sigma, delta, horizon, epochs):
 
 
 if __name__ == "__main__":
-    main('cnn', 5, 0.66, 1., 0.1, 0.05, 9, 20)
+    main('cnn', 1, 0.66, 1., 0.1, 0.05, 9, 20)
     # main('mlp', 8, 0.66, 1., 0.1, 0.05, 16, 100)
