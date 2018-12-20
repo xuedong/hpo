@@ -24,10 +24,10 @@ def main(model, mcmc):
     rng = np.random.RandomState(12345)
     model_name = model + '_sgd_'
 
-    test_model = mlp.MLP
-    params = mlp.MLP.get_search_space()
-    # test_model = logistic.LogisticRegression
-    # params = logistic.LogisticRegression.get_search_space()
+    # test_model = mlp.MLP
+    # params = mlp.MLP.get_search_space()
+    test_model = logistic.LogisticRegression
+    params = logistic.LogisticRegression.get_search_space()
 
     exp_id = 0
 
