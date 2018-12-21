@@ -41,8 +41,8 @@ if __name__ == '__main__':
 
     models = [SVM]
     model_names = ['svm_']
-    targets = [target.SklearnMLP]
-    targets_tpe = [target.HyperSKMLP]
+    targets = [target.SklearnSVM]
+    targets_tpe = [target.HyperSVM]
     params_ho = [d_svm]
     # models = [SVM, Ada, GBM, KNN, MLP]
     # model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_']
@@ -157,15 +157,15 @@ if __name__ == '__main__':
                    str(seed_id) +
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-            print('<-- Running POO -->')
-            exp_name = 'poo_' + model_names[i] + '2/'
+            print('<-- Running GPO -->')
+            exp_name = 'gpo_' + model_names[i] + '2/'
             director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(director):
                 os.makedirs(director)
             log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
             if not os.path.exists(log_dir):
                 os.makedirs(log_dir)
-            sys.stdout = logger.Logger(log_dir, 'poo')
+            sys.stdout = logger.Logger(log_dir, 'gpo')
 
             start_time = timeit.default_timer()
 
@@ -187,31 +187,31 @@ if __name__ == '__main__':
                    str(seed_id) +
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-            print('<-- Running PCT -->')
-            exp_name = 'pct_' + model_names[i] + '2/'
-            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(director):
-                os.makedirs(director)
-            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            sys.stdout = logger.Logger(log_dir, 'pct')
-
-            start_time = timeit.default_timer()
-
-            rhos = [float(j) / float(rhomax) for j in range(1, rhomax + 1)]
-            f_target = targets[i](test_model, x, y, '5fold', problem, director)
-            bbox = utils_ho.std_box(f_target, None, 3, 0.1,
-                                    [params_ho[i][key][1] for key in params_ho[i].keys()],
-                                    [params_ho[i][key][0] for key in params_ho[i].keys()])
-            losses = utils_ho.loss_pct(bbox=bbox, rhos=rhos, nu=nu, c=c, c1=c1, delta=delta,
-                                       horizon=horizon, director=director)
-            losses = np.array(losses)
-
-            with open(director + '/results.pkl', 'wb') as file:
-                cPickle.dump(-losses, file)
-
-            end_time = timeit.default_timer()
+            # print('<-- Running PCT -->')
+            # exp_name = 'pct_' + model_names[i] + '2/'
+            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(director):
+            #     os.makedirs(director)
+            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            # if not os.path.exists(log_dir):
+            #     os.makedirs(log_dir)
+            # sys.stdout = logger.Logger(log_dir, 'pct')
+            #
+            # start_time = timeit.default_timer()
+            #
+            # rhos = [float(j) / float(rhomax) for j in range(1, rhomax + 1)]
+            # f_target = targets[i](test_model, x, y, '5fold', problem, director)
+            # bbox = utils_ho.std_box(f_target, None, 3, 0.1,
+            #                         [params_ho[i][key][1] for key in params_ho[i].keys()],
+            #                         [params_ho[i][key][0] for key in params_ho[i].keys()])
+            # losses = utils_ho.loss_pct(bbox=bbox, rhos=rhos, nu=nu, c=c, c1=c1, delta=delta,
+            #                            horizon=horizon, director=director)
+            # losses = np.array(losses)
+            #
+            # with open(director + '/results.pkl', 'wb') as file:
+            #     cPickle.dump(-losses, file)
+            #
+            # end_time = timeit.default_timer()
 
             print('<-- Running Random Search -->', )
             exp_name = 'random_' + model_names[i] + '2/'

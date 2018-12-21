@@ -553,7 +553,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     os.chdir('..')
 
-    # POO
+    # GPO(POO)
     os.chdir(paths[2])
     shortest = sys.maxsize
 
@@ -576,43 +576,43 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"POO(HOO)")
+        plt.plot(x, y, label=r"GPO(POO)")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"POO(HOO)")
+        plt.loglog(x, y, label=r"GPO(POO)")
 
     os.chdir('..')
 
-    # PCT
-    os.chdir(paths[3])
-    shortest = sys.maxsize
-
-    losses = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        if len(loss) < shortest:
-            shortest = len(loss)
-    for i in range(runs):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-        losses[i] = loss[0:shortest]
-
-    # length = len(tracks[0])
-    x = range(shortest+1)
-    y = np.mean(losses, axis=0)
-    y = np.append([1.], y)
-    if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, facecolor='lightblue')
-    if type_plot == 'linear':
-        plt.plot(x, y, label=r"POO(HCT)")
-    elif type_plot == 'log':
-        plt.loglog(x, y, label=r"POO(HCT)")
-
-    os.chdir('..')
+    # # PCT
+    # os.chdir(paths[3])
+    # shortest = sys.maxsize
+    #
+    # losses = np.array([None for _ in range(runs)])
+    # for i in range(runs):
+    #     loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    #     if len(loss) < shortest:
+    #         shortest = len(loss)
+    # for i in range(runs):
+    #     loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    #     losses[i] = loss[0:shortest]
+    #
+    # # length = len(tracks[0])
+    # x = range(shortest+1)
+    # y = np.mean(losses, axis=0)
+    # y = np.append([1.], y)
+    # if devs:
+    #     err = np.std(tracks, axis=0)
+    #     lower = y - err
+    #     higher = y + err
+    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
+    # if type_plot == 'linear':
+    #     plt.plot(x, y, label=r"POO(HCT)")
+    # elif type_plot == 'log':
+    #     plt.loglog(x, y, label=r"POO(HCT)")
+    #
+    # os.chdir('..')
 
     # Random Search
-    os.chdir(paths[4])
+    os.chdir(paths[3])
     shortest = sys.maxsize
 
     tracks = np.array([None for _ in range(runs)])
@@ -641,34 +641,34 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     os.chdir('..')
 
-    # # Hyperloop
-    # os.chdir(paths[5])
-    # shortest = sys.maxsize
-    #
-    # tracks = np.array([None for _ in range(runs)])
-    # for i in range(runs):
-    #     [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-    #     if len(track) < shortest:
-    #         shortest = len(track)
-    #         print(shortest)
-    # for i in range(runs):
-    #     [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
-    #     tracks[i] = track[0:shortest]
-    #
-    # # length = len(tracks[0])
-    # x = range(shortest)
-    # y = np.mean(tracks, axis=0)
-    # if devs:
-    #     err = np.std(tracks, axis=0)
-    #     lower = y - err
-    #     higher = y + err
-    #     plt.fill_between(x, lower, higher, alpha=0.5)
-    # if type_plot == 'linear':
-    #     plt.plot(x, y, label=r"Heuristic")
-    # elif type_plot == 'log':
-    #     plt.loglog(x, y, label=r"Heuristic")
-    #
-    # os.chdir('..')
+    # Hyperloop
+    os.chdir(paths[4])
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+            print(shortest)
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, alpha=0.5)
+    if type_plot == 'linear':
+        plt.plot(x, y, label=r"Heuristic")
+    elif type_plot == 'log':
+        plt.loglog(x, y, label=r"Heuristic")
+
+    os.chdir('..')
 
     plt.grid()
     # plt.xlim((0, 400))
