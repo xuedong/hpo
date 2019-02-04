@@ -2,6 +2,7 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from six.moves import cPickle
 
 from bo.tpe_hyperopt import combine_tracks

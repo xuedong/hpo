@@ -27,7 +27,7 @@ from source.classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 1000
+    horizon = 40
     iterations = 1
     mcmc = 1
     rhomax = 20
@@ -53,8 +53,8 @@ if __name__ == '__main__':
     # rng = np.random.RandomState(12345)
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'breast_cancer.csv'
-    problem = 'binary'
+    dataset = 'wine.csv'
+    problem = 'cont'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
     x, y = data
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
-            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 24, 360, director, data,
+            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
                                        eta=2, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
             # s_run=0, verbose=False)
@@ -106,8 +106,8 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
-            # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
-            #                                   eta=4, verbose=True)
+            hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
+                                              eta=2, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
             #                                   s_run=0, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 32, 360, director, data, eta=4,
@@ -116,8 +116,8 @@ if __name__ == '__main__':
             #                                   s_run=2, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 32, 360, director, data, eta=4,
             #                                   s_run=3, verbose=True)
-            hyperband_finite.hyperband_finite(model, 'iterations', params, 1, 24, 360, director, data, eta=2,
-                                              s_run=4, verbose=True)
+            # hyperband_finite.hyperband_finite(model, 'iterations', params, 1, 24, 360, director, data, eta=2,
+            #                                   s_run=4, verbose=True)
 
             end_time = timeit.default_timer()
 
@@ -125,68 +125,68 @@ if __name__ == '__main__':
                    str(seed_id) +
                    ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
-            # print('<-- Running TPE -->')
-            # exp_name = 'tpe_' + model_names[i] + '2/'
-            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            # if not os.path.exists(director):
-            #     os.makedirs(director)
-            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            # if not os.path.exists(log_dir):
-            #     os.makedirs(log_dir)
-            # sys.stdout = logger.Logger(log_dir, 'tpe')
-            #
-            # start_time = timeit.default_timer()
-            #
-            # trials = Trials()
-            #
-            # # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
-            # f_target_tpe = targets_tpe[i](test_model, iterations, director, data)
-            # objective = f_target_tpe.objective
-            #
-            # best = fmin(objective,
-            #             space=tpe_hyperopt.convert_params(params),
-            #             algo=tpe.suggest,
-            #             max_evals=horizon,
-            #             trials=trials)
-            #
-            # with open(director + '/results.pkl', 'wb') as file:
-            #     cPickle.dump([trials, best], file)
-            #
-            # end_time = timeit.default_timer()
-            #
-            # print(('The code for the trial number ' +
-            #        str(seed_id) +
-            #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
-            #
-            # print('<-- Running GPO -->')
-            # exp_name = 'gpo_' + model_names[i] + '2/'
-            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            # if not os.path.exists(director):
-            #     os.makedirs(director)
-            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            # if not os.path.exists(log_dir):
-            #     os.makedirs(log_dir)
-            # sys.stdout = logger.Logger(log_dir, 'gpo')
-            #
-            # start_time = timeit.default_timer()
-            #
-            # rhos = [float(j) / float(rhomax) for j in range(1, rhomax + 1)]
-            # f_target = targets[i](test_model, x, y, '5fold', problem, director)
-            # bbox = utils_ho.std_box(f_target, None, 3, 0.1,
-            #                         [params_ho[i][key][1] for key in params_ho[i].keys()],
-            #                         [params_ho[i][key][0] for key in params_ho[i].keys()])
-            # losses = utils_ho.loss_poo(bbox=bbox, rhos=rhos, nu=nu, alpha=alpha, sigma=sigma,
-            #                            horizon=horizon, director=director)
-            # losses = np.array(losses)
-            #
-            # with open(director + '/results.pkl', 'wb') as file:
-            #     cPickle.dump(-losses, file)
-            #
-            # end_time = timeit.default_timer()
-            #
-            # print(('The code for the trial number ' +
-            #        str(seed_id) +
-            #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+            print('<-- Running TPE -->')
+            exp_name = 'tpe_' + model_names[i] + '2/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'tpe')
+
+            start_time = timeit.default_timer()
+
+            trials = Trials()
+
+            # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
+            f_target_tpe = targets_tpe[i](test_model, iterations, director, data)
+            objective = f_target_tpe.objective
+
+            best = fmin(objective,
+                        space=tpe_hyperopt.convert_params(params),
+                        algo=tpe.suggest,
+                        max_evals=horizon,
+                        trials=trials)
+
+            with open(director + '/results.pkl', 'wb') as file:
+                cPickle.dump([trials, best], file)
+
+            end_time = timeit.default_timer()
+
+            print(('The code for the trial number ' +
+                   str(seed_id) +
+                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+            print('<-- Running GPO -->')
+            exp_name = 'gpo_' + model_names[i] + '2/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'gpo')
+
+            start_time = timeit.default_timer()
+
+            rhos = [float(j) / float(rhomax) for j in range(1, rhomax + 1)]
+            f_target = targets[i](test_model, x, y, '5fold', problem, director)
+            bbox = utils_ho.std_box(f_target, None, 3, 0.1,
+                                    [params_ho[i][key][1] for key in params_ho[i].keys()],
+                                    [params_ho[i][key][0] for key in params_ho[i].keys()])
+            losses = utils_ho.loss_poo(bbox=bbox, rhos=rhos, nu=nu, alpha=alpha, sigma=sigma,
+                                       horizon=horizon, director=director)
+            losses = np.array(losses)
+
+            with open(director + '/results.pkl', 'wb') as file:
+                cPickle.dump(-losses, file)
+
+            end_time = timeit.default_timer()
+
+            print(('The code for the trial number ' +
+                   str(seed_id) +
+                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
 
             # print('<-- Running PCT -->')
             # exp_name = 'pct_' + model_names[i] + '2/'
@@ -214,25 +214,25 @@ if __name__ == '__main__':
             #
             # end_time = timeit.default_timer()
 
-            # print('<-- Running Random Search -->', )
-            # exp_name = 'random_' + model_names[i] + '2/'
-            # director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
-            # if not os.path.exists(director):
-            #     os.makedirs(director)
-            # log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
-            # if not os.path.exists(log_dir):
-            #     os.makedirs(log_dir)
-            # sys.stdout = logger.Logger(log_dir, 'random')
-            #
-            # start_time = timeit.default_timer()
-            #
-            # best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
-            #                                                                      director, params,
-            #                                                                      1, data, verbose=True)
-            # cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
-            #
-            # end_time = timeit.default_timer()
-            #
-            # print(('The code for the trial number ' +
-            #        str(seed_id) +
-            #        ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+            print('<-- Running Random Search -->', )
+            exp_name = 'random_' + model_names[i] + '2/'
+            director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(director):
+                os.makedirs(director)
+            log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            sys.stdout = logger.Logger(log_dir, 'random')
+
+            start_time = timeit.default_timer()
+
+            best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
+                                                                                 director, params,
+                                                                                 1, data, verbose=True)
+            cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
+
+            end_time = timeit.default_timer()
+
+            print(('The code for the trial number ' +
+                   str(seed_id) +
+                   ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
