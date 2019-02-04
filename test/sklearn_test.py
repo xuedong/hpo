@@ -27,9 +27,9 @@ from source.classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 40
+    horizon = 45
     iterations = 1
-    mcmc = 1
+    mcmc = 10
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
-            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
+            hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 5, 360, director, data,
                                        eta=2, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
             # s_run=0, verbose=False)
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
             start_time = timeit.default_timer()
 
-            hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data,
+            hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 5, 360, director, data,
                                               eta=2, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
             #                                   s_run=0, verbose=True)

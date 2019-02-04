@@ -264,10 +264,11 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
     track_test = np.array([1.])
     while count < horizon:
         current = 1
+        total_existed = 0
         for k in range(length):
             x, reward, noisy, existed = ptree.sample(alpha, k)
             cum[k] += reward
-            count += existed
+            total_existed += existed
             emp[k] += noisy
             smp[k] += 1
 
@@ -275,8 +276,12 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
                 best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
                 current = 1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
 
+        if total_existed > 0:
+            count += 1
+
         if not keep:
             [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
+            # print(count)
             if -current < best:
                 best = -current
                 test = test_score

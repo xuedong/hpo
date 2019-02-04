@@ -495,6 +495,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     :param devs:
     :return:
     """
+    sns.set_style("darkgrid")
     os.chdir(paths[0])
     fig = plt.figure()
     shortest = sys.maxsize
@@ -665,9 +666,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"Heuristic")
+        plt.plot(x, y, label=r"H-TTTS")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"Heuristic")
+        plt.loglog(x, y, label=r"H-TTTS")
 
     os.chdir('..')
 
