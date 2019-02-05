@@ -569,9 +569,8 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         losses[i] = loss[0:shortest]
 
     # length = len(tracks[0])
-    x = range(shortest+1)
+    x = range(shortest)
     y = np.mean(losses, axis=0)
-    y = np.append([1.], y)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err

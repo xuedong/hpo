@@ -29,7 +29,7 @@ from source.classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 81
     iterations = 1
-    mcmc = 1
+    mcmc = 100
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -44,11 +44,11 @@ if __name__ == '__main__':
     # targets = [target.SklearnSVM]
     # targets_tpe = [target.HyperSVM]
     # params_ho = [d_svm]
-    models = [SVM, Ada, GBM, KNN, MLP]
-    model_names = ['svm_', 'ada_', 'gbm_', 'knn_', 'sk_mlp_']
-    targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN, target.SklearnMLP]
-    targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN, target.HyperSKMLP]
-    params_ho = [d_svm, d_ada, d_gbm, d_knn, d_mlp]
+    models = [SVM, Ada, GBM, KNN]
+    model_names = ['svm_', 'ada_', 'gbm_', 'knn_']
+    targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
+    targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN]
+    params_ho = [d_svm, d_ada, d_gbm, d_knn]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
