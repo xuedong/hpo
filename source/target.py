@@ -492,7 +492,7 @@ class HyperAda(object):
                'n_estimators': n_estimators, 'learning_rate': learning_rate,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -519,7 +519,7 @@ class HyperGBM(object):
                'max_depth': max_depth, 'min_samples_split': min_samples_split,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -545,7 +545,7 @@ class HyperKNN(object):
                'n_neighbors': n_neighbors,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -571,7 +571,7 @@ class HyperSKMLP(object):
                'hidden_layer_size': hidden_layer_size, 'alpha': alpha,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -624,7 +624,7 @@ class HyperSVM(object):
                'c': c, 'gamma': gamma,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,

@@ -60,8 +60,8 @@ if __name__ == "__main__":
     # path = "../result/pct_gbm_2"
     # plots.plot_pct(path, 4, 'gbm_', '', 'breast_cancer', 2)
 
-    # names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
-    names = ['svm_']
+    names = ['ada_', 'gbm_', 'knn_', 'sk_mlp_', 'svm_']
+    # names = ['svm_']
     for name in names:
         path0 = "../result/hyperband_" + name + "2"
         path1 = "../result/tpe_" + name + "2"
