@@ -519,9 +519,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"Hyperband")
+        plt.plot(x[1:], y[1:], label=r"Hyperband")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"Hyperband")
+        plt.loglog(x[1:], y[1:], label=r"Hyperband")
 
     os.chdir('..')
 
@@ -549,9 +549,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"TPE")
+        plt.plot(x[1:], y[1:], label=r"TPE")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"TPE")
+        plt.loglog(x[1:], y[1:], label=r"TPE")
 
     os.chdir('..')
 
@@ -578,9 +578,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"GPO(POO)")
+        plt.plot(x[1:], y[1:], label=r"GPO(POO)")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"GPO(POO)")
+        plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
 
     os.chdir('..')
 
@@ -607,9 +607,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     #     higher = y + err
     #     plt.fill_between(x, lower, higher, facecolor='lightblue')
     # if type_plot == 'linear':
-    #     plt.plot(x, y, label=r"POO(HCT)")
+    #     plt.plot(x[1:], y[1:], label=r"POO(HCT)")
     # elif type_plot == 'log':
-    #     plt.loglog(x, y, label=r"POO(HCT)")
+    #     plt.loglog(x[1:], y[1:], label=r"POO(HCT)")
     #
     # os.chdir('..')
 
@@ -637,9 +637,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"Random Search")
+        plt.plot(x[1:], y[1:], label=r"Random Search")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"Random Search")
+        plt.loglog(x[1:], y[1:], label=r"Random Search")
 
     os.chdir('..')
 
@@ -666,13 +666,13 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x, y, label=r"H-TTTS")
+        plt.plot(x[1:], y[1:], label=r"H-TTTS")
     elif type_plot == 'log':
-        plt.loglog(x, y, label=r"H-TTTS")
+        plt.loglog(x[1:], y[1:], label=r"H-TTTS")
 
     os.chdir('..')
 
-    plt.grid()
+    # plt.grid()
     # plt.xlim((0, 400))
     # plt.ylim((0, 0.2))
     plt.legend(loc=0)

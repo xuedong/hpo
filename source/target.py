@@ -157,6 +157,7 @@ class SklearnSVM(object):
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(c=10**x[0], gamma=10**x[1])
+        # print(valid_error, test_error)
         with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([valid_error, test_error], file)
         return valid_error

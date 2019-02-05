@@ -27,9 +27,9 @@ from source.classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 45
+    horizon = 20
     iterations = 1
-    mcmc = 10
+    mcmc = 1
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -77,7 +77,7 @@ if __name__ == '__main__':
             start_time = timeit.default_timer()
 
             hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 5, 360, director, data,
-                                       eta=2, verbose=True)
+                                       eta=3, verbose=False)
             # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
             # s_run=0, verbose=False)
             # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             start_time = timeit.default_timer()
 
             hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 5, 360, director, data,
-                                              eta=2, verbose=True)
+                                              eta=3, verbose=False)
             # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
             #                                   s_run=0, verbose=True)
             # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 32, 360, director, data, eta=4,
@@ -228,7 +228,7 @@ if __name__ == '__main__':
 
             best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
                                                                                  director, params,
-                                                                                 1, data, verbose=True)
+                                                                                 1, data, verbose=False)
             cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
             end_time = timeit.default_timer()

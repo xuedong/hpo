@@ -130,6 +130,7 @@ class SVM(Model):
             else:
                 current_track_valid = np.append(current_track_valid, current_best_valid)
                 current_track_test = np.append(current_track_test, current_test)
+            # print("valid: "+str(current_best_valid)+", test: "+str(current_test))
 
         avg_loss = avg_loss / iterations
 

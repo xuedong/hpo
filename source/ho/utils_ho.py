@@ -256,7 +256,7 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
     emp = [0.] * length
     smp = [0] * length
     best = 1.
-    test = 1.
+    test = -1.
 
     # bar = progressbar.ProgressBar()
 
@@ -274,16 +274,15 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
 
             if existed and count <= horizon:
                 best_k = max(range(length), key=lambda a: (-float("inf") if smp[k] == 0 else emp[a] / smp[k]))
-                current = 1 if smp[best_k] == 0 else cum[best_k] / float(smp[best_k])
+                current = 1 if smp[best_k] == 0 else - cum[best_k] / float(smp[best_k])
 
         if total_existed > 0:
             count += 1
 
         if not keep:
             [_, test_score] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
-            # print(count)
-            if -current < best:
-                best = -current
+            if current < best:
+                best = current
                 test = test_score
                 losses[count-1] = test
             else:
