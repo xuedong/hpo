@@ -107,6 +107,7 @@ class SVM(Model):
             current_loss, test_error = loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
             current_loss = -current_loss
             avg_loss += current_loss
+            # print(current_loss)
 
             if verbose:
                 print(

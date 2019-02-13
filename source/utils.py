@@ -8,7 +8,7 @@ import pandas as pd
 from six.moves import urllib
 from six.moves import cPickle
 
-from sklearn.metrics import log_loss, mean_squared_error
+from sklearn.metrics import log_loss, mean_squared_error, accuracy_score
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler
 
@@ -105,7 +105,8 @@ class Loss:
         sc = StandardScaler()
         self.x = sc.fit_transform(self.x)
         if self.problem == 'binary':
-            self.loss = log_loss
+            # self.loss = log_loss
+            self.loss = accuracy_score
         elif self.problem == 'cont':
             self.loss = mean_squared_error
         else:
@@ -128,8 +129,12 @@ class Loss:
             else:
                 y_hat_test = clf.predict_proba(x_test)
                 y_hat_valid = clf.predict_proba(x_valid)
-            valid_error = -self.loss(y_valid, y_hat_valid)
-            test_error = -self.loss(y_test, y_hat_test)
+            if self.problem == 'binary':
+                valid_error = self.loss(y_valid, y_hat_valid, normalize=True)
+                test_error = self.loss(y_test, y_hat_test)
+            else:
+                valid_error = -self.loss(y_valid, y_hat_valid)
+                test_error = -self.loss(y_test, y_hat_test)
             return valid_error, test_error
         elif self.method == '5fold':
             kf = KFold(n_splits=5, shuffle=True)
@@ -151,8 +156,12 @@ class Loss:
                 else:
                     y_hat_valid = clf.predict_proba(x_valid)
                     y_hat_test = clf.predict_proba(x_test)
-                losses.append(-self.loss(y_valid, y_hat_valid))
-                test_errors.append(-self.loss(y_test, y_hat_test))
+                if self.problem == 'binary':
+                    losses.append(self.loss(y_valid, y_hat_valid, normalize=True))
+                    test_errors.append(self.loss(y_test, y_hat_test, normalize=True))
+                else:
+                    losses.append(-self.loss(y_valid, y_hat_valid))
+                    test_errors.append(-self.loss(y_test, y_hat_test))
             return np.average(losses), np.average(test_errors)
 
 

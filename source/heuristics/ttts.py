@@ -71,6 +71,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1
+                print(rewards[a])
                 trial = bernoulli.rvs(1-rewards[a])
                 if trial == 1:
                     succ[a] += 1
