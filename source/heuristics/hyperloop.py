@@ -105,4 +105,5 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
                 else:
                     cPickle.dump([durations, results, track_valid, track_test],
                                  open(director + '/results_' + str(s_run) + '.pkl', 'wb'))
+                # print(track_test)
                 s -= 1

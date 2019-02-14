@@ -40,21 +40,21 @@ if __name__ == '__main__':
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     verbose = False
 
-    models = [SVM]
-    model_names = ['svm_']
-    targets = [target.SklearnSVM]
-    targets_tpe = [target.HyperSVM]
-    params_ho = [d_svm]
-    # models = [SVM, Ada, GBM, KNN]
-    # model_names = ['svm_', 'ada_', 'gbm_', 'knn_']
-    # targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
-    # targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN]
-    # params_ho = [d_svm, d_ada, d_gbm, d_knn]
+    # models = [SVM]
+    # model_names = ['svm_']
+    # targets = [target.SklearnSVM]
+    # targets_tpe = [target.HyperSVM]
+    # params_ho = [d_svm]
+    models = [SVM, Ada, GBM, KNN]
+    model_names = ['svm_', 'ada_', 'gbm_', 'knn_']
+    targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
+    targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN]
+    params_ho = [d_svm, d_ada, d_gbm, d_knn]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
-    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
-    methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
+    methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
+    # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'breast_cancer.csv'

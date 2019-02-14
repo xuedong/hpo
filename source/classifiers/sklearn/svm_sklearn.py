@@ -122,7 +122,7 @@ class SVM(Model):
                 test_score = -test_error
                 # best_iter = iteration
 
-            if best_loss < current_best_valid:
+            if best_loss <= current_best_valid:
                 current_best_valid = best_loss
                 current_test = test_score
                 current_track_valid = np.append(current_track_valid, current_best_valid)
