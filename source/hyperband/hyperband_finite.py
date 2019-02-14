@@ -78,8 +78,9 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                     print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))
 
                 arms[arm_key]['results'].append([num_pulls, val_err, avg_loss])
-                remaining_arms[a][1] = val_err
-                remaining_arms[a][2] = avg_loss
+                remaining_arms[a][1] = -val_err
+                remaining_arms[a][2] = -avg_loss
+                print(avg_loss)
 
         if resource_type == 'epochs':
             remaining_arms = sorted(remaining_arms, key=lambda a: a[2])

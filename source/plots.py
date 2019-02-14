@@ -512,7 +512,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     # length = len(tracks[0])
     x = range(shortest)
-    y = np.mean(tracks, axis=0)
+    if resource_type == 'iterations':
+        tracks = -tracks
+        y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err
@@ -658,7 +660,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     # length = len(tracks[0])
     x = range(shortest)
-    y = np.mean(tracks, axis=0)
+    if resource_type == 'iterations':
+        tracks += 1
+        y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err
