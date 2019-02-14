@@ -53,8 +53,8 @@ if __name__ == '__main__':
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
-    methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
-    # methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": True, "random": False}
+    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
+    methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'breast_cancer.csv'

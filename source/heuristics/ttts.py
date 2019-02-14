@@ -146,14 +146,15 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
                 print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))
 
             arms[arm_key]['results'].append([num_pulls[idx_i], val_err, avg_loss])
-            remaining_arms[int(idx_i)][1] = -val_err
-            remaining_arms[int(idx_i)][2] = -avg_loss
+            remaining_arms[int(idx_i)][1] = val_err
+            remaining_arms[int(idx_i)][2] = avg_loss
 
     if resource_type == 'epochs':
         remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
     elif resource_type == 'iterations':
         remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
 
+    # TODO: this best arm output is wrong in the 'iteration' case, but it does not affect the final output figure
     best_arm = arms[remaining_arms[0][0]]
 
     result = []
