@@ -480,10 +480,11 @@ class HyperCNN(object):
 
 
 class HyperAda(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -492,7 +493,7 @@ class HyperAda(object):
                'n_estimators': n_estimators, 'learning_rate': learning_rate,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -506,10 +507,11 @@ class HyperAda(object):
 
 
 class HyperGBM(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -519,7 +521,7 @@ class HyperGBM(object):
                'max_depth': max_depth, 'min_samples_split': min_samples_split,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -533,10 +535,11 @@ class HyperGBM(object):
 
 
 class HyperKNN(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -545,7 +548,7 @@ class HyperKNN(object):
                'n_neighbors': n_neighbors,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -559,10 +562,11 @@ class HyperKNN(object):
 
 
 class HyperSKMLP(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -571,7 +575,7 @@ class HyperSKMLP(object):
                'hidden_layer_size': hidden_layer_size, 'alpha': alpha,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -585,10 +589,11 @@ class HyperSKMLP(object):
 
 
 class HyperRF(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -598,7 +603,7 @@ class HyperRF(object):
                'max_features': max_features,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=True)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -612,10 +617,11 @@ class HyperRF(object):
 
 
 class HyperSVM(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -624,7 +630,8 @@ class HyperSVM(object):
                'c': c, 'gamma': gamma,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
+        # print(best_loss)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -638,10 +645,11 @@ class HyperSVM(object):
 
 
 class HyperTree(object):
-    def __init__(self, model, iterations, director, data):
+    def __init__(self, model, iterations, director, problem, data):
         self.model = model
         self.iterations = iterations
         self.director = director
+        self.problem = problem
         self.data = data
 
     def objective(self, hps):
@@ -650,7 +658,7 @@ class HyperTree(object):
                'max_features': max_features, 'max_depth': max_depth, 'min_samples_split': min_samples_split,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=True)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
