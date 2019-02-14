@@ -11,7 +11,7 @@ import source.utils as utils
 def random_search(model, resource_type, n, director, params, num_pulls, data,
                   rng=np.random.RandomState(12345),
                   track_valid=np.array([1.]), track_test=np.array([1.]),
-                  verbose=False):
+                  problem='cont', verbose=False):
     """Random search for HPO.
 
     :param model:
@@ -24,6 +24,7 @@ def random_search(model, resource_type, n, director, params, num_pulls, data,
     :param rng:
     :param track_valid:
     :param track_test:
+    :param problem:
     :param verbose:
     :return:
     """
@@ -40,7 +41,7 @@ def random_search(model, resource_type, n, director, params, num_pulls, data,
     print('%d\t%d' % (n, num_pulls))
     bar = progressbar.ProgressBar()
 
-    for a in bar(range(len(list_arms))):
+    for a in range(len(list_arms)):
         start_time = timeit.default_timer()
         arm_key = list_arms[a][0]
 
@@ -71,7 +72,7 @@ def random_search(model, resource_type, n, director, params, num_pulls, data,
             val_err, avg_loss, current_track_valid, current_track_test = \
                 model.run_solver(num_pulls, arms[arm_key], data,
                                  rng=rng, track_valid=current_track_valid,
-                                 track_test=current_track_test, verbose=verbose)
+                                 track_test=current_track_test, problem=problem, verbose=verbose)
 
             if verbose:
                 print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))

@@ -8,7 +8,8 @@ import utils
 
 
 def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
-              rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
+              rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]),
+              problem='cont', verbose=False):
     """Successive halving.
 
     :param model: model to be trained
@@ -23,6 +24,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     :param rng: random state
     :param track_valid: initial track vector
     :param track_test: initial track vector
+    :param problem: type of problem (classification or regression)
     :param verbose: verbose option
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
@@ -72,15 +74,15 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                 val_err, avg_loss, current_track_valid, current_track_test = \
                     model.run_solver(num_pulls, arms[arm_key], data,
                                      rng=rng, track_valid=current_track_valid,
-                                     track_test=current_track_test, verbose=verbose)
+                                     track_test=current_track_test, problem=problem, verbose=verbose)
 
                 if verbose:
                     print(arm_key, val_err, utils.s_to_m(start_time, timeit.default_timer()))
 
                 arms[arm_key]['results'].append([num_pulls, val_err, avg_loss])
-                remaining_arms[a][1] = -val_err
-                remaining_arms[a][2] = -avg_loss
-                print(avg_loss)
+                remaining_arms[a][1] = val_err
+                remaining_arms[a][2] = avg_loss
+                # print(avg_loss)
 
         if resource_type == 'epochs':
             remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
@@ -106,7 +108,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
 
 def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
                      rng=np.random.RandomState(12345), eta=4., budget=0, n_hyperbands=1,
-                     s_run=None, doubling=False, verbose=False):
+                     s_run=None, doubling=False, problem='cont', verbose=False):
     """Hyperband with finite horizon.
 
     :param model: object with subroutines to generate arms and train models
@@ -123,6 +125,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
     :param n_hyperbands: maximum number of hyperbands to run
     :param s_run: option to repeat a specific bracket
     :param doubling: option to decide whether we want to double the per bracket budget in the outer loop
+    :param problem: type of problem (classification or regression)
     :param verbose: verbose option
     :return: None
     """
@@ -169,7 +172,8 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                     print('s = %d, n = %d' % (i, n))
                     arms, result, track_valid, track_test = \
                         sh_finite(model, resource_type, params, n, i, eta, big_r, director,
-                                  rng=rng, data=data, track_valid=track_valid, track_test=track_test, verbose=verbose)
+                                  rng=rng, data=data, track_valid=track_valid, track_test=track_test,
+                                  problem=problem, verbose=verbose)
                     results[(k, s)] = arms
 
                     if resource_type == 'epochs':

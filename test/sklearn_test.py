@@ -29,7 +29,7 @@ from source.classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 81
     iterations = 1
-    mcmc = 100
+    mcmc = 1
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -40,21 +40,21 @@ if __name__ == '__main__':
     c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     verbose = False
 
-    # models = [SVM]
-    # model_names = ['svm_']
-    # targets = [target.SklearnSVM]
-    # targets_tpe = [target.HyperSVM]
-    # params_ho = [d_svm]
-    models = [SVM, Ada, GBM, KNN]
-    model_names = ['svm_', 'ada_', 'gbm_', 'knn_']
-    targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
-    targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN]
-    params_ho = [d_svm, d_ada, d_gbm, d_knn]
+    models = [SVM]
+    model_names = ['svm_']
+    targets = [target.SklearnSVM]
+    targets_tpe = [target.HyperSVM]
+    params_ho = [d_svm]
+    # models = [SVM, Ada, GBM, KNN]
+    # model_names = ['svm_', 'ada_', 'gbm_', 'knn_']
+    # targets = [target.SklearnSVM, target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
+    # targets_tpe = [target.HyperSVM, target.HyperAda, target.HyperGBM, target.HyperKNN]
+    # params_ho = [d_svm, d_ada, d_gbm, d_knn]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
     # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
-    methods = {"hyperloop": False, "hyperband": True, "gpo": False, "tpe": False, "random": False}
+    methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": False, "random": True}
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'breast_cancer.csv'
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 9, 360, director, data,
-                                                  eta=3, verbose=verbose)
+                                                  eta=3, problem=problem, verbose=verbose)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
                 #                                   s_run=0, verbose=True)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 32, 360, director, data, eta=4,
@@ -238,7 +238,8 @@ if __name__ == '__main__':
 
                 best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
                                                                                      director, params,
-                                                                                     1, data, verbose=verbose)
+                                                                                     1, data,
+                                                                                     problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
                 end_time = timeit.default_timer()

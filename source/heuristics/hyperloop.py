@@ -100,7 +100,6 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
                     durations.append([utils.s_to_m(start_time, timeit.default_timer()), result])
                     print("time elapsed: " + str(utils.s_to_m(start_time, timeit.default_timer())))
 
-                print(track_valid)
                 if s_run is None:
                     cPickle.dump([durations, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
                 else:

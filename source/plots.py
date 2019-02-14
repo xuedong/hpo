@@ -513,7 +513,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     # length = len(tracks[0])
     x = range(shortest)
     if resource_type == 'iterations':
-        tracks = -tracks
+        tracks += 1
         y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
@@ -631,7 +631,9 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     length = len(tracks[0])
     x = range(length)
-    y = np.mean(tracks, axis=0)
+    if resource_type == 'iterations':
+        tracks += 1
+        y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err
@@ -653,7 +655,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
-            print(shortest)
+            # print(shortest)
     for i in range(runs):
         [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]

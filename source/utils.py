@@ -149,8 +149,14 @@ class Loss:
                 else:
                     y_hat_valid = clf.predict_proba(x_valid)
                     y_hat_test = clf.predict_proba(x_test)
-                losses.append(self.loss(y_valid, y_hat_valid))
+                loss = self.loss(y_valid, y_hat_valid)
+                # if loss > 1:
+                #     print(y_valid)
+                #     print(y_hat_valid)
+                # print(y_hat_valid)
+                losses.append(loss)
                 test_errors.append(self.loss(y_test, y_hat_test))
+            # print(losses)
             return np.average(losses), np.average(test_errors)
 
 
