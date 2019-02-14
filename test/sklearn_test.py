@@ -29,7 +29,7 @@ from source.classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 81
     iterations = 1
-    mcmc = 10
+    mcmc = 100
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'wine.csv'
+    dataset = 'breast_cancer.csv'
     problem = 'binary'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         for seed_id in range(mcmc):
             if methods["hyperloop"]:
                 print('<-- Running Hyperloop -->')
-                exp_name = 'hyperloop_' + model_names[i] + '1/'
+                exp_name = 'hyperloop_' + model_names[i] + '2/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
             if methods["hyperband"]:
                 print('<-- Running Hyperband -->')
-                exp_name = 'hyperband_' + model_names[i] + '1/'
+                exp_name = 'hyperband_' + model_names[i] + '2/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
             if methods["tpe"]:
                 print('<-- Running TPE -->')
-                exp_name = 'tpe_' + model_names[i] + '1/'
+                exp_name = 'tpe_' + model_names[i] + '2/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
             if methods["gpo"]:
                 print('<-- Running GPO -->')
-                exp_name = 'gpo_' + model_names[i] + '1/'
+                exp_name = 'gpo_' + model_names[i] + '2/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -225,7 +225,7 @@ if __name__ == '__main__':
 
             if methods["random"]:
                 print('<-- Running Random Search -->', )
-                exp_name = 'random_' + model_names[i] + '1/'
+                exp_name = 'random_' + model_names[i] + '2/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
