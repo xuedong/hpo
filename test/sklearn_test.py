@@ -29,7 +29,7 @@ from source.classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 81
     iterations = 1
-    mcmc = 1
+    mcmc = 100
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -53,8 +53,8 @@ if __name__ == '__main__':
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
-    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
-    methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": True, "random": False}
+    methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
+    # methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": True, "random": False}
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'breast_cancer.csv'
