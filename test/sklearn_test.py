@@ -29,7 +29,7 @@ from source.classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 81
     iterations = 1
-    mcmc = 100
+    mcmc = 10
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'breast_cancer.csv'
+    dataset = 'wine.csv'
     problem = 'binary'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
