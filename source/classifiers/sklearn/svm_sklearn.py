@@ -23,7 +23,7 @@ class SVM(Model):
 
     def eval(self):
         if self.problem == 'binary':
-            mod = SVC(kernel=self.kernel, C=self.c, gamma=self.gamma, probability=True, random_state=20)
+            mod = SVC(kernel=self.kernel, C=self.c, gamma=self.gamma, probability=True)
         else:
             mod = SVR(kernel=self.kernel, C=self.c, gamma=self.gamma)
         return mod
@@ -107,7 +107,6 @@ class SVM(Model):
             current_loss, test_error = loss.evaluate_loss(c=arm['c'], gamma=arm['gamma'])
             current_loss = -current_loss
             avg_loss += current_loss
-            # print(current_loss)
 
             if verbose:
                 print(

@@ -53,6 +53,7 @@ if __name__ == '__main__':
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
+    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
     methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
 
     path = os.path.join(os.getcwd(), '../data/uci')
@@ -81,7 +82,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 9, 360, director, data,
-                                           eta=3, verbose=False)
+                                           eta=3, problem=problem, verbose=False)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
                 # s_run=0, verbose=False)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,

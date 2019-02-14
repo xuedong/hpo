@@ -10,7 +10,7 @@ from heuristics.ttts import ttts
 
 def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
                      rng=np.random.RandomState(1234), eta=4., budget=0, n_hyperloops=1,
-                     s_run=None, doubling=False, verbose=False):
+                     s_run=None, doubling=False, problem='cont', verbose=False):
     """Hyperband with finite horizon.
 
     :param model: object with subroutines to generate arms and train models
@@ -27,6 +27,7 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
     :param n_hyperloops: maximum number of hyperloops to run
     :param s_run: option to repeat a specific bracket
     :param doubling: option to decide whether we want to double the per bracket budget in the outer loop
+    :param problem: type of problem (classification or regression)
     :param verbose: verbose option
     :return: None
     """
@@ -73,7 +74,8 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
                     print('s = %d, n = %d' % (i, n))
                     arms, result, track_valid, track_test = \
                         ttts(model, resource_type, params, n, i, budget, director,
-                             rng=rng, data=data, track_valid=track_valid, track_test=track_test, verbose=verbose)
+                             rng=rng, data=data, track_valid=track_valid, track_test=track_test,
+                             problem=problem, verbose=False)
                     results[(k, s)] = arms
 
                     if resource_type == 'epochs':

@@ -10,7 +10,8 @@ import utils
 
 
 def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, dist='Bernoulli',
-         rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
+         rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]),
+         problem='cont', verbose=False):
     """Top-Two Thompson Sampling.
 
     :param model: model to be trained
@@ -26,6 +27,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
     :param rng: random state
     :param track_valid: initial track vector
     :param track_test: initial track vector
+    :param problem: type of problem (classification or regression)
     :param verbose: verbose option
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
@@ -58,20 +60,20 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
             val_err, avg_loss, current_track_valid, current_track_test = \
                 model.run_solver(1, arms[arm_key], data,
                                  rng=rng, track_valid=current_track_valid,
-                                 track_test=current_track_test, verbose=verbose)
-            rewards[a] = avg_loss
+                                 track_test=current_track_test, problem=problem, verbose=verbose)
+            rewards[a] = 1 + avg_loss
 
     # best = 0
     for _ in range(n, int(budget)):
         # means = rewards / num_pulls
         # best = np.random.choice(np.flatnonzero(means == means.max()))
 
+        # print(rewards)
         ts = np.zeros(n)
         for a in range(n):
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1
-                print(rewards[a])
                 trial = bernoulli.rvs(1-rewards[a])
                 if trial == 1:
                     succ[a] += 1
@@ -131,7 +133,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
                 model.run_solver(1, arms[arm_key], data,
                                  rng=rng, track_valid=current_track_valid,
                                  track_test=current_track_test, verbose=verbose)
-            rewards[idx_i] = avg_loss
+            rewards[idx_i] = 1 + avg_loss
             num_pulls[idx_i] += 1
 
             if verbose:
@@ -145,6 +147,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
         remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
     elif resource_type == 'iterations':
         remaining_arms = sorted(remaining_arms, key=lambda a: a[2])
+    print(remaining_arms)
 
     best_arm = arms[remaining_arms[0][0]]
 
