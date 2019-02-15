@@ -48,23 +48,23 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
     # means = np.zeros(n)
 
     start_time = timeit.default_timer()
-    for a in range(n):
-        arm_key = remaining_arms[a][0]
-        num_pulls[a] = 1
-        if resource_type == 'epochs':
-            train_loss, val_err, test_err, current_track_valid, current_track_test = \
-                model.run_solver(1, arms[arm_key], data, rng=rng,
-                                 track_valid=current_track_valid, track_test=current_track_test, verbose=verbose)
-            rewards[a] = val_err
-        elif resource_type == 'iterations':
-            val_err, avg_loss, current_track_valid, current_track_test = \
-                model.run_solver(1, arms[arm_key], data,
-                                 rng=rng, track_valid=current_track_valid,
-                                 track_test=current_track_test, problem=problem, verbose=verbose)
-            rewards[a] = 1 + avg_loss
+    # for a in range(n):
+    #     arm_key = remaining_arms[a][0]
+    #     num_pulls[a] = 1
+    #     if resource_type == 'epochs':
+    #         train_loss, val_err, test_err, current_track_valid, current_track_test = \
+    #             model.run_solver(1, arms[arm_key], data, rng=rng,
+    #                              track_valid=current_track_valid, track_test=current_track_test, verbose=verbose)
+    #         rewards[a] = val_err
+    #     elif resource_type == 'iterations':
+    #         val_err, avg_loss, current_track_valid, current_track_test = \
+    #             model.run_solver(1, arms[arm_key], data,
+    #                              rng=rng, track_valid=current_track_valid,
+    #                              track_test=current_track_test, problem=problem, verbose=verbose)
+    #         rewards[a] = 1 + avg_loss
 
     # best = 0
-    for _ in range(n, int(budget)):
+    for _ in range(int(budget)):
         # means = rewards / num_pulls
         # best = np.random.choice(np.flatnonzero(means == means.max()))
 
@@ -74,7 +74,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1
-                if rewards[a] > 1 or rewards[a] < 0:
+                if rewards[a] >= 1 or rewards[a] <= 0:
                     trial = bernoulli.rvs(0.5)
                 else:
                     trial = bernoulli.rvs(1-rewards[a])
@@ -97,7 +97,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
                     alpha_prior = 1
                     beta_prior = 1
                     for a in range(n):
-                        if rewards[a] > 1 or rewards[a] < 0:
+                        if rewards[a] >= 1 or rewards[a] <= 0:
                             trial = bernoulli.rvs(0.5)
                         else:
                             trial = bernoulli.rvs(1 - rewards[a])

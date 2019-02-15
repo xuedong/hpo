@@ -10,14 +10,15 @@ import utils
 
 
 def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, dist='Bernoulli',
-          rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
+          rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]),
+          problem='cont', verbose=False):
     """Dynamic Top-Two Thompson Sampling.
 
     :param model: model to be trained
     :param resource_type: type of resource to be allocated
     :param params: hyperparameter search space
-    :param n: number of configurations in this ttts phase
-    :param i: the number of the bracket
+    :param n: maximum number of configurations
+    :param i: the number of initial configurations
     :param budget: number of resources
     :param director: where we store the results
     :param data: dataset
@@ -26,10 +27,11 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
     :param rng: random state
     :param track_valid: initial track vector
     :param track_test: initial track vector
+    :param problem: type of problem (classification or regression)
     :param verbose: verbose option
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
-    arms = model.generate_arms(n, director, params)
+    arms = model.generate_arms(i, director, params)
     remaining_arms = []
     if resource_type == 'epochs':
         remaining_arms = [list(a) for a in
@@ -39,35 +41,43 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
     current_track_valid = np.copy(track_valid)
     current_track_test = np.copy(track_test)
 
-    succ = np.zeros(n)
-    fail = np.zeros(n)
-    num_pulls = np.zeros(n)
-    rewards = np.zeros(n)
-    # means = np.zeros(n)
+    succ = np.zeros(i)
+    fail = np.zeros(i)
+    num_pulls = np.zeros(i)
+    rewards = np.zeros(i)
+    # means = np.zeros(i)
+
+    dynamic_num = i
 
     start_time = timeit.default_timer()
-    for a in range(n):
-        arm_key = remaining_arms[a][0]
-        num_pulls[a] = 1
-        if resource_type == 'epochs':
-            train_loss, val_err, test_err, current_track_valid, current_track_test = \
-                model.run_solver(1, arms[arm_key], data, rng=rng,
-                                 track_valid=current_track_valid, track_test=current_track_test, verbose=verbose)
-            rewards[a] = val_err
-        elif resource_type == 'iterations':
-            val_err, avg_loss, current_track_valid, current_track_test = \
-                model.run_solver(1, arms[arm_key], data,
-                                 rng=rng, track_valid=current_track_valid,
-                                 track_test=current_track_test, verbose=verbose)
-            rewards[a] = avg_loss
+    # for a in range(n):
+    #     arm_key = remaining_arms[a][0]
+    #     num_pulls[a] = 1
+    #     if resource_type == 'epochs':
+    #         train_loss, val_err, test_err, current_track_valid, current_track_test = \
+    #             model.run_solver(1, arms[arm_key], data, rng=rng,
+    #                              track_valid=current_track_valid, track_test=current_track_test, verbose=verbose)
+    #         rewards[a] = val_err
+    #     elif resource_type == 'iterations':
+    #         val_err, avg_loss, current_track_valid, current_track_test = \
+    #             model.run_solver(1, arms[arm_key], data,
+    #                              rng=rng, track_valid=current_track_valid,
+    #                              track_test=current_track_test, verbose=verbose)
+    #         rewards[a] = avg_loss
 
     # best = 0
-    for _ in range(n, int(budget)):
+    for _ in range(int(budget)):
         # means = rewards / num_pulls
         # best = np.random.choice(np.flatnonzero(means == means.max()))
+        succ = np.append(succ, 0)
+        fail = np.append(fail, 0)
+        num_pulls = np.append(num_pulls, 0)
+        rewards = np.append(rewards, 0)
+        if dynamic_num < n:
+            dynamic_num += 1
 
-        ts = np.zeros(n)
-        for a in range(n):
+        ts = np.zeros(dynamic_num)
+        for a in range(dynamic_num):
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1

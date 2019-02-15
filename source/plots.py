@@ -546,7 +546,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     x = range(shortest)
     if resource_type == 'iterations':
         tracks += 1
-        y = np.mean(tracks, axis=0)
+    y = np.mean(tracks, axis=0)
     if devs:
         err = np.std(tracks, axis=0)
         lower = y - err
