@@ -577,15 +577,15 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     if resource_type == 'iterations':
         losses += 1
     y = np.mean(losses, axis=0)
-    if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, facecolor='lightblue')
-    if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], marker='+', label=r"GPO(POO)")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
+    # if devs:
+    #     err = np.std(tracks, axis=0)
+    #     lower = y - err
+    #     higher = y + err
+    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
+    # if type_plot == 'linear':
+    #     plt.plot(x[1:], y[1:], marker='+', label=r"GPO(POO)")
+    # elif type_plot == 'log':
+    #     plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
 
     os.chdir('..')
 
@@ -706,7 +706,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], marker=',', label=r"D-TTTS")
+        plt.plot(x[1:], y[1:], marker='4', label=r"D-TTTS")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"D-TTTS")
 

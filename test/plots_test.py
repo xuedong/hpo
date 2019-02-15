@@ -66,12 +66,11 @@ if __name__ == "__main__":
         path0 = "../result/hyperband_" + name + "2"
         path1 = "../result/tpe_" + name + "2"
         path2 = "../result/gpo_" + name + "2"
-        # path2 = "../result/gpo_" + name + "2"
         path3 = "../result/random_" + name + "2"
         path4 = "../result/hyperloop_" + name + "2"
         path5 = "../result/dttts_" + name + "2"
         paths = [path0, path1, path2, path3, path4, path5]
-        plots.plot_all(paths, 5, name, '', 'breast_cancer', 2, 'iterations', type_plot='linear', devs=False)
+        plots.plot_all(paths, 20, name, '', 'breast_cancer', 2, 'iterations', type_plot='linear', devs=False)
 
     # path = "../result/hyperloop_svm_2/"
     # plots.plot_hyperloop_only(path, 1, '', 'svm_', 'breast_cancer', 2)

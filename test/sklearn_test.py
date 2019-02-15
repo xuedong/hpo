@@ -54,11 +54,11 @@ if __name__ == '__main__':
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
-    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
-    methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
+    methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
+    # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'breast_cancer.csv'
+    dataset = 'wine.csv'
     problem = 'binary'
     target_index = 0
     data = utils.build(os.path.join(path, dataset), target_index)
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         for seed_id in range(mcmc):
             if methods["hyperloop"]:
                 print('<-- Running Hyperloop -->')
-                exp_name = 'hyperloop_' + model_names[i] + '2/'
+                exp_name = 'hyperloop_' + model_names[i] + '1/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
             if methods["hyperband"]:
                 print('<-- Running Hyperband -->')
-                exp_name = 'hyperband_' + model_names[i] + '2/'
+                exp_name = 'hyperband_' + model_names[i] + '1/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
             if methods["tpe"]:
                 print('<-- Running TPE -->')
-                exp_name = 'tpe_' + model_names[i] + '2/'
+                exp_name = 'tpe_' + model_names[i] + '1/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 
             if methods["gpo"]:
                 print('<-- Running GPO -->')
-                exp_name = 'gpo_' + model_names[i] + '2/'
+                exp_name = 'gpo_' + model_names[i] + '1/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -226,7 +226,7 @@ if __name__ == '__main__':
 
             if methods["random"]:
                 print('<-- Running Random Search -->', )
-                exp_name = 'random_' + model_names[i] + '2/'
+                exp_name = 'random_' + model_names[i] + '1/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -239,7 +239,7 @@ if __name__ == '__main__':
 
                 best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
                                                                                      director, params,
-                                                                                     1, data,
+                                                                                     iterations, data,
                                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
@@ -251,7 +251,7 @@ if __name__ == '__main__':
 
             if methods["dttts"]:
                 print('<-- Running Dynamic TTTS -->', )
-                exp_name = 'dttts_' + model_names[i] + '2/'
+                exp_name = 'dttts_' + model_names[i] + '1/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -263,7 +263,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 best, results, track_valid, track_test = dttts.dttts(test_model, 'iterations', params,
-                                                                     horizon, 2, 81, director, data,
+                                                                     81, 2, 81, director, data,
                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
