@@ -28,8 +28,8 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 81
-    iterations = 1
+    horizon = 27
+    iterations = 3
     mcmc = 100
     rhomax = 20
     rho = 0.66
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     # rng = np.random.RandomState(12345)
 
     # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
-    methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": False, "random": False, "dttts": True}
+    methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'breast_cancer.csv'
@@ -263,7 +263,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 best, results, track_valid, track_test = dttts.dttts(test_model, 'iterations', params,
-                                                                     horizon, 1, horizon, director, data,
+                                                                     horizon, 2, 81, director, data,
                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 

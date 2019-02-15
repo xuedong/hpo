@@ -31,7 +31,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
     :param verbose: verbose option
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
-    arms = model.generate_arms(1, director, params)
+    arms = model.generate_arms(i, director, params)
     remaining_arms = []
     if resource_type == 'epochs':
         remaining_arms = [list(a) for a in
@@ -104,7 +104,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
         # print("\n"+str(ts[idx_i])+"\n")
         if np.random.rand() > frac:
             idx_j = idx_i
-            threshold = 10000
+            threshold = 1000
             count = 0
             while idx_i == idx_j and count < threshold:
                 ts = np.zeros(dynamic_num)
