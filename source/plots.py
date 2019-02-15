@@ -480,12 +480,13 @@ def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem)
     plt.close(fig)
 
 
-def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, resource_type,
+def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, dataset_name, idx, resource_type,
              type_plot='linear', devs=False):
     """
 
     :param paths:
-    :param runs:
+    :param runs_begin:
+    :param runs_end:
     :param classifier_name:
     :param optimizer_name:
     :param dataset_name:
@@ -501,13 +502,13 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     shortest = sys.maxsize
 
     # Hyperband
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])
@@ -531,14 +532,14 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir(paths[1])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    for i in range(runs_end-runs_begin):
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
         track = combine_tracks(trials)
         if len(track) < shortest:
             shortest = len(track)
-    for i in range(runs):
-        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    for i in range(runs_end-runs_begin):
+        [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
         track = combine_tracks(trials)
         tracks[i] = track[0:shortest]
 
@@ -563,13 +564,13 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir(paths[2])
     shortest = sys.maxsize
 
-    losses = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    losses = np.array([None for _ in range(runs_end-runs_begin)])
+    for i in range(runs_end-runs_begin):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
         if len(loss) < shortest:
             shortest = len(loss)
-    for i in range(runs):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    for i in range(runs_end-runs_begin):
+        loss = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
         losses[i] = loss[0:shortest]
 
     # length = len(tracks[0])
@@ -593,13 +594,13 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     # os.chdir(paths[3])
     # shortest = sys.maxsize
     #
-    # losses = np.array([None for _ in range(runs)])
-    # for i in range(runs):
-    #     loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    # losses = np.array([None for _ in range(runs_end-runs_begin)])
+    # for i in range(runs_end-runs_begin):
+    #     loss = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
     #     if len(loss) < shortest:
     #         shortest = len(loss)
-    # for i in range(runs):
-    #     loss = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    # for i in range(runs_end-runs_begin):
+    #     loss = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
     #     losses[i] = loss[0:shortest]
     #
     # # length = len(tracks[0])
@@ -622,14 +623,14 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir(paths[3])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
                                              + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i)
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
                                              + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
@@ -654,14 +655,16 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir(paths[4])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
+                                             + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
             # print(shortest)
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
+                                             + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])
@@ -685,14 +688,16 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
     os.chdir(paths[5])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs)])
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
+                                             + '/results.pkl', 'rb'))
         if len(track) < shortest:
             shortest = len(track)
             # print(shortest)
-    for i in range(runs):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+    for i in range(runs_end-runs_begin):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
+                                             + '/results.pkl', 'rb'))
         tracks[i] = track[0:shortest]
 
     # length = len(tracks[0])
