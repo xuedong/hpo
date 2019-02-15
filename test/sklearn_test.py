@@ -28,8 +28,8 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 27
-    iterations = 3
+    horizon = 12
+    iterations = 2
     mcmc = 100
     rhomax = 20
     rho = 0.66
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         for seed_id in range(mcmc):
             if methods["hyperloop"]:
                 print('<-- Running Hyperloop -->')
-                exp_name = 'hyperloop_' + model_names[i] + '1/'
+                exp_name = 'hyperloop_' + model_names[i] + '3/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 9, 360, director, data,
+                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 6, 360, director, data,
                                            eta=3, problem=problem, verbose=False)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
                 # s_run=0, verbose=False)
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
             if methods["hyperband"]:
                 print('<-- Running Hyperband -->')
-                exp_name = 'hyperband_' + model_names[i] + '1/'
+                exp_name = 'hyperband_' + model_names[i] + '3/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 9, 360, director, data,
+                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 6, 360, director, data,
                                                   eta=3, problem=problem, verbose=verbose)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
                 #                                   s_run=0, verbose=True)
@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
             if methods["tpe"]:
                 print('<-- Running TPE -->')
-                exp_name = 'tpe_' + model_names[i] + '1/'
+                exp_name = 'tpe_' + model_names[i] + '3/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 
             if methods["gpo"]:
                 print('<-- Running GPO -->')
-                exp_name = 'gpo_' + model_names[i] + '1/'
+                exp_name = 'gpo_' + model_names[i] + '3/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -199,7 +199,7 @@ if __name__ == '__main__':
 
                 # if methods["pct"]:
                 #     print('<-- Running PCT -->')
-                #     exp_name = 'pct_' + model_names[i] + '1/'
+                #     exp_name = 'pct_' + model_names[i] + '3/'
                 #     director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 #     if not os.path.exists(director):
                 #         os.makedirs(director)
@@ -226,7 +226,7 @@ if __name__ == '__main__':
 
             if methods["random"]:
                 print('<-- Running Random Search -->', )
-                exp_name = 'random_' + model_names[i] + '1/'
+                exp_name = 'random_' + model_names[i] + '3/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -251,7 +251,7 @@ if __name__ == '__main__':
 
             if methods["dttts"]:
                 print('<-- Running Dynamic TTTS -->', )
-                exp_name = 'dttts_' + model_names[i] + '1/'
+                exp_name = 'dttts_' + model_names[i] + '3/'
                 director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
                 if not os.path.exists(director):
                     os.makedirs(director)
@@ -263,7 +263,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 best, results, track_valid, track_test = dttts.dttts(test_model, 'iterations', params,
-                                                                     81, 2, 81, director, data,
+                                                                     24, 2, 24, director, data,
                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 

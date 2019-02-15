@@ -70,7 +70,7 @@ if __name__ == "__main__":
         path4 = "../result/hyperloop_" + name + "1"
         path5 = "../result/dttts_" + name + "1"
         paths = [path0, path1, path2, path3, path4, path5]
-        plots.plot_all(paths, 0, 20, name, '', 'wine', 1, 'iterations', type_plot='linear', devs=False)
+        plots.plot_all(paths, 0, 75, name, '', 'wine', 1, 'iterations', type_plot='linear', devs=False)
 
     # path = "../result/hyperloop_svm_2/"
     # plots.plot_hyperloop_only(path, 1, '', 'svm_', 'breast_cancer', 2)

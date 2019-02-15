@@ -175,6 +175,15 @@ def build(csv_path, target_index, header=None):
     return x, y
 
 
+def sub_build(csv_path, target_index, frac=0.2, header=None, rng=1234):
+    data = pd.read_csv(csv_path, header=header)
+    data = data.sample(frac=frac, random_state=rng)
+    data = data.as_matrix()
+    y = data[:, target_index]
+    x = np.delete(data, obj=np.array([target_index]), axis=1)
+    return x, y
+
+
 def second_largest(arr):
     count = 0
     m1 = m2 = float('-inf')
