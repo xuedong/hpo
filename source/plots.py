@@ -521,7 +521,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], label=r"Hyperband")
+        plt.plot(x[1:], y[1:], marker='.', label=r"Hyperband")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"Hyperband")
 
@@ -553,7 +553,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], label=r"TPE")
+        plt.plot(x[1:], y[1:], marker='*', label=r"TPE")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"TPE")
 
@@ -583,7 +583,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], label=r"GPO(POO)")
+        plt.plot(x[1:], y[1:], marker='+', label=r"GPO(POO)")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
 
@@ -644,7 +644,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, facecolor='lightblue')
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], label=r"Random Search")
+        plt.plot(x[1:], y[1:], marker='x', label=r"Random Search")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"Random Search")
 
@@ -675,7 +675,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], label=r"H-TTTS")
+        plt.plot(x[1:], y[1:], marker='2', label=r"H-TTTS")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"H-TTTS")
 
@@ -706,7 +706,7 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
         higher = y + err
         plt.fill_between(x, lower, higher, alpha=0.5)
     if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], label=r"D-TTTS")
+        plt.plot(x[1:], y[1:], marker=',', label=r"D-TTTS")
     elif type_plot == 'log':
         plt.loglog(x[1:], y[1:], label=r"D-TTTS")
 
