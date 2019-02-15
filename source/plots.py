@@ -681,6 +681,37 @@ def plot_all(paths, runs, classifier_name, optimizer_name, dataset_name, idx, re
 
     os.chdir('..')
 
+    # Dynamic TTTS
+    os.chdir(paths[5])
+    shortest = sys.maxsize
+
+    tracks = np.array([None for _ in range(runs)])
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        if len(track) < shortest:
+            shortest = len(track)
+            # print(shortest)
+    for i in range(runs):
+        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i) + '/results.pkl', 'rb'))
+        tracks[i] = track[0:shortest]
+
+    # length = len(tracks[0])
+    x = range(shortest)
+    if resource_type == 'iterations':
+        tracks += 1
+    y = np.mean(tracks, axis=0)
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, alpha=0.5)
+    if type_plot == 'linear':
+        plt.plot(x[1:], y[1:], label=r"D-TTTS")
+    elif type_plot == 'log':
+        plt.loglog(x[1:], y[1:], label=r"D-TTTS")
+
+    os.chdir('..')
+
     # plt.grid()
     # plt.xlim((0, 400))
     # plt.ylim((0, 0.2))
