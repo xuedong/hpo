@@ -31,7 +31,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
     :param verbose: verbose option
     :return: the dictionary of arms, the stored results and the vector of test errors
     """
-    arms = model.generate_arms(i, director, params)
+    arms = model.generate_arms(1, director, params)
     remaining_arms = []
     if resource_type == 'epochs':
         remaining_arms = [list(a) for a in
@@ -47,7 +47,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
     rewards = np.zeros(i)
     # means = np.zeros(i)
 
-    dynamic_num = i
+    dynamic_num = i-1
 
     start_time = timeit.default_timer()
     # for a in range(n):
@@ -75,14 +75,14 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
         rewards = np.append(rewards, 0)
         new_arm = model.generate_arms(1, director, params)
         if resource_type == 'epochs':
-            remaining_arms = [list(a) for a in
-                              zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
+            remaining_arms = np.append(remaining_arms, [[dynamic_num+1, 0, 0, 0]], axis=0)
         elif resource_type == 'iterations':
-            remaining_arms = [list(a) for a in zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()))]
-        arms = np.append(arms, new_arm)
+            remaining_arms = np.append(remaining_arms, [[dynamic_num+1, 0, 0]], axis=0)
+        arms[dynamic_num] = new_arm[0]
 
         if dynamic_num < n:
             dynamic_num += 1
+        # print(dynamic_num)
 
         ts = np.zeros(dynamic_num)
         for a in range(dynamic_num):
@@ -107,11 +107,11 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
             threshold = 10000
             count = 0
             while idx_i == idx_j and count < threshold:
-                ts = np.zeros(n)
+                ts = np.zeros(dynamic_num)
                 if dist == 'Bernoulli':
                     alpha_prior = 1
                     beta_prior = 1
-                    for a in range(n):
+                    for a in range(dynamic_num):
                         if rewards[a] >= 1 or rewards[a] <= 0:
                             trial = bernoulli.rvs(0.5)
                         else:
@@ -177,4 +177,4 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
     elif resource_type == 'iterations':
         result = [best_arm, remaining_arms[0][1], remaining_arms[0][2]]
 
-    return arms, result, current_track_valid, current_track_test
+    return best_arm, result, current_track_valid, current_track_test

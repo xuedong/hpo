@@ -10,20 +10,21 @@ from hyperopt import fmin
 from hyperopt import Trials
 
 import log.logger as logger
-import source.target as target
-# import source.utils as utils
-import source.hyperband.hyperband_finite as hyperband_finite
-import source.heuristics.hyperloop as hyperloop
+import target
+# import utils
+import hyperband.hyperband_finite as hyperband_finite
+import heuristics.hyperloop as hyperloop
 import bo.tpe_hyperopt as tpe_hyperopt
 import baseline.random_search as random_search
+import heuristics.dttts as dttts
 import ho.utils_ho as utils_ho
-from source.classifiers.sklearn.svm_sklearn import *
-from source.classifiers.sklearn.ada_sklearn import *
-from source.classifiers.sklearn.gbm_sklearn import *
-from source.classifiers.sklearn.knn_sklearn import *
-from source.classifiers.sklearn.mlp_sklearn import *
-# from source.classifiers.rf_sklearn import *
-# from source.classifiers.tree_sklearn import *
+from classifiers.sklearn.svm_sklearn import *
+from classifiers.sklearn.ada_sklearn import *
+from classifiers.sklearn.gbm_sklearn import *
+from classifiers.sklearn.knn_sklearn import *
+from classifiers.sklearn.mlp_sklearn import *
+# from classifiers.rf_sklearn import *
+# from classifiers.tree_sklearn import *
 
 
 if __name__ == '__main__':
@@ -53,8 +54,8 @@ if __name__ == '__main__':
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
-    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True}
-    methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": False, "random": False}
+    # methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
+    methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": False, "random": False, "dttts": True}
 
     path = os.path.join(os.getcwd(), '../data/uci')
     dataset = 'breast_cancer.csv'
@@ -240,6 +241,30 @@ if __name__ == '__main__':
                                                                                      director, params,
                                                                                      1, data,
                                                                                      problem=problem, verbose=False)
+                cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
+
+                end_time = timeit.default_timer()
+
+                print(('The code for the trial number ' +
+                       str(seed_id) +
+                       ' ran for %.1fs' % (end_time - start_time)), file=sys.stderr)
+
+            if methods["dttts"]:
+                print('<-- Running Dynamic TTTS -->', )
+                exp_name = 'dttts_' + model_names[i] + '2/'
+                director = output_dir + '../result/' + exp_name + model_names[i] + str(seed_id)
+                if not os.path.exists(director):
+                    os.makedirs(director)
+                log_dir = output_dir + '../log/' + exp_name + model_names[i] + str(seed_id)
+                if not os.path.exists(log_dir):
+                    os.makedirs(log_dir)
+                sys.stdout = logger.Logger(log_dir, 'dttts')
+
+                start_time = timeit.default_timer()
+
+                best, results, track_valid, track_test = dttts.dttts(test_model, 'iterations', params,
+                                                                     horizon, 1, horizon, director, data,
+                                                                     problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
                 end_time = timeit.default_timer()
