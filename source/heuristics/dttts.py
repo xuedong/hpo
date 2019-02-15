@@ -73,6 +73,14 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
         fail = np.append(fail, 0)
         num_pulls = np.append(num_pulls, 0)
         rewards = np.append(rewards, 0)
+        new_arm = model.generate_arms(1, director, params)
+        if resource_type == 'epochs':
+            remaining_arms = [list(a) for a in
+                              zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()), [0] * len(arms.keys()))]
+        elif resource_type == 'iterations':
+            remaining_arms = [list(a) for a in zip(arms.keys(), [0] * len(arms.keys()), [0] * len(arms.keys()))]
+        arms = np.append(arms, new_arm)
+
         if dynamic_num < n:
             dynamic_num += 1
 
@@ -81,7 +89,10 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1
-                trial = bernoulli.rvs(1-rewards[a])
+                if rewards[a] >= 1 or rewards[a] <= 0:
+                    trial = bernoulli.rvs(0.5)
+                else:
+                    trial = bernoulli.rvs(1 - rewards[a])
                 if trial == 1:
                     succ[a] += 1
                 else:
@@ -101,7 +112,10 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
                     alpha_prior = 1
                     beta_prior = 1
                     for a in range(n):
-                        trial = bernoulli.rvs(1 - rewards[a])
+                        if rewards[a] >= 1 or rewards[a] <= 0:
+                            trial = bernoulli.rvs(0.5)
+                        else:
+                            trial = bernoulli.rvs(1 - rewards[a])
                         if trial == 1:
                             succ[a] += 1
                         else:
@@ -139,8 +153,8 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
             val_err, avg_loss, current_track_valid, current_track_test = \
                 model.run_solver(1, arms[arm_key], data,
                                  rng=rng, track_valid=current_track_valid,
-                                 track_test=current_track_test, verbose=verbose)
-            rewards[idx_i] = avg_loss
+                                 track_test=current_track_test, problem=problem, verbose=verbose)
+            rewards[idx_i] = 1 + avg_loss
             num_pulls[idx_i] += 1
 
             if verbose:
