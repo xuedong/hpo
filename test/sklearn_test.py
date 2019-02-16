@@ -28,9 +28,9 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 12
-    iterations = 2
-    mcmc = 100
+    horizon = 108
+    iterations = 4
+    mcmc = 10
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -58,17 +58,17 @@ if __name__ == '__main__':
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
 
     path = os.path.join(os.getcwd(), '../data/uci')
-    dataset = 'wine.csv'
+    dataset = 'adult.csv'
     problem = 'binary'
-    target_index = 0
-    data = utils.build(os.path.join(path, dataset), target_index)
-    x, y = data
+    target_index = 88
 
     for i in range(len(models)):
         model = models[i]
         test_model = model()
         params = model.get_search_space()
         for seed_id in range(mcmc):
+            data = utils.sub_build(os.path.join(path, dataset), target_index, frac=0.05)
+            x, y = data
             if methods["hyperloop"]:
                 print('<-- Running Hyperloop -->')
                 exp_name = 'hyperloop_' + model_names[i] + '3/'
@@ -82,8 +82,8 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 6, 360, director, data,
-                                           eta=3, problem=problem, verbose=False)
+                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 27, 360, director, data,
+                                           eta=3, problem=problem, verbose=True)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
                 # s_run=0, verbose=False)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 100, 360, director, data, eta=4,
@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 6, 360, director, data,
+                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 27, 360, director, data,
                                                   eta=3, problem=problem, verbose=verbose)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
                 #                                   s_run=0, verbose=True)
@@ -263,7 +263,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 best, results, track_valid, track_test = dttts.dttts(test_model, 'iterations', params,
-                                                                     24, 2, 24, director, data,
+                                                                     432, 2, 432, director, data,
                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 

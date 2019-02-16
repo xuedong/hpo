@@ -63,14 +63,14 @@ if __name__ == "__main__":
     # names = ['ada_', 'gbm_', 'knn_', 'svm_']
     names = ['svm_']
     for name in names:
-        path0 = "../result/hyperband_" + name + "1"
-        path1 = "../result/tpe_" + name + "1"
-        path2 = "../result/gpo_" + name + "1"
-        path3 = "../result/random_" + name + "1"
-        path4 = "../result/hyperloop_" + name + "1"
-        path5 = "../result/dttts_" + name + "1"
+        path0 = "../result/hyperband_" + name + "3"
+        path1 = "../result/tpe_" + name + "3"
+        path2 = "../result/gpo_" + name + "3"
+        path3 = "../result/random_" + name + "3"
+        path4 = "../result/hyperloop_" + name + "3"
+        path5 = "../result/dttts_" + name + "3"
         paths = [path0, path1, path2, path3, path4, path5]
-        plots.plot_all(paths, 0, 75, name, '', 'wine', 1, 'iterations', type_plot='linear', devs=False)
+        plots.plot_all(paths, 0, 4, name, '', 'adult', 3, 'iterations', type_plot='linear', devs=False)
 
     # path = "../result/hyperloop_svm_2/"
     # plots.plot_hyperloop_only(path, 1, '', 'svm_', 'breast_cancer', 2)
