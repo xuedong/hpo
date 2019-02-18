@@ -584,15 +584,15 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     if resource_type == 'iterations':
         losses += 1
     y = np.mean(losses, axis=0)
-    # if devs:
-    #     err = np.std(tracks, axis=0)
-    #     lower = y - err
-    #     higher = y + err
-    #     plt.fill_between(x, lower, higher, facecolor='lightblue')
-    # if type_plot == 'linear':
-    #     plt.plot(x[1:], y[1:], marker='+', label=r"GPO(POO)")
-    # elif type_plot == 'log':
-    #     plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
+    if devs:
+        err = np.std(tracks, axis=0)
+        lower = y - err
+        higher = y + err
+        plt.fill_between(x, lower, higher, facecolor='lightblue')
+    if type_plot == 'linear':
+        plt.plot(x[1:], y[1:], marker='+', label=r"GPO(POO)")
+    elif type_plot == 'log':
+        plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
 
     os.chdir('..')
 

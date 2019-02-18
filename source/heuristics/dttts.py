@@ -92,7 +92,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
                 if rewards[a] >= 1 or rewards[a] <= 0:
                     trial = bernoulli.rvs(0.5)
                 else:
-                    trial = bernoulli.rvs(1 - rewards[a])
+                    trial = bernoulli.rvs(rewards[a])
                 if trial == 1:
                     succ[a] += 1
                 else:
@@ -115,7 +115,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
                         if rewards[a] >= 1 or rewards[a] <= 0:
                             trial = bernoulli.rvs(0.5)
                         else:
-                            trial = bernoulli.rvs(1 - rewards[a])
+                            trial = bernoulli.rvs(rewards[a])
                         if trial == 1:
                             succ[a] += 1
                         else:

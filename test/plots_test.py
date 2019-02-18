@@ -61,16 +61,17 @@ if __name__ == "__main__":
     # plots.plot_pct(path, 4, 'gbm_', '', 'breast_cancer', 2)
 
     # names = ['ada_', 'gbm_', 'knn_', 'svm_']
+    nb = 1
     names = ['svm_']
     for name in names:
-        path0 = "../result/hyperband_" + name + "3"
-        path1 = "../result/tpe_" + name + "3"
-        path2 = "../result/gpo_" + name + "3"
-        path3 = "../result/random_" + name + "3"
-        path4 = "../result/hyperloop_" + name + "3"
-        path5 = "../result/dttts_" + name + "3"
+        path0 = "../result/hyperband_" + name + str(nb)
+        path1 = "../result/tpe_" + name + str(nb)
+        path2 = "../result/gpo_" + name + str(nb)
+        path3 = "../result/random_" + name + str(nb)
+        path4 = "../result/hyperloop_" + name + str(nb)
+        path5 = "../result/dttts_" + name + str(nb)
         paths = [path0, path1, path2, path3, path4, path5]
-        plots.plot_all(paths, 0, 4, name, '', 'adult', 3, 'iterations', type_plot='linear', devs=False)
+        plots.plot_all(paths, 0, 10, name, '', 'wine', 1, 'iterations', type_plot='linear', devs=False, marker=True)
 
     # path = "../result/hyperloop_svm_2/"
     # plots.plot_hyperloop_only(path, 1, '', 'svm_', 'breast_cancer', 2)
