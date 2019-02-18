@@ -89,14 +89,6 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
             if dist == 'Bernoulli':
                 alpha_prior = 1
                 beta_prior = 1
-                if rewards[a] >= 1 or rewards[a] <= 0:
-                    trial = bernoulli.rvs(0.5)
-                else:
-                    trial = bernoulli.rvs(rewards[a])
-                if trial == 1:
-                    succ[a] += 1
-                else:
-                    fail[a] += 1
                 ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
 
         idx_i = np.argmax(ts)
@@ -112,14 +104,14 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
                     alpha_prior = 1
                     beta_prior = 1
                     for a in range(dynamic_num):
-                        if rewards[a] >= 1 or rewards[a] <= 0:
-                            trial = bernoulli.rvs(0.5)
-                        else:
-                            trial = bernoulli.rvs(rewards[a])
-                        if trial == 1:
-                            succ[a] += 1
-                        else:
-                            fail[a] += 1
+                        # if rewards[a] >= 1 or rewards[a] <= 0:
+                        #     trial = bernoulli.rvs(0.5)
+                        # else:
+                        #     trial = bernoulli.rvs(rewards[a])
+                        # if trial == 1:
+                        #     succ[a] += 1
+                        # else:
+                        #     fail[a] += 1
                         ts[a] = beta.rvs(alpha_prior + succ[a], beta_prior + fail[a], size=1)[0]
                 idx_j = np.argmax(ts)
                 count += 1
@@ -129,6 +121,15 @@ def dttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, 
             else:
                 _, idx_j = utils.second_largest(list(ts))
                 idx_i = idx_j
+
+        if rewards[idx_i] >= 1 or rewards[idx_i] <= 0:
+            trial = bernoulli.rvs(0.5)
+        else:
+            trial = bernoulli.rvs(1 - rewards[idx_i])
+        if trial == 1:
+            succ[idx_i] += 1
+        else:
+            fail[idx_i] += 1
 
         if resource_type == 'epochs':
             arm_key = remaining_arms[int(idx_i)][0]

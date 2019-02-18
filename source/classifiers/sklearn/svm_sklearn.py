@@ -69,7 +69,7 @@ class SVM(Model):
         return arms
 
     @staticmethod
-    def run_solver(iterations, arm, data,
+    def run_solver(iterations, arm, data, test,
                    rng=None, problem='cont', method='5fold',
                    track_valid=np.array([1.]), track_test=np.array([1.]), verbose=False):
         """
@@ -77,6 +77,7 @@ class SVM(Model):
         :param iterations:
         :param arm:
         :param data:
+        :param test:
         :param rng:
         :param problem:
         :param method:
@@ -86,7 +87,8 @@ class SVM(Model):
         :return:
         """
         x, y = data
-        loss = utils.Loss(SVM(), x, y, method=method, problem=problem)
+        x_test, y_test = test
+        loss = utils.Loss(SVM(), x, y, x_test, y_test, method=method, problem=problem)
 
         best_loss = 1.
         avg_loss = 0.

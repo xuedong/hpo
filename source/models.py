@@ -11,7 +11,7 @@ class Model:
 
     @staticmethod
     @abc.abstractmethod
-    def run_solver(iterations, arm, data):
+    def run_solver(iterations, arm, data, test):
         pass
 
     @staticmethod

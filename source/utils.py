@@ -96,7 +96,7 @@ def get_budget(min_units, max_units, eta):
 
 
 class Loss:
-    def __init__(self, model, x, y, method='holdout', problem='binary'):
+    def __init__(self, model, x, y, x_test, y_test, method='holdout', problem='binary'):
         self.model = model
         self.x = x
         self.y = y
@@ -104,8 +104,8 @@ class Loss:
         self.problem = problem
         sc = StandardScaler()
         self.x = sc.fit_transform(self.x)
-        self.x_train_valid, self.x_test, self.y_train_valid, self.y_test = \
-            train_test_split(self.x, self.y, test_size=0.2)
+        self.x_test = x_test
+        self.y_test = y_test
         if self.problem == 'binary':
             # self.loss = log_loss
             self.loss = accuracy_score
@@ -116,29 +116,27 @@ class Loss:
 
     def evaluate_loss(self, **param):
         if self.method == 'holdout':
-            x_train_valid, x_test, y_train_valid, y_test = \
-                self.x_train_valid, self.x_test, self.y_train_valid, self.y_test
+            x_train_valid, _, y_train_valid, _ = train_test_split(self.x, self.y, test_size=0.2)
             x_train, x_valid, y_train, y_valid = train_test_split(x_train_valid, y_train_valid, test_size=0.2)
             clf = self.model.__class__(problem=self.problem, **param).eval()
             clf.fit(x_train, y_train)
             if self.problem == 'binary':
                 y_hat_valid = clf.predict(x_valid)
-                y_hat_test = clf.predict(x_test)
+                y_hat_test = clf.predict(self.x_test)
             elif self.problem == 'cont':
-                y_hat_test = clf.predict(x_test)
+                y_hat_test = clf.predict(self.x_test)
                 y_hat_valid = clf.predict(x_valid)
             else:
-                y_hat_test = clf.predict_proba(x_test)
+                y_hat_test = clf.predict_proba(self.x_test)
                 y_hat_valid = clf.predict_proba(x_valid)
             valid_error = self.loss(y_valid, y_hat_valid)
-            test_error = self.loss(y_test, y_hat_test)
+            test_error = self.loss(self.y_test, y_hat_test)
             return valid_error, test_error
         elif self.method == '5fold':
             kf = KFold(n_splits=3, shuffle=True)
             losses = []
             test_errors = []
-            x_train_valid, x_test, y_train_valid, y_test = \
-                self.x_train_valid, self.x_test, self.y_train_valid, self.y_test
+            x_train_valid, _, y_train_valid, _ = train_test_split(self.x, self.y, test_size=0.2)
             for train_index, valid_index in kf.split(x_train_valid):
                 x_train, x_valid = x_train_valid[train_index], x_train_valid[valid_index]
                 y_train, y_valid = y_train_valid[train_index], y_train_valid[valid_index]
@@ -146,19 +144,19 @@ class Loss:
                 clf.fit(x_train, y_train)
                 if self.problem == 'binary':
                     y_hat_valid = clf.predict(x_valid)
-                    y_hat_test = clf.predict(x_test)
+                    y_hat_test = clf.predict(self.x_test)
                 elif self.problem == 'cont':
                     y_hat_valid = clf.predict(x_valid)
-                    y_hat_test = clf.predict(x_test)
+                    y_hat_test = clf.predict(self.x_test)
                 else:
                     y_hat_valid = clf.predict_proba(x_valid)
-                    y_hat_test = clf.predict_proba(x_test)
+                    y_hat_test = clf.predict_proba(self.x_test)
                 loss = self.loss(y_valid, y_hat_valid)
                 if loss > 1:
                     print(y_hat_valid)
                 # print(y_hat_valid)
                 losses.append(loss)
-                test_errors.append(self.loss(y_test, y_hat_test))
+                test_errors.append(self.loss(self.y_test, y_hat_test))
             # print(losses)
             return np.average(losses), np.average(test_errors)
 
