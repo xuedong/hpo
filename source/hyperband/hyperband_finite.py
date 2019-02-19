@@ -7,7 +7,7 @@ from six.moves import cPickle
 import utils
 
 
-def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
+def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data, test,
               rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]),
               problem='cont', verbose=False):
     """Successive halving.
@@ -21,6 +21,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     :param big_r: number of resources
     :param director: where we store the results
     :param data: dataset
+    :param test: test set
     :param rng: random state
     :param track_valid: initial track vector
     :param track_test: initial track vector
@@ -72,7 +73,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
                 remaining_arms[a][3] = test_err
             elif resource_type == 'iterations':
                 val_err, avg_loss, current_track_valid, current_track_test = \
-                    model.run_solver(num_pulls, arms[arm_key], data,
+                    model.run_solver(num_pulls, arms[arm_key], data, test,
                                      rng=rng, track_valid=current_track_valid,
                                      track_test=current_track_test, problem=problem, verbose=verbose)
 
@@ -106,7 +107,7 @@ def sh_finite(model, resource_type, params, n, i, eta, big_r, director, data,
     return arms, result, current_track_valid, current_track_test
 
 
-def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
+def hyperband_finite(model, resource_type, params, min_units, max_units, runtime, director, data, test,
                      rng=np.random.RandomState(12345), eta=4., budget=0, n_hyperbands=1,
                      s_run=None, doubling=False, problem='cont', verbose=False):
     """Hyperband with finite horizon.
@@ -119,6 +120,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
     :param runtime: runtime patience (in min)
     :param director: path to the directory where output are stored
     :param data: dataset to use
+    :param test: test set
     :param rng: random state
     :param eta: elimination proportion
     :param budget: total budget for one bracket
@@ -172,7 +174,7 @@ def hyperband_finite(model, resource_type, params, min_units, max_units, runtime
                     print('s = %d, n = %d' % (i, n))
                     arms, result, track_valid, track_test = \
                         sh_finite(model, resource_type, params, n, i, eta, big_r, director,
-                                  rng=rng, data=data, track_valid=track_valid, track_test=track_test,
+                                  rng=rng, data=data, test=test, track_valid=track_valid, track_test=track_test,
                                   problem=problem, verbose=verbose)
                     results[(k, s)] = arms
 

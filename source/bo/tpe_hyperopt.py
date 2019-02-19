@@ -67,4 +67,4 @@ def combine_tracks(trials):
                 track_valid = np.append(track_valid, current_best_valid)
                 track_test = np.append(track_test, current_test)
 
-    return track_test
+    return track_valid, track_test

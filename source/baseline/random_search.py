@@ -8,7 +8,7 @@ from six.moves import cPickle
 import source.utils as utils
 
 
-def random_search(model, resource_type, n, director, params, num_pulls, data,
+def random_search(model, resource_type, n, director, params, num_pulls, data, test,
                   rng=np.random.RandomState(12345),
                   track_valid=np.array([1.]), track_test=np.array([1.]),
                   problem='cont', verbose=False):
@@ -21,6 +21,7 @@ def random_search(model, resource_type, n, director, params, num_pulls, data,
     :param params:
     :param num_pulls:
     :param data:
+    :param test:
     :param rng:
     :param track_valid:
     :param track_test:
@@ -70,7 +71,7 @@ def random_search(model, resource_type, n, director, params, num_pulls, data,
             list_arms[a][3] = test_err
         elif resource_type == 'iterations':
             val_err, avg_loss, current_track_valid, current_track_test = \
-                model.run_solver(num_pulls, arms[arm_key], data,
+                model.run_solver(num_pulls, arms[arm_key], data, test,
                                  rng=rng, track_valid=current_track_valid,
                                  track_test=current_track_test, problem=problem, verbose=verbose)
 

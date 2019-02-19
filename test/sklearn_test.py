@@ -3,6 +3,7 @@ import sys
 # import os
 import math
 import timeit
+# import pandas as pd
 from six.moves import cPickle
 
 from hyperopt import tpe
@@ -28,8 +29,8 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 12
-    iterations = 2
+    horizon = 162
+    iterations = 1
     mcmc = 100
     rhomax = 20
     rho = 0.66
@@ -62,12 +63,17 @@ if __name__ == '__main__':
     # problem = 'binary'
     # target_index = 88
     # data = utils.sub_build(os.path.join(path, dataset), target_index, frac=0.3)
-    dataset = 'wine.csv'
+    dataset = 'adult_train.csv'
+    testset = 'adult_test.csv'
     problem = 'binary'
-    target_index = 0
-    data = utils.build(os.path.join(path, dataset), target_index)
+    target_index = 88
+
+    # build dataset and test set
+    test = utils.sub_build(os.path.join(path, testset), target_index=target_index, frac=0.2)
+    x_test, y_test = test
+    data = utils.sub_build(os.path.join(path, dataset), target_index=target_index, frac=0.1)
     x, y = data
-    exp_index = 1
+    exp_index = 3
 
     for i in range(len(models)):
         model = models[i]
@@ -87,7 +93,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 6, 360, director, data,
+                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 18, 360, director, data, test,
                                            eta=3, problem=problem, verbose=True)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
                 # s_run=0, verbose=False)
@@ -118,7 +124,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 6, 360, director, data,
+                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 18, 360, director, data, test,
                                                   eta=3, problem=problem, verbose=verbose)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
                 #                                   s_run=0, verbose=True)
@@ -153,7 +159,7 @@ if __name__ == '__main__':
                 trials = Trials()
 
                 # f_target_tpe = target.HyperLogistic(test_model, epochs, director, data)
-                f_target_tpe = targets_tpe[i](test_model, iterations, director, problem, data)
+                f_target_tpe = targets_tpe[i](test_model, iterations, director, problem, data, test)
                 objective = f_target_tpe.objective
 
                 best = fmin(objective,
@@ -185,16 +191,17 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 rhos = [float(j) / float(rhomax) for j in range(1, rhomax + 1)]
-                f_target = targets[i](test_model, x, y, '5fold', problem, director)
+                f_target = targets[i](test_model, x, y, x_test, y_test, '5fold', problem, director)
                 bbox = utils_ho.std_box(f_target, None, 3, 0.1,
                                         [params_ho[i][key][1] for key in params_ho[i].keys()],
                                         [params_ho[i][key][0] for key in params_ho[i].keys()])
-                losses = utils_ho.loss_poo(bbox=bbox, rhos=rhos, nu=nu, alpha=alpha, sigma=0,
-                                           horizon=24, director=director)
-                losses = np.array(losses)
+                valid_losses, test_losses = utils_ho.loss_poo(bbox=bbox, rhos=rhos, nu=nu, alpha=alpha, sigma=0,
+                                                              horizon=horizon*iterations, director=director)
+                valid_losses = np.array(valid_losses)
+                test_losses = np.array(test_losses)
 
                 with open(director + '/results.pkl', 'wb') as file:
-                    cPickle.dump(-losses, file)
+                    cPickle.dump([-valid_losses, -test_losses], file)
 
                 end_time = timeit.default_timer()
 
@@ -244,7 +251,7 @@ if __name__ == '__main__':
 
                 best, results, track_valid, track_test = random_search.random_search(test_model, 'iterations', horizon,
                                                                                      director, params,
-                                                                                     iterations, data,
+                                                                                     iterations, data, test,
                                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 
@@ -268,7 +275,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 best, results, track_valid, track_test = dttts.dttts(test_model, 'iterations', params,
-                                                                     24, 2, 24, director, data,
+                                                                     162, 2, 162, director, data, test,
                                                                      problem=problem, verbose=False)
                 cPickle.dump([best, results, track_valid, track_test], open(director + '/results.pkl', 'wb'))
 

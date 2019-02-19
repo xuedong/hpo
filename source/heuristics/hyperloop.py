@@ -8,7 +8,7 @@ import utils
 from heuristics.ttts import ttts
 
 
-def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime, director, data,
+def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime, director, data, test,
                      rng=np.random.RandomState(1234), eta=4., budget=0, n_hyperloops=1,
                      s_run=None, doubling=False, problem='cont', verbose=False):
     """Hyperband with finite horizon.
@@ -21,6 +21,7 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
     :param runtime: runtime patience (in min)
     :param director: path to the directory where output are stored
     :param data: dataset to use
+    :param test: test set
     :param rng: random state
     :param eta: elimination proportion
     :param budget: total budget for one bracket
@@ -74,7 +75,7 @@ def hyperloop_finite(model, resource_type, params, min_units, max_units, runtime
                     print('s = %d, n = %d' % (i, n))
                     arms, result, track_valid, track_test = \
                         ttts(model, resource_type, params, n, i, budget, director,
-                             rng=rng, data=data, track_valid=track_valid, track_test=track_test,
+                             rng=rng, data=data, test=test, track_valid=track_valid, track_test=track_test,
                              problem=problem, verbose=False)
                     results[(k, s)] = arms
 

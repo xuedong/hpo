@@ -9,7 +9,7 @@ from six.moves import cPickle
 import utils
 
 
-def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, dist='Bernoulli',
+def ttts(model, resource_type, params, n, i, budget, director, data, test, frac=0.5, dist='Bernoulli',
          rng=np.random.RandomState(12345), track_valid=np.array([1.]), track_test=np.array([1.]),
          problem='cont', verbose=False):
     """Top-Two Thompson Sampling.
@@ -22,6 +22,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
     :param budget: number of resources
     :param director: where we store the results
     :param data: dataset
+    :param test: test set
     :param frac: threshold in ttts
     :param dist: type of prior distribution
     :param rng: random state
@@ -137,7 +138,7 @@ def ttts(model, resource_type, params, n, i, budget, director, data, frac=0.5, d
         elif resource_type == 'iterations':
             arm_key = remaining_arms[int(idx_i)][0]
             val_err, avg_loss, current_track_valid, current_track_test = \
-                model.run_solver(1, arms[arm_key], data,
+                model.run_solver(1, arms[arm_key], data, test,
                                  rng=rng, track_valid=current_track_valid,
                                  track_test=current_track_test, problem=problem, verbose=verbose)
             rewards[idx_i] = 1 + avg_loss

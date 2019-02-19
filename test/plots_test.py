@@ -62,6 +62,7 @@ if __name__ == "__main__":
 
     # names = ['ada_', 'gbm_', 'knn_', 'svm_']
     exp_index = 1
+    end = 100
     names = ['svm_']
     for name in names:
         path0 = "../result/hyperband_" + name + str(exp_index)
@@ -71,8 +72,10 @@ if __name__ == "__main__":
         path4 = "../result/hyperloop_" + name + str(exp_index)
         path5 = "../result/dttts_" + name + str(exp_index)
         paths = [path0, path1, path2, path3, path4, path5]
-        plots.plot_all(paths, 0, 100, name, '', 'wine', exp_index, 'iterations',
-                       type_plot='linear', devs=False, marker=True)
+        plots.plot_all(paths, 0, end, name, '', 'wine_test', exp_index, 'iterations',
+                       plot='test', devs=False, marker=False)
+        plots.plot_all(paths, 0, end, name, '', 'wine_valid', exp_index, 'iterations',
+                       plot='valid', devs=False, marker=False)
 
     # path = "../result/hyperloop_svm_2/"
     # plots.plot_hyperloop_only(path, 1, '', 'svm_', 'breast_cancer', 2)

@@ -481,7 +481,7 @@ def plot_bo(bo_ei_history, bo_ucb_history, random, dataset_name, model, problem)
 
 
 def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, dataset_name, idx, resource_type,
-             type_plot='linear', devs=False, marker=False):
+             plot='valid', devs=False, marker=False):
     """
 
     :param paths:
@@ -492,8 +492,9 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     :param dataset_name:
     :param idx:
     :param resource_type:
-    :param type_plot:
+    :param plot:
     :param devs:
+    :param marker:
     :return:
     """
     sns.set_style("darkgrid")
@@ -502,32 +503,42 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     shortest = sys.maxsize
 
     # Hyperband
-    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    valid_tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    test_tracks = np.array([None for _ in range(runs_end-runs_begin)])
     for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
-        if len(track) < shortest:
-            shortest = len(track)
+        [_, _, valid_track, _] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
+        if len(valid_track) < shortest:
+            shortest = len(valid_track)
     for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
-        tracks[i] = track[0:shortest]
+        [_, _, valid_track, test_track] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
+        valid_tracks[i] = valid_track[0:shortest]
+        test_tracks[i] = test_track[0:shortest]
 
     # length = len(tracks[0])
     x = range(shortest)
     if resource_type == 'iterations':
-        tracks += 1
-    y = np.mean(tracks, axis=0)
+        valid_tracks += 1
+        test_tracks = -test_tracks
+    y_valid = np.mean(valid_tracks, axis=0)
+    y_test = np.mean(test_tracks, axis=0)
     if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, alpha=0.5)
-    if type_plot == 'linear':
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
         if marker:
-            plt.plot(x[1:], y[1:], marker='.', label=r"Hyperband")
+            plt.plot(x[1:], y_valid[1:], marker='.', label=r"Hyperband")
         else:
-            plt.plot(x[1:], y[1:], label=r"Hyperband")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"Hyperband")
+            plt.plot(x[1:], y_valid[1:], label=r"Hyperband")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='.', label=r"Hyperband")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"Hyperband")
 
     os.chdir('..')
 
@@ -535,34 +546,42 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     os.chdir(paths[1])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs_end-runs_begin)])
+    valid_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    test_tracks = np.array([None for _ in range(runs_end - runs_begin)])
     for i in range(runs_end-runs_begin):
         [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
-        track = combine_tracks(trials)
-        if len(track) < shortest:
-            shortest = len(track)
+        valid_track, _ = combine_tracks(trials)
+        if len(valid_track) < shortest:
+            shortest = len(valid_track)
     for i in range(runs_end-runs_begin):
         [trials, _] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
-        track = combine_tracks(trials)
-        tracks[i] = track[0:shortest]
+        valid_track, test_track = combine_tracks(trials)
+        valid_tracks[i] = valid_track[0:shortest]
+        test_tracks[i] = test_track[0:shortest]
 
     # length = len(tracks[0])
     x = range(shortest)
     if resource_type == 'iterations':
-        tracks += 1
-    y = np.mean(tracks, axis=0)
+        valid_tracks += 1
+        test_tracks = -test_tracks
+    y_valid = np.mean(valid_tracks, axis=0)
+    y_test = np.mean(test_tracks, axis=0)
     if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, alpha=0.5)
-    if type_plot == 'linear':
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
         if marker:
-            plt.plot(x[1:], y[1:], marker='*', label=r"TPE")
+            plt.plot(x[1:], y_valid[1:], marker='*', label=r"TPE")
         else:
-            plt.plot(x[1:], y[1:], label=r"TPE")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"TPE")
+            plt.plot(x[1:], y_valid[1:], label=r"TPE")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='*', label=r"TPE")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"TPE")
 
     os.chdir('..')
 
@@ -570,29 +589,42 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     os.chdir(paths[2])
     shortest = sys.maxsize
 
-    losses = np.array([None for _ in range(runs_end-runs_begin)])
+    valid_losses = np.array([None for _ in range(runs_end-runs_begin)])
+    test_losses = np.array([None for _ in range(runs_end-runs_begin)])
     for i in range(runs_end-runs_begin):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
-        if len(loss) < shortest:
-            shortest = len(loss)
+        valid_loss, test_loss = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
+        if len(valid_loss) < shortest:
+            shortest = len(valid_loss)
     for i in range(runs_end-runs_begin):
-        loss = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
-        losses[i] = loss[0:shortest]
+        valid_loss, test_loss = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin) + '/results.pkl', 'rb'))
+        valid_losses[i] = valid_loss[0:shortest]
+        test_losses[i] = test_loss[0:shortest]
 
     # length = len(tracks[0])
     x = range(shortest)
     if resource_type == 'iterations':
-        losses += 1
-    y = np.mean(losses, axis=0)
+        valid_losses = 1 - valid_losses
+        test_losses = -test_losses
+    y_valid = np.mean(valid_losses, axis=0)
+    y_test = np.mean(test_losses, axis=0)
     if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, facecolor='lightblue')
-    if type_plot == 'linear':
-        plt.plot(x[1:], y[1:], marker='+', label=r"GPO(POO)")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"GPO(POO)")
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
+        if marker:
+            plt.plot(x[1:], y_valid[1:], marker='+', label=r"GPO(HOO)")
+        else:
+            plt.plot(x[1:], y_valid[1:], label=r"GPO(HOO)")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='+', label=r"GPO(HOO)")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"GPO(HOO)")
 
     os.chdir('..')
 
@@ -632,34 +664,42 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     os.chdir(paths[3])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs_end-runs_begin)])
-    for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
-                                             + '/results.pkl', 'rb'))
-        if len(track) < shortest:
-            shortest = len(track)
-    for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
-                                             + '/results.pkl', 'rb'))
-        tracks[i] = track[0:shortest]
+    valid_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    test_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    for i in range(runs_end - runs_begin):
+        [_, _, valid_track, _] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i + runs_begin) + '/results.pkl', 'rb'))
+        if len(valid_track) < shortest:
+            shortest = len(valid_track)
+    for i in range(runs_end - runs_begin):
+        [_, _, valid_track, test_track] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i + runs_begin) + '/results.pkl', 'rb'))
+        valid_tracks[i] = valid_track[0:shortest]
+        test_tracks[i] = test_track[0:shortest]
 
-    length = len(tracks[0])
-    x = range(length)
+    # length = len(tracks[0])
+    x = range(shortest)
     if resource_type == 'iterations':
-        tracks += 1
-    y = np.mean(tracks, axis=0)
+        valid_tracks += 1
+        test_tracks = -test_tracks
+    y_valid = np.mean(valid_tracks, axis=0)
+    y_test = np.mean(test_tracks, axis=0)
     if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, facecolor='lightblue')
-    if type_plot == 'linear':
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
         if marker:
-            plt.plot(x[1:], y[1:], marker='x', label=r"Random Search")
+            plt.plot(x[1:], y_valid[1:], marker='x', label=r"Random Search")
         else:
-            plt.plot(x[1:], y[1:], label=r"Random Search")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"Random Search")
+            plt.plot(x[1:], y_valid[1:], label=r"Random Search")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='x', label=r"Random Search")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"Random Search")
 
     os.chdir('..')
 
@@ -667,35 +707,42 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     os.chdir(paths[4])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs_end-runs_begin)])
-    for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
-                                             + '/results.pkl', 'rb'))
-        if len(track) < shortest:
-            shortest = len(track)
-            # print(shortest)
-    for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
-                                             + '/results.pkl', 'rb'))
-        tracks[i] = track[0:shortest]
+    valid_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    test_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    for i in range(runs_end - runs_begin):
+        [_, _, valid_track, _] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i + runs_begin) + '/results.pkl', 'rb'))
+        if len(valid_track) < shortest:
+            shortest = len(valid_track)
+    for i in range(runs_end - runs_begin):
+        [_, _, valid_track, test_track] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i + runs_begin) + '/results.pkl', 'rb'))
+        valid_tracks[i] = valid_track[0:shortest]
+        test_tracks[i] = test_track[0:shortest]
 
     # length = len(tracks[0])
     x = range(shortest)
     if resource_type == 'iterations':
-        tracks += 1
-    y = np.mean(tracks, axis=0)
+        valid_tracks += 1
+        test_tracks = -test_tracks
+    y_valid = np.mean(valid_tracks, axis=0)
+    y_test = np.mean(test_tracks, axis=0)
     if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, alpha=0.5)
-    if type_plot == 'linear':
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
         if marker:
-            plt.plot(x[1:], y[1:], marker='2', label=r"H-TTTS")
+            plt.plot(x[1:], y_valid[1:], marker='2', label=r"H-TTTS")
         else:
-            plt.plot(x[1:], y[1:], label=r"H-TTTS")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"H-TTTS")
+            plt.plot(x[1:], y_valid[1:], label=r"H-TTTS")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='2', label=r"H-TTTS")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"H-TTTS")
 
     os.chdir('..')
 
@@ -703,35 +750,42 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     os.chdir(paths[5])
     shortest = sys.maxsize
 
-    tracks = np.array([None for _ in range(runs_end-runs_begin)])
-    for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
-                                             + '/results.pkl', 'rb'))
-        if len(track) < shortest:
-            shortest = len(track)
-            # print(shortest)
-    for i in range(runs_end-runs_begin):
-        [_, _, _, track] = cPickle.load(open(classifier_name + optimizer_name + str(i+runs_begin)
-                                             + '/results.pkl', 'rb'))
-        tracks[i] = track[0:shortest]
+    valid_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    test_tracks = np.array([None for _ in range(runs_end - runs_begin)])
+    for i in range(runs_end - runs_begin):
+        [_, _, valid_track, _] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i + runs_begin) + '/results.pkl', 'rb'))
+        if len(valid_track) < shortest:
+            shortest = len(valid_track)
+    for i in range(runs_end - runs_begin):
+        [_, _, valid_track, test_track] = \
+            cPickle.load(open(classifier_name + optimizer_name + str(i + runs_begin) + '/results.pkl', 'rb'))
+        valid_tracks[i] = valid_track[0:shortest]
+        test_tracks[i] = test_track[0:shortest]
 
     # length = len(tracks[0])
     x = range(shortest)
     if resource_type == 'iterations':
-        tracks += 1
-    y = np.mean(tracks, axis=0)
+        valid_tracks += 1
+        test_tracks = -test_tracks
+    y_valid = np.mean(valid_tracks, axis=0)
+    y_test = np.mean(test_tracks, axis=0)
     if devs:
-        err = np.std(tracks, axis=0)
-        lower = y - err
-        higher = y + err
-        plt.fill_between(x, lower, higher, alpha=0.5)
-    if type_plot == 'linear':
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
         if marker:
-            plt.plot(x[1:], y[1:], marker='4', label=r"D-TTTS")
+            plt.plot(x[1:], y_valid[1:], marker='4', label=r"D-TTTS")
         else:
-            plt.plot(x[1:], y[1:], label=r"D-TTTS")
-    elif type_plot == 'log':
-        plt.loglog(x[1:], y[1:], label=r"D-TTTS")
+            plt.plot(x[1:], y_valid[1:], label=r"D-TTTS")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='4', label=r"D-TTTS")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"D-TTTS")
 
     os.chdir('..')
 
@@ -739,7 +793,10 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     # plt.xlim((0, 400))
     # plt.ylim((0, 0.2))
     plt.legend(loc=0)
-    plt.ylabel('Test Error')
+    if plot == 'valid':
+        plt.ylabel('Validation error')
+    else:
+        plt.ylabel('Test error')
     if resource_type == 'epochs':
         plt.xlabel('Number of Epochs')
     elif resource_type == 'iterations':

@@ -151,9 +151,9 @@ class Gramacy1(object):
 # Scikit-learn functions
 
 class SklearnSVM(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(c=10**x[0], gamma=10**x[1])
@@ -617,12 +617,13 @@ class HyperRF(object):
 
 
 class HyperSVM(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         c, gamma = hps
@@ -630,7 +631,7 @@ class HyperSVM(object):
                'c': c, 'gamma': gamma,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=False)
         # print(best_loss)
         return {
             'loss': best_loss,

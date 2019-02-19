@@ -136,7 +136,9 @@ class Loss:
             kf = KFold(n_splits=3, shuffle=True)
             losses = []
             test_errors = []
-            x_train_valid, _, y_train_valid, _ = train_test_split(self.x, self.y, test_size=0.2)
+            # x_train_valid, _, y_train_valid, _ = train_test_split(self.x, self.y, test_size=0.2)
+            x_train_valid, y_train_valid = self.x, self.y
+            # print(self.y_test)
             for train_index, valid_index in kf.split(x_train_valid):
                 x_train, x_valid = x_train_valid[train_index], x_train_valid[valid_index]
                 y_train, y_valid = y_train_valid[train_index], y_train_valid[valid_index]
@@ -157,7 +159,6 @@ class Loss:
                 # print(y_hat_valid)
                 losses.append(loss)
                 test_errors.append(self.loss(self.y_test, y_hat_test))
-            # print(losses)
             return np.average(losses), np.average(test_errors)
 
 

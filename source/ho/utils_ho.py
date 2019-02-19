@@ -249,6 +249,7 @@ def regret_poo(bbox, rhos, nu, alpha, sigma, horizon, epoch):
 
 def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
     losses = [0. for _ in range(horizon)]
+    valid_losses = [0. for _ in range(horizon)]
     ptree = poo.POO(bbox.support, bbox.support_type, None, 0, rhos, sigma, nu, bbox)
     count = 0
     length = len(rhos)
@@ -284,8 +285,10 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
             if current < best:
                 best = current
                 test = test_score
+                valid_losses[count-1] = best
                 losses[count-1] = test
             else:
+                valid_losses[count-1] = best
                 losses[count-1] = test
         else:
             [current_track_valid, current_track_test] = cPickle.load(open(director + '/tracks.pkl', 'rb'))
@@ -304,8 +307,9 @@ def loss_poo(bbox, rhos, nu, alpha, sigma, horizon, director, keep=False):
 
     if keep:
         losses = track_test[1:]
+        valid_losses = track_valid[1:]
 
-    return losses
+    return valid_losses, losses
 
 
 def regret_pct(bbox, rhos, nu, c, c1, delta, horizon, epoch):
