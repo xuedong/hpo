@@ -25,8 +25,8 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 12
-    iterations = 2
+    horizon = 108
+    iterations = 1
     mcmc = 5
     rhomax = 20
     rho = 0.66
@@ -50,16 +50,16 @@ if __name__ == '__main__':
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
 
     # Load data from https://www.openml.org/d/554
-    [X, y] = cPickle.load(open('../data/mnist_openml.pkl', 'rb'))
-    X = X / 255.
+    [x, y] = cPickle.load(open('../data/mnist_openml.pkl', 'rb'))
+    x = x / 255.
 
     # rescale the data, use the traditional train/test split
-    X_train, X_test = X[:60000], X[60000:]
+    x_train, x_test = x[:60000], x[60000:]
     y_train, y_test = y[:60000], y[60000:]
 
     # build dataset and test set
-    data = X_train, y_train
-    test = X_test, y_test
+    data = x_train, y_train
+    test = x_test, y_test
     exp_index = 0
     problem = 'binary'
 
@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 6, 360, director, data, test,
+                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 12, 360, director, data, test,
                                            eta=3, problem=problem, verbose=True)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
                 # s_run=0, verbose=False)
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 6, 360, director, data, test,
+                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 12, 360, director, data, test,
                                                   eta=3, problem=problem, verbose=verbose)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
                 #                                   s_run=0, verbose=True)
@@ -179,7 +179,7 @@ if __name__ == '__main__':
                 start_time = timeit.default_timer()
 
                 rhos = [float(j) / float(rhomax) for j in range(1, rhomax + 1)]
-                f_target = targets[i](test_model, x, y, x_test, y_test, '5fold', problem, director)
+                f_target = targets[i](test_model, x_train, y_train, x_test, y_test, '5fold', problem, director)
                 bbox = utils_ho.std_box(f_target, None, 3, 0.1,
                                         [params_ho[i][key][1] for key in params_ho[i].keys()],
                                         [params_ho[i][key][0] for key in params_ho[i].keys()])

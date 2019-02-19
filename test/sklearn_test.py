@@ -29,8 +29,8 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 12
-    iterations = 2
+    horizon = 24
+    iterations = 1
     mcmc = 100
     rhomax = 20
     rho = 0.66

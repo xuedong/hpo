@@ -27,11 +27,11 @@ class MLP(Model):
 
     def eval(self):
         if self.problem == 'binary':
-            mod = MLPClassifier(hidden_layer_sizes=self.hidden_layer_sizes, max_iter=50, alpha=self.alpha, solver='sgd',
+            mod = MLPClassifier(hidden_layer_sizes=self.hidden_layer_sizes, max_iter=10, alpha=self.alpha, solver='sgd',
                                 learning_rate_init=self.learning_rate_init, early_stopping=True,
                                 beta_1=self.beta_1, beta_2=self.beta_2, random_state=20)
         else:
-            mod = MLPRegressor(hidden_layer_sizes=self.hidden_layer_sizes, max_iter=50, alpha=self.alpha, solver='sgd',
+            mod = MLPRegressor(hidden_layer_sizes=self.hidden_layer_sizes, max_iter=10, alpha=self.alpha, solver='sgd',
                                learning_rate_init=self.learning_rate_init, early_stopping=True,
                                beta_1=self.beta_1, beta_2=self.beta_2, random_state=20)
         return mod
