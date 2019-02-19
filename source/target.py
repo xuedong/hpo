@@ -194,7 +194,7 @@ class SklearnMLP(object):
         self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
-        valid_error, test_error = self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
+        valid_error, test_error = self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1], learning_rate_init=x[2])
         with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([valid_error, test_error], file)
         return valid_error
@@ -574,9 +574,9 @@ class HyperSKMLP(object):
         self.test = test
 
     def objective(self, hps):
-        hidden_layer_size, alpha = hps
+        hidden_layer_size, alpha, learning_rate_init = hps
         arm = {'dir': self.director,
-               'hidden_layer_size': hidden_layer_size, 'alpha': alpha,
+               'hidden_layer_size': hidden_layer_size, 'alpha': alpha, 'learning_rate_init': learning_rate_init,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
             self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=False)

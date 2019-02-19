@@ -27,7 +27,7 @@ from classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 12
     iterations = 2
-    mcmc = 1
+    mcmc = 5
     rhomax = 20
     rho = 0.66
     nu = 1.
