@@ -25,9 +25,9 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 108
-    iterations = 1
-    mcmc = 5
+    horizon = 36
+    iterations = 3
+    mcmc = 10
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     # rng = np.random.RandomState(12345)
 
     methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
-    # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
+    # methods = {"hyperloop": False, "hyperband": False, "gpo": False, "tpe": False, "random": False, "dttts": True}
 
     # Load data from https://www.openml.org/d/554
     [x, y] = cPickle.load(open('../data/mnist_openml.pkl', 'rb'))

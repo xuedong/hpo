@@ -194,7 +194,8 @@ class SklearnMLP(object):
         self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
-        valid_error, test_error = self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1], learning_rate_init=x[2])
+        valid_error, test_error = self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1],
+                                                          learning_rate_init=10**x[2])
         with open(self.director + '/tracks.pkl', 'wb') as file:
             cPickle.dump([valid_error, test_error], file)
         return valid_error
