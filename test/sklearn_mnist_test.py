@@ -20,7 +20,7 @@ import baseline.random_search as random_search
 import heuristics.dttts as dttts
 import ho.utils_ho as utils_ho
 
-from sklearn.datasets import fetch_openml
+# from sklearn.datasets import fetch_openml
 from classifiers.sklearn.mlp_sklearn import *
 
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
 
     # Load data from https://www.openml.org/d/554
-    X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
+    [X, y] = cPickle.load(open('../data/mnist_openml.pkl', 'rb'))
     X = X / 255.
 
     # rescale the data, use the traditional train/test split
@@ -61,6 +61,7 @@ if __name__ == '__main__':
     data = X_train, y_train
     test = X_test, y_test
     exp_index = 0
+    problem = 'binary'
 
     for i in range(len(models)):
         model = models[i]

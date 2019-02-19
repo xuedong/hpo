@@ -103,7 +103,7 @@ ENV/
 .mypy_cache/
 
 # Data
-data/
+data/uci/
 *.pkl
 
 # PyCharm IDE
