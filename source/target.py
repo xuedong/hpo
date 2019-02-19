@@ -164,9 +164,9 @@ class SklearnSVM(object):
 
 
 class SklearnGBM(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(learning_rate=10**x[0], n_estimators=x[1],
@@ -177,9 +177,9 @@ class SklearnGBM(object):
 
 
 class SklearnKNN(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(n_neighbors=x[0])
@@ -189,9 +189,9 @@ class SklearnKNN(object):
 
 
 class SklearnMLP(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(hidden_layer_size=x[0], alpha=x[1])
@@ -201,9 +201,9 @@ class SklearnMLP(object):
 
 
 class SklearnRF(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(n_estimators=x[0], min_samples_split=x[1], max_features=x[2])
@@ -213,9 +213,9 @@ class SklearnRF(object):
 
 
 class SklearnTree(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(max_features=x[0], max_depth=x[1], min_samples_split=x[2])
@@ -225,9 +225,9 @@ class SklearnTree(object):
 
 
 class SklearnAda(object):
-    def __init__(self, model, x, y, method, problem, director):
+    def __init__(self, model, x, y, x_test, y_test, method, problem, director):
         self.director = director
-        self.loss = utils.Loss(model, x, y, method, problem)
+        self.loss = utils.Loss(model, x, y, x_test, y_test, method, problem)
 
     def f(self, x):
         valid_error, test_error = self.loss.evaluate_loss(n_estimators=x[0], learning_rate=10**x[1])
@@ -423,7 +423,7 @@ class HyperLogistic(object):
 
 
 class HyperMLP(object):
-    def __init__(self, model, epochs, director, data):
+    def __init__(self, model, epochs, director, data, test):
         self.model = model
         self.epochs = epochs
         self.director = director
