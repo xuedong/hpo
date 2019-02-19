@@ -19,19 +19,15 @@ import bo.tpe_hyperopt as tpe_hyperopt
 import baseline.random_search as random_search
 import heuristics.dttts as dttts
 import ho.utils_ho as utils_ho
-from classifiers.sklearn.svm_sklearn import *
-from classifiers.sklearn.ada_sklearn import *
-from classifiers.sklearn.gbm_sklearn import *
-from classifiers.sklearn.knn_sklearn import *
+
+from sklearn.datasets import fetch_openml
 from classifiers.sklearn.mlp_sklearn import *
-# from classifiers.rf_sklearn import *
-# from classifiers.tree_sklearn import *
 
 
 if __name__ == '__main__':
     horizon = 12
     iterations = 2
-    mcmc = 100
+    mcmc = 1
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -42,39 +38,29 @@ if __name__ == '__main__':
     # c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     verbose = False
 
-    # models = [SVM]
-    # model_names = ['svm_']
-    # targets = [target.SklearnSVM]
-    # targets_tpe = [target.HyperSVM]
-    # params_ho = [d_svm]
-    models = [Ada, GBM, KNN]
-    model_names = ['ada_', 'gbm_', 'knn_']
-    targets = [target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
-    targets_tpe = [target.HyperAda, target.HyperGBM, target.HyperKNN]
-    params_ho = [d_ada, d_gbm, d_knn]
+    models = [MLP]
+    model_names = ['mlp_']
+    targets = [target.SklearnMLP]
+    targets_tpe = [target.HyperSKMLP]
+    params_ho = [d_mlp]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
     methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
 
-    path = os.path.join(os.getcwd(), '../data/uci')
-    # dataset = 'adult.csv'
-    # problem = 'binary'
-    # target_index = 88
-    # data = utils.sub_build(os.path.join(path, dataset), target_index, frac=0.3)
-    dataset = 'wine.csv'
-    testset = 'adult_test.csv'
-    problem = 'binary'
-    target_index = 0
+    # Load data from https://www.openml.org/d/554
+    X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
+    X = X / 255.
+
+    # rescale the data, use the traditional train/test split
+    X_train, X_test = X[:60000], X[60000:]
+    y_train, y_test = y[:60000], y[60000:]
 
     # build dataset and test set
-    test = utils.sub_build(os.path.join(path, dataset), target_index=target_index, frac=0.2)
-    x_test, y_test = test
-    # data = utils.sub_build(os.path.join(path, dataset), target_index=target_index, frac=0.1)
-    data = utils.build(os.path.join(path, dataset), target_index=target_index)
-    x, y = data
-    exp_index = 1
+    data = X_train, y_train
+    test = X_test, y_test
+    exp_index = 0
 
     for i in range(len(models)):
         model = models[i]

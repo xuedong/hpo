@@ -60,10 +60,10 @@ if __name__ == "__main__":
     # path = "../result/pct_gbm_2"
     # plots.plot_pct(path, 4, 'gbm_', '', 'breast_cancer', 2)
 
-    # names = ['ada_', 'gbm_', 'knn_', 'svm_']
+    # names = ['ada_', 'gbm_', 'knn_']
     exp_index = 1
-    end = 100
-    names = ['svm_']
+    end = 33
+    names = ['ada_']
     for name in names:
         path0 = "../result/hyperband_" + name + str(exp_index)
         path1 = "../result/tpe_" + name + str(exp_index)

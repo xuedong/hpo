@@ -9,8 +9,9 @@ from models import Model
 from params import Param
 
 d_mlp = OrderedDict()
-d_mlp['hidden_layer_size'] = ('int', (5, 50))
+d_mlp['hidden_layer_size'] = ('int', (5, 100))
 d_mlp['alpha'] = ('cont', (1e-5, 0.9))
+d_mlp['learning_rate_init'] = ('cont', (1e-5, 1e-1))
 
 
 class MLP(Model):
@@ -26,11 +27,11 @@ class MLP(Model):
 
     def eval(self):
         if self.problem == 'binary':
-            mod = MLPClassifier(hidden_layer_sizes=self.hidden_layer_sizes, alpha=self.alpha,
+            mod = MLPClassifier(hidden_layer_sizes=self.hidden_layer_sizes, max_iter=10, alpha=self.alpha, solver='sgd',
                                 learning_rate_init=self.learning_rate_init, beta_1=self.beta_1, beta_2=self.beta_2,
                                 random_state=20)
         else:
-            mod = MLPRegressor(hidden_layer_sizes=self.hidden_layer_sizes, alpha=self.alpha,
+            mod = MLPRegressor(hidden_layer_sizes=self.hidden_layer_sizes, max_iter=10, alpha=self.alpha, solver='sgd',
                                learning_rate_init=self.learning_rate_init, beta_1=self.beta_1, beta_2=self.beta_2,
                                random_state=20)
         return mod
@@ -51,7 +52,8 @@ class MLP(Model):
             dirname = "default_arm"
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
-            arm = {'dir': path + "/" + dirname, 'hidden_layer_size': 100, 'alpha': 10 ** (-4), 'results': []}
+            arm = {'dir': path + "/" + dirname, 'hidden_layer_size': 100, 'alpha': 10 ** (-4),
+                   'learning_rate_init': 0.001, 'results': []}
             arms[0] = arm
             return arms
         subdirs = next(os.walk('.'))[1]
@@ -64,7 +66,7 @@ class MLP(Model):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             arm = {'dir': path + "/" + dirname}
-            hps = ['hidden_layer_size', 'alpha']
+            hps = ['hidden_layer_size', 'alpha', 'learning_rate_init']
             for hp in hps:
                 val = params[hp].get_param_range(1, stochastic=True)
                 arm[hp] = val[0]
@@ -114,7 +116,8 @@ class MLP(Model):
 
         for iteration in range(iterations):
             current_loss, test_error = loss.evaluate_loss(hidden_layer_size=arm['hidden_layer_size'],
-                                                          alpha=arm['alpha'])
+                                                          alpha=arm['alpha'],
+                                                          learning_rate_init=arm['learning_rate_init'])
             current_loss = -current_loss
             avg_loss += current_loss
 
@@ -149,7 +152,9 @@ class MLP(Model):
     def get_search_space():
         params = {
             'hidden_layer_size': Param('hidden_layer_size', 5, 50, dist='uniform', scale='linear', interval=1),
-            'alpha': Param('alpha', 1 * 10 ** (-5), 0.9, dist='uniform', scale='linear')
+            'alpha': Param('alpha', 1 * 10 ** (-5), 0.9, dist='uniform', scale='linear'),
+            'learning_rate_init': Param('learning_rate_init', np.log(1 * 10 ** (-5)), np.log(1 * 10 ** (-1)),
+                                        dist='uniform', scale='log')
         }
 
         return params

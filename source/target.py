@@ -423,7 +423,7 @@ class HyperLogistic(object):
 
 
 class HyperMLP(object):
-    def __init__(self, model, epochs, director, data, test):
+    def __init__(self, model, epochs, director, data):
         self.model = model
         self.epochs = epochs
         self.director = director
@@ -480,12 +480,13 @@ class HyperCNN(object):
 
 
 class HyperAda(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         n_estimators, learning_rate = hps
@@ -493,7 +494,7 @@ class HyperAda(object):
                'n_estimators': n_estimators, 'learning_rate': learning_rate,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -507,12 +508,13 @@ class HyperAda(object):
 
 
 class HyperGBM(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         learning_rate, n_estimators, max_depth, min_samples_split = hps
@@ -521,7 +523,7 @@ class HyperGBM(object):
                'max_depth': max_depth, 'min_samples_split': min_samples_split,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -535,12 +537,13 @@ class HyperGBM(object):
 
 
 class HyperKNN(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         n_neighbors = hps[0]
@@ -548,7 +551,7 @@ class HyperKNN(object):
                'n_neighbors': n_neighbors,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -562,12 +565,13 @@ class HyperKNN(object):
 
 
 class HyperSKMLP(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         hidden_layer_size, alpha = hps
@@ -575,7 +579,7 @@ class HyperSKMLP(object):
                'hidden_layer_size': hidden_layer_size, 'alpha': alpha,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=False)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=False)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -589,12 +593,13 @@ class HyperSKMLP(object):
 
 
 class HyperRF(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         n_estimators, min_samples_split, max_features = hps
@@ -603,7 +608,7 @@ class HyperRF(object):
                'max_features': max_features,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=True)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
@@ -646,12 +651,13 @@ class HyperSVM(object):
 
 
 class HyperTree(object):
-    def __init__(self, model, iterations, director, problem, data):
+    def __init__(self, model, iterations, director, problem, data, test):
         self.model = model
         self.iterations = iterations
         self.director = director
         self.problem = problem
         self.data = data
+        self.test = test
 
     def objective(self, hps):
         max_features, max_depth, min_samples_split = hps
@@ -659,7 +665,7 @@ class HyperTree(object):
                'max_features': max_features, 'max_depth': max_depth, 'min_samples_split': min_samples_split,
                'results': []}
         best_loss, avg_loss, track_valid, track_test = \
-            self.model.run_solver(self.iterations, arm, self.data, problem=self.problem, verbose=True)
+            self.model.run_solver(self.iterations, arm, self.data, self.test, problem=self.problem, verbose=True)
         return {
             'loss': best_loss,
             'status': STATUS_OK,
