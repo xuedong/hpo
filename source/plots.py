@@ -520,7 +520,7 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     x = range(shortest)
     if resource_type == 'iterations':
         valid_tracks += 1
-        test_tracks = -test_tracks
+        test_tracks += 1
     y_valid = np.mean(valid_tracks, axis=0)
     y_test = np.mean(test_tracks, axis=0)
     if devs:
@@ -563,7 +563,7 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     x = range(shortest)
     if resource_type == 'iterations':
         valid_tracks += 1
-        test_tracks = -test_tracks
+        test_tracks += 1
     y_valid = np.mean(valid_tracks, axis=0)
     y_test = np.mean(test_tracks, axis=0)
     if devs:
@@ -606,25 +606,25 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     x = range(shortest)
     if resource_type == 'iterations':
         valid_losses = 1 - valid_losses
-        test_losses = -test_losses
+        test_losses += 1
     y_valid = np.mean(valid_losses, axis=0)
     y_test = np.mean(test_losses, axis=0)
-    # if devs:
-    #     if plot == 'valid':
-    #         err = np.std(valid_tracks, axis=0)
-    #         lower = y_valid - err
-    #         higher = y_valid + err
-    #         plt.fill_between(x, lower, higher, alpha=0.5)
-    # if plot == 'valid':
-    #     if marker:
-    #         plt.plot(x[1:], y_valid[1:], marker='+', label=r"GPO(HOO)")
-    #     else:
-    #         plt.plot(x[1:], y_valid[1:], label=r"GPO(HOO)")
-    # elif plot == 'test':
-    #     if marker:
-    #         plt.plot(x[1:], y_test[1:], marker='+', label=r"GPO(HOO)")
-    #     else:
-    #         plt.plot(x[1:], y_test[1:], label=r"GPO(HOO)")
+    if devs:
+        if plot == 'valid':
+            err = np.std(valid_tracks, axis=0)
+            lower = y_valid - err
+            higher = y_valid + err
+            plt.fill_between(x, lower, higher, alpha=0.5)
+    if plot == 'valid':
+        if marker:
+            plt.plot(x[1:], y_valid[1:], marker='+', label=r"GPO(HOO)")
+        else:
+            plt.plot(x[1:], y_valid[1:], label=r"GPO(HOO)")
+    elif plot == 'test':
+        if marker:
+            plt.plot(x[1:], y_test[1:], marker='+', label=r"GPO(HOO)")
+        else:
+            plt.plot(x[1:], y_test[1:], label=r"GPO(HOO)")
 
     os.chdir('..')
 
@@ -681,7 +681,7 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     x = range(shortest)
     if resource_type == 'iterations':
         valid_tracks += 1
-        test_tracks = -test_tracks
+        test_tracks += 1
     y_valid = np.mean(valid_tracks, axis=0)
     y_test = np.mean(test_tracks, axis=0)
     if devs:
@@ -724,7 +724,7 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     x = range(shortest)
     if resource_type == 'iterations':
         valid_tracks += 1
-        test_tracks = -test_tracks
+        test_tracks += 1
     y_valid = np.mean(valid_tracks, axis=0)
     y_test = np.mean(test_tracks, axis=0)
     if devs:
@@ -767,7 +767,7 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     x = range(shortest)
     if resource_type == 'iterations':
         valid_tracks += 1
-        test_tracks = -test_tracks
+        test_tracks += 1
     y_valid = np.mean(valid_tracks, axis=0)
     y_test = np.mean(test_tracks, axis=0)
     if devs:

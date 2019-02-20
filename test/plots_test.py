@@ -62,18 +62,18 @@ if __name__ == "__main__":
 
     # names = ['ada_', 'gbm_', 'knn_']
     exp_index = 0
-    end = 1
+    end = 4
     # names = ['svm_']
     names = ['mlp_']
     for name in names:
         path0 = "../result/hyperband_" + name + str(exp_index)
         path1 = "../result/tpe_" + name + str(exp_index)
-        # path2 = "../result/gpo_" + name + str(exp_index)
-        # path3 = "../result/random_" + name + str(exp_index)
+        path2 = "../result/gpo_" + name + str(exp_index)
+        path3 = "../result/random_" + name + str(exp_index)
         path4 = "../result/hyperloop_" + name + str(exp_index)
-        # path5 = "../result/dttts_" + name + str(exp_index)
-        # paths = [path0, path1, path2, path3, path4, path5]
-        paths = [path0, path1, path4]
+        path5 = "../result/dttts_" + name + str(exp_index)
+        paths = [path0, path1, path2, path3, path4, path5]
+        # paths = [path0, path1, path4]
         plots.plot_all(paths, 0, end, name, '', 'mnist_test', exp_index, 'iterations',
                        plot='test', devs=False, marker=False)
         plots.plot_all(paths, 0, end, name, '', 'mnist_valid', exp_index, 'iterations',
