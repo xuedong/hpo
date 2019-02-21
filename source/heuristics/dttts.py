@@ -126,7 +126,7 @@ def dttts(model, resource_type, params, n, i, budget, director, data, test, frac
         if rewards[idx_i] >= 1 or rewards[idx_i] <= 0:
             trial = bernoulli.rvs(0.5)
         else:
-            trial = bernoulli.rvs(1 - rewards[idx_i])
+            trial = bernoulli.rvs(rewards[idx_i])
         if trial == 1:
             succ[idx_i] += 1
         else:

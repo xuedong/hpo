@@ -29,7 +29,7 @@ from classifiers.sklearn.mlp_sklearn import *
 
 
 if __name__ == '__main__':
-    horizon = 24
+    horizon = 162
     iterations = 1
     mcmc = 100
     rhomax = 20
@@ -42,16 +42,16 @@ if __name__ == '__main__':
     # c1 = (0.66 / (3 * 1.)) ** (1. / 8)
     verbose = False
 
-    # models = [SVM]
-    # model_names = ['svm_']
-    # targets = [target.SklearnSVM]
-    # targets_tpe = [target.HyperSVM]
-    # params_ho = [d_svm]
-    models = [Ada, GBM, KNN]
-    model_names = ['ada_', 'gbm_', 'knn_']
-    targets = [target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
-    targets_tpe = [target.HyperAda, target.HyperGBM, target.HyperKNN]
-    params_ho = [d_ada, d_gbm, d_knn]
+    models = [SVM]
+    model_names = ['svm_']
+    targets = [target.SklearnSVM]
+    targets_tpe = [target.HyperSVM]
+    params_ho = [d_svm]
+    # models = [Ada, GBM, KNN]
+    # model_names = ['ada_', 'gbm_', 'knn_']
+    # targets = [target.SklearnAda, target.SklearnGBM, target.SklearnKNN]
+    # targets_tpe = [target.HyperAda, target.HyperGBM, target.HyperKNN]
+    # params_ho = [d_ada, d_gbm, d_knn]
     output_dir = ''
     # rng = np.random.RandomState(12345)
 
@@ -63,18 +63,18 @@ if __name__ == '__main__':
     # problem = 'binary'
     # target_index = 88
     # data = utils.sub_build(os.path.join(path, dataset), target_index, frac=0.3)
-    dataset = 'wine.csv'
+    dataset = 'adult_train.csv'
     testset = 'adult_test.csv'
     problem = 'binary'
-    target_index = 0
+    target_index = 88
 
     # build dataset and test set
-    test = utils.sub_build(os.path.join(path, dataset), target_index=target_index, frac=0.2)
+    test = utils.sub_build(os.path.join(path, testset), target_index=target_index, frac=1)
     x_test, y_test = test
-    # data = utils.sub_build(os.path.join(path, dataset), target_index=target_index, frac=0.1)
-    data = utils.build(os.path.join(path, dataset), target_index=target_index)
+    data = utils.sub_build(os.path.join(path, dataset), target_index=target_index, frac=0.1)
+    # data = utils.build(os.path.join(path, dataset), target_index=target_index)
     x, y = data
-    exp_index = 1
+    exp_index = 3
 
     for i in range(len(models)):
         model = models[i]
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 6, 360, director, data, test,
+                hyperloop.hyperloop_finite(test_model, 'iterations', params, 1, 18, 360, director, data, test,
                                            eta=3, problem=problem, verbose=True)
                 # hyperband_finite.hyperband_finite(test_model, 'epoch', params, 1, 1000, 360, director, data, eta=4,
                 # s_run=0, verbose=False)
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
                 start_time = timeit.default_timer()
 
-                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 6, 360, director, data, test,
+                hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 18, 360, director, data, test,
                                                   eta=3, problem=problem, verbose=verbose)
                 # hyperband_finite.hyperband_finite(test_model, 'iterations', params, 1, 10, 360, director, data, eta=4,
                 #                                   s_run=0, verbose=True)

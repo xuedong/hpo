@@ -61,10 +61,10 @@ if __name__ == "__main__":
     # plots.plot_pct(path, 4, 'gbm_', '', 'breast_cancer', 2)
 
     # names = ['ada_', 'gbm_', 'knn_']
-    exp_index = 0
-    end = 4
-    # names = ['svm_']
-    names = ['mlp_']
+    exp_index = 3
+    end = 20
+    names = ['svm_']
+    # names = ['mlp_']
     for name in names:
         path0 = "../result/hyperband_" + name + str(exp_index)
         path1 = "../result/tpe_" + name + str(exp_index)
@@ -74,9 +74,9 @@ if __name__ == "__main__":
         path5 = "../result/dttts_" + name + str(exp_index)
         paths = [path0, path1, path2, path3, path4, path5]
         # paths = [path0, path1, path4]
-        plots.plot_all(paths, 0, end, name, '', 'mnist_test', exp_index, 'iterations',
+        plots.plot_all(paths, 0, end, name, '', 'adult_test', exp_index, 'iterations',
                        plot='test', devs=False, marker=False)
-        plots.plot_all(paths, 0, end, name, '', 'mnist_valid', exp_index, 'iterations',
+        plots.plot_all(paths, 0, end, name, '', 'adult_valid', exp_index, 'iterations',
                        plot='valid', devs=False, marker=False)
 
     # path = "../result/hyperloop_svm_2/"
