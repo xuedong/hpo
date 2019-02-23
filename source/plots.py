@@ -615,16 +615,16 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
             lower = y_valid - err
             higher = y_valid + err
             plt.fill_between(x, lower, higher, alpha=0.5)
-    if plot == 'valid':
-        if marker:
-            plt.plot(x[1:], y_valid[1:], marker='+', label=r"GPO(HOO)")
-        else:
-            plt.plot(x[1:], y_valid[1:], label=r"GPO(HOO)")
-    elif plot == 'test':
-        if marker:
-            plt.plot(x[1:], y_test[1:], marker='+', label=r"GPO(HOO)")
-        else:
-            plt.plot(x[1:], y_test[1:], label=r"GPO(HOO)")
+    # if plot == 'valid':
+    #     if marker:
+    #         plt.plot(x[1:], y_valid[1:], marker='+', label=r"GPO(HOO)")
+    #     else:
+    #         plt.plot(x[1:], y_valid[1:], label=r"GPO(HOO)")
+    # elif plot == 'test':
+    #     if marker:
+    #         plt.plot(x[1:], y_test[1:], marker='+', label=r"GPO(HOO)")
+    #     else:
+    #         plt.plot(x[1:], y_test[1:], label=r"GPO(HOO)")
 
     os.chdir('..')
 

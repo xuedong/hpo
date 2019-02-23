@@ -27,7 +27,7 @@ from classifiers.sklearn.mlp_sklearn import *
 if __name__ == '__main__':
     horizon = 108
     iterations = 1
-    mcmc = 20
+    mcmc = 30
     rhomax = 20
     rho = 0.66
     nu = 1.
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         model = models[i]
         test_model = model()
         params = model.get_search_space()
-        for seed_id in range(10, mcmc):
+        for seed_id in range(20, mcmc):
             if methods["hyperloop"]:
                 print('<-- Running Hyperloop -->')
                 exp_name = 'hyperloop_' + model_names[i] + str(exp_index) + '/'
