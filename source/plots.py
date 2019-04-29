@@ -525,10 +525,10 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     y_test = np.mean(test_tracks, axis=0)
     if devs:
         if plot == 'valid':
-            err = np.std(valid_tracks, axis=0)
+            err = np.std(valid_tracks, axis=0) / 10
             lower = y_valid - err
             higher = y_valid + err
-            plt.fill_between(x, lower, higher, alpha=0.5)
+            plt.fill_between(x[1:], lower[1:], higher[1:], alpha=0.4)
     if plot == 'valid':
         if marker:
             plt.plot(x[1:], y_valid[1:], marker='.', label=r"Hyperband")
@@ -568,10 +568,10 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     y_test = np.mean(test_tracks, axis=0)
     if devs:
         if plot == 'valid':
-            err = np.std(valid_tracks, axis=0)
+            err = np.std(valid_tracks, axis=0) / 10
             lower = y_valid - err
             higher = y_valid + err
-            plt.fill_between(x, lower, higher, alpha=0.5)
+            plt.fill_between(x[1:], lower[1:], higher[1:], alpha=0.4)
     if plot == 'valid':
         if marker:
             plt.plot(x[1:], y_valid[1:], marker='*', label=r"TPE")
@@ -609,12 +609,12 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
         test_losses += 1
     y_valid = np.mean(valid_losses, axis=0)
     y_test = np.mean(test_losses, axis=0)
-    if devs:
-        if plot == 'valid':
-            err = np.std(valid_tracks, axis=0)
-            lower = y_valid - err
-            higher = y_valid + err
-            plt.fill_between(x, lower, higher, alpha=0.5)
+    # if devs:
+    #     if plot == 'valid':
+    #         err = np.std(valid_tracks, axis=0) / 10
+    #         lower = y_valid - err
+    #         higher = y_valid + err
+    #         plt.fill_between(x, lower, higher, alpha=0.4)
     # if plot == 'valid':
     #     if marker:
     #         plt.plot(x[1:], y_valid[1:], marker='+', label=r"GPO(HOO)")
@@ -686,10 +686,10 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     y_test = np.mean(test_tracks, axis=0)
     if devs:
         if plot == 'valid':
-            err = np.std(valid_tracks, axis=0)
+            err = np.std(valid_tracks, axis=0) / 10
             lower = y_valid - err
             higher = y_valid + err
-            plt.fill_between(x, lower, higher, alpha=0.5)
+            plt.fill_between(x[1:], lower[1:], higher[1:], alpha=0.4)
     if plot == 'valid':
         if marker:
             plt.plot(x[1:], y_valid[1:], marker='x', label=r"Random Search")
@@ -729,10 +729,10 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     y_test = np.mean(test_tracks, axis=0)
     if devs:
         if plot == 'valid':
-            err = np.std(valid_tracks, axis=0)
+            err = np.std(valid_tracks, axis=0) / 10
             lower = y_valid - err
             higher = y_valid + err
-            plt.fill_between(x, lower, higher, alpha=0.5)
+            plt.fill_between(x[1:], lower[1:], higher[1:], alpha=0.4)
     if plot == 'valid':
         if marker:
             plt.plot(x[1:], y_valid[1:], marker='2', label=r"H-TTTS")
@@ -772,10 +772,10 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
     y_test = np.mean(test_tracks, axis=0)
     if devs:
         if plot == 'valid':
-            err = np.std(valid_tracks, axis=0)
+            err = np.std(valid_tracks, axis=0) / 10
             lower = y_valid - err
             higher = y_valid + err
-            plt.fill_between(x, lower, higher, alpha=0.5)
+            plt.fill_between(x[1:], lower[1:], higher[1:], alpha=0.4)
     if plot == 'valid':
         if marker:
             plt.plot(x[1:], y_valid[1:], marker='4', label=r"D-TTTS")
@@ -791,7 +791,7 @@ def plot_all(paths, runs_begin, runs_end, classifier_name, optimizer_name, datas
 
     # plt.grid()
     # plt.xlim((0, 400))
-    # plt.ylim((0, 0.2))
+    # plt.ylim((0, 0.1))
     plt.legend(loc=0)
     if plot == 'valid':
         plt.ylabel('Validation error')
