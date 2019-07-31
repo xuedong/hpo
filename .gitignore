@@ -104,6 +104,7 @@ ENV/
 
 # Data
 data/uci/
+data/MNIST/
 *.pkl
 
 # PyCharm IDE
