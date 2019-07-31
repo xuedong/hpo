@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     methods = {"hyperloop": True, "hyperband": True, "gpo": True, "tpe": True, "random": True, "dttts": True}
     # methods = {"hyperloop": True, "hyperband": False, "gpo": False, "tpe": True, "random": True, "dttts": True}
-
+    print(os.getcwd())
     path = os.path.join(os.getcwd(), '../data/uci')
     # dataset = 'adult.csv'
     # problem = 'binary'

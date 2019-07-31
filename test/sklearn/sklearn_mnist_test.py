@@ -67,7 +67,7 @@ if __name__ == '__main__':
         model = models[i]
         test_model = model()
         params = model.get_search_space()
-        for seed_id in range(20, mcmc):
+        for seed_id in range(1, mcmc):
             if methods["hyperloop"]:
                 print('<-- Running Hyperloop -->')
                 exp_name = 'hyperloop_' + model_names[i] + str(exp_index) + '/'
